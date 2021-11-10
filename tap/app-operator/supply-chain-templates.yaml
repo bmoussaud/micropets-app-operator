@@ -121,7 +121,7 @@ spec:
       fetch:
         - git:
             url: https://github.com/bmoussaud/micropets-app-operator
-            ref: master
+            ref: main
             subPath: tap/kapp
       template:
         - ytt:
