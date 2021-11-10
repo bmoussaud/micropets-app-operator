@@ -120,9 +120,9 @@ spec:
       serviceAccountName: default  
       fetch:
         - git:
-            url: https://github.com/bmoussaud/micropets-app
+            url: https://github.com/bmoussaud/micropets-app-operator
             ref: master
-            subPath: cluster/tap/kapp
+            subPath: tap/kapp
       template:
         - ytt:
             ignoreUnknownComments: true
