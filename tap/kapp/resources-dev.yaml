@@ -37,7 +37,7 @@ data:
                 "name": "fishes",
                 "host": "fishes-service",
                 "port": "7007",
-                "context": "/dogs/v1/data"
+                "context": "/fishes/v1/data"
             }
         ]
     }
