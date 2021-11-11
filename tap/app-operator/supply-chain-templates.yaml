@@ -49,7 +49,7 @@ metadata:
 spec:
   imagePath: .status.latestImage
   template:
-    apiVersion: kpack.io/v1alpha2
+    apiVersion: kpack.io/v1alpha1
     kind: Image
     metadata:
       name: micropet-$(workload.metadata.name)$
