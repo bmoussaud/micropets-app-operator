@@ -20,6 +20,15 @@ data:
               "amplitude": 0.3
             }
         },
+        "observability": {
+          "enable": true,
+          "application": "micropets",
+          "service": "(@=  str(data.values.service.name) @)",
+          "cluster": "us-west",
+          "shard": "primary",
+          "server": "https://vmware.wavefront.com",
+          "token": "df3e4928-3fdc-44b5-80d5-01bcc522f97b"
+        },
         "backends": [
             {
                 "name": "cats",

@@ -1,5 +1,11 @@
 # micropets-app-operator
 
+This repository gathers all the configurations that will be managed by an `app-operator` to provide on top a on an infrastructure-ready kubernetest cluster an application-ready cluster
+
+## Cloud Native Build Pack
+
+## Supply Chains
+
 With a `ClusterSupplyChain`, the app operators describe which "shape of applications" they deal with (via `spec.selector`), and what series of components are responsible for creating an artifact that delivers it (via `spec.components`).
 
 Those `Workload`s that match `spec.selector` then go through the components specified in `spec.components`.
