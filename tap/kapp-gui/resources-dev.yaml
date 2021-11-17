@@ -83,7 +83,7 @@ spec:
     - host: #@ data.values.service.virtual_host
       http:
         paths:
-          - path: #@ "/"+ data.values.service.name
+          - path: /
             pathType: Prefix
             backend:
               service:
