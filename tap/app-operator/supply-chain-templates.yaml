@@ -78,7 +78,7 @@ spec:
     - name: mode
       default: "RANDOM_NUMBER"
     - name: observability
-      default: false
+      default: true
   configPath: .metadata.name
   template:
     apiVersion: v1
