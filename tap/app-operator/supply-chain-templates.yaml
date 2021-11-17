@@ -93,6 +93,7 @@ spec:
           version: latest
           virtual_host: front.mytanzu.xyz
           image: $(images.image.image)$
+          application: micro-pet
         registry:
           server: harbor.mytanzu.xyz/library
 ---

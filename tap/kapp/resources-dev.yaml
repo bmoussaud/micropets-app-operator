@@ -67,21 +67,21 @@ metadata:
   name: #@ data.values.service.name +"-app"
   labels:
     app: #@ data.values.service.name+ "-app"
-    group: micro-pet
-    k8s-app: micro-pet    
+    group: #@ data.values.service.application
+    k8s-app: #@ data.values.service.application    
 spec:
   replicas: #@ data.values.service.replicas
   selector:
     matchLabels:
       app: #@ data.values.service.name+ "-app"
-      group: micro-pet
-      k8s-app: micro-pet
+      group: #@ data.values.service.application
+      k8s-app: #@ data.values.service.application
   template:
     metadata:
       labels:
         app: #@ data.values.service.name+ "-app"
-        group: micro-pet
-        k8s-app: micro-pet
+        group: #@ data.values.service.application
+        k8s-app: #@ data.values.service.application
     spec:
       volumes:
         - name: config-volume
@@ -138,8 +138,8 @@ metadata:
   name: #@ data.values.service.name +"-service"
   labels:
     app: #@ data.values.service.name+ "-app"
-    group: micro-pet
-    k8s-app: micro-pet
+    group: #@ data.values.service.application
+    k8s-app: #@ data.values.service.application
 spec:
   ports:
     - protocol: TCP
@@ -147,8 +147,8 @@ spec:
       port: #@ data.values.service.port
   selector:
     app: #@ data.values.service.name+ "-app"
-    group: micro-pet
-    k8s-app: micro-pet
+    group: #@ data.values.service.application
+    k8s-app: #@ data.values.service.application
 ---
 kind: Ingress
 apiVersion: extensions/v1beta1
