@@ -21,7 +21,7 @@ data:
             }
         },
         "observability": {
-          "enable": true,
+          "enable": (@=  str(data.values.service.observability) @),
           "application": "micropets",
           "service": "(@=  str(data.values.service.name) @)",
           "cluster": "us-west",
