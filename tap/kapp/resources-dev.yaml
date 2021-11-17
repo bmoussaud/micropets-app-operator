@@ -66,21 +66,18 @@ apiVersion: apps/v1
 metadata:  
   name: #@ data.values.service.name +"-app"
   labels:
-    app: #@ data.values.service.name+ "-app"
-    group: #@ data.values.service.application
+    service: #@ data.values.service.name    
     k8s-app: #@ data.values.service.application    
 spec:
   replicas: #@ data.values.service.replicas
   selector:
     matchLabels:
-      app: #@ data.values.service.name+ "-app"
-      group: #@ data.values.service.application
+      service: #@ data.values.service.name      
       k8s-app: #@ data.values.service.application
   template:
     metadata:
       labels:
-        app: #@ data.values.service.name+ "-app"
-        group: #@ data.values.service.application
+        service: #@ data.values.service.name        
         k8s-app: #@ data.values.service.application
     spec:
       volumes:
@@ -137,8 +134,7 @@ kind: Service
 metadata:
   name: #@ data.values.service.name +"-service"
   labels:
-    app: #@ data.values.service.name+ "-app"
-    group: #@ data.values.service.application
+    service: #@ data.values.service.name    
     k8s-app: #@ data.values.service.application
 spec:
   ports:
@@ -146,8 +142,7 @@ spec:
       name: #@ data.values.service.name+ "-http"
       port: #@ data.values.service.port
   selector:
-    app: #@ data.values.service.name+ "-app"
-    group: #@ data.values.service.application
+    service: #@ data.values.service.name    
     k8s-app: #@ data.values.service.application
 ---
 kind: Ingress
