@@ -12,6 +12,9 @@ service:
   stage: LOCAL_DEV
   color: green
   config_path: /workspace/src/assets/config
+  observability: false
+application:
+  name: mypet
 registry:
   server: harbor.mytanzu.xyz/library
   

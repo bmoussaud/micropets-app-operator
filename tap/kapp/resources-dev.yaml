@@ -8,6 +8,7 @@ metadata:
     kapp.k14s.io/versioned : ""
   name: #@ data.values.service.name + "-config"
 data:
+#@ if data.values.service.observability:
   pets_config.json: |-
     {
         "service": {
@@ -20,7 +21,6 @@ data:
               "amplitude": 0.3
             }
         },
-#@ if data.values.service.observability:
         "observability": {          
           "enable": true,          
           "application": "micropets",
@@ -30,7 +30,6 @@ data:
           "server": "https://vmware.wavefront.com",
           "token": "df3e4928-3fdc-44b5-80d5-01bcc522f97b"
         },
-#@ end
         "backends": [
             {
                 "name": "cats",
@@ -52,7 +51,44 @@ data:
             }
         ]
     }
-
+#@ else:
+  pets_config.json: |-
+    {
+        "service": {
+            "port": ":(@=  str(data.values.service.port) @)",
+            "listen": "true",
+            "mode": "(@=  str(data.values.service.mode) @)",
+            "frequencyError": 10,
+            "delay": {
+              "period": 100,
+              "amplitude": 0.3
+            }
+        },
+        "observability": {          
+          "enable": false,                   
+        },
+        "backends": [
+            {
+                "name": "cats",
+                "host": "cats-service",
+                "port": "7002",
+                "context": "/cats/v1/data"
+            },
+            {
+                "name": "dogs",
+                "host": "dogs-service",
+                "port": "7003",
+                "context": "/dogs/v1/data"
+            },
+            {
+                "name": "fishes",
+                "host": "fishes-service",
+                "port": "7007",
+                "context": "/fishes/v1/data"
+            }
+        ]
+    }
+#@ end
 ---
 apiVersion: v1
 kind: Secret
