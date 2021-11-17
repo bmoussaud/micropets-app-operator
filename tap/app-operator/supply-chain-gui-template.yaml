@@ -55,7 +55,9 @@ spec:
           port: 8080
           stage: supply_chain
           config_path: /tmp/workspace/src/assets/config
-          application: micro-pet
+          observability: false
+        application: 
+          name: micro-pet
         registry:
           server: harbor.mytanzu.xyz/library
 ---

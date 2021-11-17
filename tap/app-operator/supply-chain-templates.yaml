@@ -77,6 +77,8 @@ spec:
       default: 7003
     - name: mode
       default: "RANDOM_NUMBER"
+    - name: observability
+      default: false
   configPath: .metadata.name
   template:
     apiVersion: v1
@@ -89,11 +91,13 @@ spec:
           name: $(workload.metadata.name)$
           port: $(params.port)$
           mode: $(params.mode)$
-          replicas: 1
+          replicas: 2
           version: latest
           virtual_host: front.mytanzu.xyz
           image: $(images.image.image)$
-          application: micro-pet
+          observability: $(params.observability)$
+        application: 
+          name: micro-pet
         registry:
           server: harbor.mytanzu.xyz/library
 ---

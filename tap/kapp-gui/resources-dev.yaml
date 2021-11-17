@@ -22,18 +22,18 @@ metadata:
   name: #@ data.values.service.name +"-app"
   labels:
     service: #@ data.values.service.name    
-    k8s-app: #@ data.values.service.application  
+    k8s-app: #@ data.values.application.name  
 spec:
   replicas: #@ data.values.service.replicas
   selector:
     matchLabels:
       service: #@ data.values.service.name      
-      k8s-app: #@ data.values.service.application
+      k8s-app: #@ data.values.application.name
   template:
     metadata:
       labels:
         service: #@ data.values.service.name               
-        k8s-app: #@ data.values.service.application
+        k8s-app: #@ data.values.application.name
     spec:
       volumes:
         - name: config-volume
@@ -62,7 +62,7 @@ metadata:
   name: #@ data.values.service.name +"-service"
   labels:
     service: #@ data.values.service.name    
-    k8s-app: #@ data.values.service.application
+    k8s-app: #@ data.values.application.name
 spec:
   ports:
     - protocol: TCP
@@ -70,7 +70,7 @@ spec:
       port: #@ data.values.service.port
   selector:
     service: #@ data.values.service.name    
-    k8s-app: #@ data.values.service.application
+    k8s-app: #@ data.values.application.name
 ---
 kind: Ingress
 apiVersion: extensions/v1beta1
