@@ -67,6 +67,7 @@ metadata:
   name: #@ data.values.service.name +"-app"
   labels:
     app: #@ data.values.service.name+ "-app"
+    k8s-app: micro-pet
     group: micro-pet
 spec:
   replicas: #@ data.values.service.replicas
@@ -74,11 +75,13 @@ spec:
     matchLabels:
       app: #@ data.values.service.name+ "-app"
       group: micro-pet
+      k8s-app: micro-pet
   template:
     metadata:
       labels:
         app: #@ data.values.service.name+ "-app"
         group: micro-pet
+        k8s-app: micro-pet
     spec:
       volumes:
         - name: config-volume
