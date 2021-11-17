@@ -65,7 +65,7 @@ data:
             }
         },
         "observability": {          
-          "enable": false,                   
+          "enable": false                   
         },
         "backends": [
             {
