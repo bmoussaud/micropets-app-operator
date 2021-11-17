@@ -67,8 +67,8 @@ metadata:
   name: #@ data.values.service.name +"-app"
   labels:
     app: #@ data.values.service.name+ "-app"
-    k8s-app: micro-pet
     group: micro-pet
+    k8s-app: micro-pet    
 spec:
   replicas: #@ data.values.service.replicas
   selector:
@@ -139,6 +139,7 @@ metadata:
   labels:
     app: #@ data.values.service.name+ "-app"
     group: micro-pet
+    k8s-app: micro-pet
 spec:
   ports:
     - protocol: TCP
@@ -147,6 +148,7 @@ spec:
   selector:
     app: #@ data.values.service.name+ "-app"
     group: micro-pet
+    k8s-app: micro-pet
 ---
 kind: Ingress
 apiVersion: extensions/v1beta1
