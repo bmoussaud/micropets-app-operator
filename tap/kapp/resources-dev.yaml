@@ -186,6 +186,8 @@ spec:
 kind: Ingress
 apiVersion: extensions/v1beta1
 metadata:
+  annotations:
+    kubernetes.io/ingress.class: istio
   name: #@ data.values.service.name + "-ingress"
 spec:
   rules:
@@ -193,9 +195,12 @@ spec:
       http:
         paths:
           - path: #@ "/"+ data.values.service.name
+            pathType: Prefix
             backend:
-              serviceName:  #@ data.values.service.name +"-service"
-              servicePort: #@ data.values.service.port
+              service:
+                name: #@ data.values.service.name +"-service"
+                port: 
+                  number: #@ data.values.service.port
 
 
 
