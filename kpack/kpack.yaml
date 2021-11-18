@@ -1,4 +1,5 @@
 #@ load("@ytt:data", "data")
+# TODO Test  gcr.io/paketo-buildpacks/nodejs:0.10.0
 ---
 apiVersion: kpack.io/v1alpha1
 kind: ClusterStore
@@ -7,7 +8,7 @@ metadata:
 spec:
   sources:
     - image: gcr.io/paketo-buildpacks/go    
-    - image: gcr.io/paketo-buildpacks/nodejs
+    - image: gcr.io/paketo-buildpacks/nodejs:0.9.0
     - image: harbor.mytanzu.xyz/library/watermark-labels-buildpack:0.0.4
 ---
 apiVersion: kpack.io/v1alpha1

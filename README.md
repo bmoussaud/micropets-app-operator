@@ -4,6 +4,51 @@ This repository gathers all the configurations that will be managed by an `app-o
 
 ## Cloud Native Build Pack
 
+Set up the project to use [Cloud Native Buildpack](https://buildpacks.io/) instead of managing Dockerfile to create the image
+
+The project will use [kPack](https://github.com/pivotal/kpack). 
+If you're looking for a supported version of [kPack](https://github.com/pivotal/kpack), please look at [Tanzu Build Service by vmware](https://tanzu.vmware.com/build-service)
+
+### Install kPack into the cluster
+
+```
+kapp deploy --yes -a kpack \
+	-f https://github.com/pivotal/kpack/releases/download/v0.3.1/release-0.3.1.yaml
+```
+
+### Configure kPack 
+
+Edit [kpack/kpack_values.yaml](kpack/kpack_valuesvalues.yaml) 
+the kpack folder defines the cluster-scoped resources and the shared resources amongs the services
+
+```
+export MICROPETS_registry_password="moussaud"
+kubectl create ns ${MICROPETS_into_ns}
+ytt --ignore-unknown-comments --data-values-env  MICROPETS   -f . | kapp deploy --yes --into-ns ${MICROPETS_into_ns} -a micropet-kpack -f-
+```
+
+or
+
+```
+MICROPETS_registry_password="moussaud" make kpack
+```
+
+### Check the builder is available 
+
+```
+$kubectl get ClusterBuilder micropet-builder
+NAME               LATESTIMAGE                                                                                                           READY
+micropet-builder   harbor.mytanzu.xyz/library/micropet-builder@sha256:dd1993c5a5550f7b91052330d11bb029bd2f108776dff5097e42e813988ae1b9   True
+```
+
+in each service project, the `kpack.yaml` file specify what to build (Image). 
+Run `make deploy-cnb` to apply the definition using the current kubernetes context (at the root of the project or individually)
+
+_undeploy everything_
+
+kapp delete -a micropet-kpack
+kubectl delete  ns ${MICROPETS_into_ns}
+
 ## Supply Chains
 
 With a `ClusterSupplyChain`, the app operators describe which "shape of applications" they deal with (via `spec.selector`), and what series of components are responsible for creating an artifact that delivers it (via `spec.components`).

@@ -1,7 +1,7 @@
 #@data/values
 ---
 image_prefix: harbor.mytanzu.xyz/library/micropet
-#into_ns: XXXX
+into_ns: micropets-supplychain
 registry:
   server: https://harbor.mytanzu.xyz
   username: admin
