@@ -91,7 +91,7 @@ spec:
           name: $(workload.metadata.name)$
           port: $(params.port)$
           mode: $(params.mode)$
-          replicas: 2
+          replicas: 1
           version: latest
           virtual_host: front.mytanzu.xyz
           image: $(images.image.image)$
