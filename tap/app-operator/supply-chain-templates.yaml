@@ -65,7 +65,6 @@ spec:
         blob:
           url: $(sources.source.url)$
         subPath: $(workload.metadata.name)$
-
 ---
 apiVersion: carto.run/v1alpha1
 kind: ClusterConfigTemplate
@@ -78,7 +77,7 @@ spec:
     - name: mode
       default: "RANDOM_NUMBER"
     - name: observability
-      default: true
+      default: false
   configPath: .metadata.name
   template:
     apiVersion: v1
