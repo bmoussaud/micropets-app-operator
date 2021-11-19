@@ -93,6 +93,8 @@ spec:
       value: "RANDOM_NUMBER"
     - name: port
       value: 7003   
+    - name: observability
+      value: true   
 ````
 
 apply this yaml definition and wacth
