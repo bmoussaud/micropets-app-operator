@@ -11,7 +11,7 @@ spec:
   #     GitRepository               Image                     App                   App
   #
   #
-  components:
+  resources:
     - name: source-provider
       templateRef:
         kind: ClusterSourceTemplate
@@ -21,22 +21,22 @@ spec:
         kind: ClusterImageTemplate
         name: micropet-gui-image
       sources:
-        - component: source-provider
+        - resource: source-provider
           name: source
     - name: configuration
       templateRef:
         kind: ClusterConfigTemplate
         name: micropet-gui-service-config
       sources:
-        - component: source-provider
+        - resource: source-provider
           name: source
       images:
-        - component: image-builder
+        - resource: image-builder
           name: image      
     - name: deploy
       templateRef:
         kind: ClusterTemplate
         name: micropet-gui-deploy      
       configs:
-        - component: configuration
+        - resource: configuration
           name: petconfig

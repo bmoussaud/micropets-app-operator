@@ -73,7 +73,6 @@ The association between a workload and the requested supplychain is based using 
 `app.tanzu.vmware.com/workload-type`.
 
 
-
 Example: request A new workload called `micropet-service` with the following git repository using the `RANDOM_NUMBER` mode and listening on the `7003` port.
 
 ````
@@ -116,4 +115,47 @@ micropets-supplychain    └─SourceResolver/micropet-dogs-source          True
 ````
 
 Several resources (kpack image, kapp-controler app, kubernetes config map, fluxcd git repository) are created and connected all together by the workload.
+
+### install cartographer
+
+Source : https://cartographer.sh/docs/install/ 
+v0.0.7
+
+````
+kubectl create namespace cartographer-system
+kubectl apply -f https://github.com/vmware-tanzu/cartographer/releases/latest/download/cartographer.yaml
+````
+
+### install the micropet Supply Chains
+
+````
+❯ make tap
+kubectl create namespace "micropets-supplychain" --dry-run=client -o yaml | kubectl apply -f -
+namespace/micropets-supplychain configured
+kubectl get namespace "micropets-supplychain"
+NAME                    STATUS   AGE
+micropets-supplychain   Active   58d
+ytt --ignore-unknown-comments -f tap/app-operator | kapp deploy --yes --dangerous-override-ownership-of-existing-resources --into-ns "micropets-supplychain" -a micropet-tap -f-
+Target cluster 'https://gimckc2x2x1ar31iv6sd8124v6od-k8s-312336063.eu-west-3.elb.amazonaws.com:443' (nodes: ip-10-0-1-199.eu-west-3.compute.internal, 3+)
+
+Changes
+
+Namespace  Name                               Kind                Conds.  Age  Op      Op st.  Wait to    Rs  Ri
+(cluster)  micropet-gui-service-supply-chain  ClusterSupplyChain  -       -    create  -       reconcile  -   -
+^          micropet-service-supply-chain      ClusterSupplyChain  -       -    create  -       reconcile  -   -
+
+Op:      2 create, 0 delete, 0 update, 0 noop
+Wait to: 2 reconcile, 0 delete, 0 noop
+
+4:44:06PM: ---- applying 2 changes [0/2 done] ----
+4:44:07PM: create clustersupplychain/micropet-gui-service-supply-chain (carto.run/v1alpha1) cluster
+4:44:07PM: create clustersupplychain/micropet-service-supply-chain (carto.run/v1alpha1) cluster
+4:44:07PM: ---- waiting on 2 changes [0/2 done] ----
+4:44:07PM: ok: reconcile clustersupplychain/micropet-service-supply-chain (carto.run/v1alpha1) cluster
+4:44:07PM: ok: reconcile clustersupplychain/micropet-gui-service-supply-chain (carto.run/v1alpha1) cluster
+4:44:07PM: ---- applying complete [2/2 done] ----
+4:44:07PM: ---- waiting complete [2/2 done] ----
+
+Succeeded
+````
 
