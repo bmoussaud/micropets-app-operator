@@ -11,7 +11,7 @@ tap: namespace
 	ytt --ignore-unknown-comments -f tap/app-operator | kapp deploy --yes --dangerous-override-ownership-of-existing-resources --into-ns $(MICROPETS_SP_NS) -a micropet-tap -f-
 
 untap:
-	kapp delete --yes -a micropet-tap
+	kapp delete --yes -a micropet-tap -n  $(MICROPETS_SP_NS) 
 
 local-kapp:
 	ytt --ignore-unknown-comments -f tap/kapp -f tap/kapp-values/kapp-local-values.yaml
