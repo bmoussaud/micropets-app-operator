@@ -70,19 +70,19 @@ data:
         "backends": [
             {
                 "name": "cats",
-                "host": "cats-service.micropets-supplychain.svc.cluster.local",
+                "host": "cats.svc.cnr.mytanzu.xyz",
                 "port": "80",
                 "context": "/cats/v1/data"
             },
             {
                 "name": "dogs",
-                "host": "dogs-service.micropets-supplychain.svc.cluster.local",
+                "host": "dogs.svc.cnr.mytanzu.xyz",
                 "port": "80",
                 "context": "/dogs/v1/data"
             },
             {
                 "name": "fishes",
-                "host": "fishes-service.micropets-supplychain.svc.cluster.local",
+                "host": "fishes.svc.cnr.mytanzu.xyz",
                 "port": "80",
                 "context": "/fishes/v1/data"
             }
