@@ -70,19 +70,19 @@ data:
         "backends": [
             {
                 "name": "cats",
-                "host": "cats-service",
+                "host": "cats-service.micropets-supplychain.svc.cluster.local",
                 "port": "80",
                 "context": "/cats/v1/data"
             },
             {
                 "name": "dogs",
-                "host": "dogs-service",
+                "host": "dogs-service.micropets-supplychain.svc.cluster.local",
                 "port": "80",
                 "context": "/dogs/v1/data"
             },
             {
                 "name": "fishes",
-                "host": "fishes-service",
+                "host": "fishes-service.micropets-supplychain.svc.cluster.local",
                 "port": "80",
                 "context": "/fishes/v1/data"
             }
