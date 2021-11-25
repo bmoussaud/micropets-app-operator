@@ -70,19 +70,19 @@ data:
         "backends": [
             {
                 "name": "cats",
-                "host": "cats-service",
+                "host": "cats-service.micropets-supplychain",
                 "port": "8080",
                 "context": "/cats/v1/data"
             },
             {
                 "name": "dogs",
-                "host": "dogs-service",
+                "host": "dogs-service.micropets-supplychain",
                 "port": "8080",
                 "context": "/dogs/v1/data"
             },
             {
                 "name": "fishes",
-                "host": "fishes-service",
+                "host": "fishes-service.micropets-supplychain",
                 "port": "8080",
                 "context": "/fishes/v1/data"
             }
