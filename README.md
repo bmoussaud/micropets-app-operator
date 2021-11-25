@@ -161,3 +161,64 @@ Wait to: 2 reconcile, 0 delete, 0 noop
 Succeeded
 ````
 
+
+## Cloud Native Runtime / KNative
+
+### Core
+````
+kapp deploy -n default -a knative-serving-1.0 -f https://github.com/knative/serving/releases/download/knative-v1.0.0/serving-crds.yaml -f https://github.com/knative/serving/releases/download/knative-v1.0.0/serving-core.yaml
+````
+Ref: https://knative.dev/docs/install/serving/install-serving-with-yaml/
+
+### Istio 
+If `Istio` hasn't been [installed](https://istio.io/latest/docs/setup/getting-started/#download)
+````
+$kubectl create ns istio-system
+$istioctl install --set profile=default -y
+➜ istioctl install --set profile=default -y
+✔ Istio core installed
+✔ Istiod installed
+✔ Ingress gateways installed
+✔ Installation complete
+````
+
+### Configure DNS
+
+Ref: https://knative.dev/docs/install/serving/install-serving-with-yaml/#configure-dns
+
+Fetch the External IP address or CNAME by running the command:
+````
+➜ kubectl --namespace istio-system get service istio-ingressgateway
+
+NAME                   TYPE           CLUSTER-IP       EXTERNAL-IP                                                               PORT(S)                                      AGE
+istio-ingressgateway   LoadBalancer   10.101.243.102   a5ea5edbenoita79cbed84ee388a-1045033682.eu-west-3.elb.amazonaws.com   15021:30542/TCP,80:31378/TCP,443:30205/TCP   3m28s
+````
+
+`*.cnr.mytanzu.xyz` and `cnr.mytanzu.xyz` defined in AWS
+![screen](img/configure-dns-record-aws.png)
+
+Put this value in [knative/values.yaml](knative/values.yaml)
+
+
+### Deploy Knative / Istio 
+
+The following command deploy __knative 1.0.0__ with the istio configuration.
+Moreover, with ytt, it overlays the configuration to configure the `k-services` to
+* to use a custom domain name (here cnr.mytanzu.xyz)
+* to use be exposed using either the default configuration ({{.Name}}-{{.Namespace}}.{{.Domain}}) or by reading the `service.subdomain` annotation set on the service.
+
+````
+ytt --ignore-unknown-comments -f knative \
+		-f https://github.com/knative/serving/releases/download/knative-v1.0.0/serving-crds.yaml  \
+		-f https://github.com/knative/serving/releases/download/knative-v1.0.0/serving-core.yaml  \
+		-f https://github.com/knative/net-istio/releases/download/knative-v1.0.0/net-istio.yaml   \
+	| kapp deploy --yes -n default -a knative-serving-1.0 -f-
+	kubectl --namespace istio-system get service istio-ingressgateway
+````
+
+Check the configuration using :
+
+````
+kubectl get cm  -n knative-serving config-network  -o yaml
+kubectl get cm  -n knative-serving config-domain  -o yaml
+````

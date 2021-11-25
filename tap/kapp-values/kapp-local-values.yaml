@@ -1,14 +1,15 @@
 #@data/values
 ---
 service:  
-  name: gui
-  port: 9999
+  name: dogs
+  port: 8080
   mode: RANDOM_NUMBER
   frequencyError: 10
   replicas: 1
   version: latest
+  domain: cnr.mytanzu.xyz
   virtual_host: front.mytanzu.xyz
-  image: harbor.mytanzu.xyz/library/micropet-dogs:latest 
+  image: harbor.mytanzu.xyz/library/micropet-tap-dogs@sha256:b24abdf40753f64cdcfd40b4c9cdbfc45254e53e83243d9e5329b9daf2521be8
   stage: LOCAL_DEV
   color: green
   config_path: /workspace/src/assets/config

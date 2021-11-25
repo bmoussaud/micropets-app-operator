@@ -1,0 +1,124 @@
+#@ load("@ytt:data", "data")
+#@yaml/text-templated-strings
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:  
+  name: #@ data.values.service.name + "-config"
+data:
+#@ if data.values.service.observability:
+  pets_config.json: |-
+    {
+        "service": {
+            "port": ":(@=  str(data.values.service.port) @)",
+            "listen": "true",
+            "mode": "(@=  str(data.values.service.mode) @)",
+            "frequencyError": 10,
+            "delay": {
+              "period": 100,
+              "amplitude": 0.3
+            }
+        },
+        "observability": {          
+          "enable": true,          
+          "application": "micropets",
+          "service": "(@=  str(data.values.service.name) @)",
+          "cluster": "us-west",
+          "shard": "primary",
+          "server": "https://vmware.wavefront.com",
+          "token": "df3e4928-3fdc-44b5-80d5-01bcc522f97b"
+        },
+        "backends": [
+            {
+                "name": "cats",
+                "host": "cats-service",
+                "port": "7002",
+                "context": "/cats/v1/data"
+            },
+            {
+                "name": "dogs",
+                "host": "dogs-service",
+                "port": "7003",
+                "context": "/dogs/v1/data"
+            },
+            {
+                "name": "fishes",
+                "host": "fishes-service",
+                "port": "7007",
+                "context": "/fishes/v1/data"
+            }
+        ]
+    }
+#@ else:
+  pets_config.json: |-
+    {
+        "service": {
+            "port": ":(@=  str(data.values.service.port) @)",
+            "listen": "true",
+            "mode": "(@=  str(data.values.service.mode) @)",
+            "frequencyError": 10,
+            "delay": {
+              "period": 100,
+              "amplitude": 0.3
+            }
+        },
+        "observability": {          
+          "enable": false                   
+        },
+        "backends": [
+            {
+                "name": "cats",
+                "host": "cats-service",
+                "port": "7002",
+                "context": "/cats/v1/data"
+            },
+            {
+                "name": "dogs",
+                "host": "dogs-service",
+                "port": "7003",
+                "context": "/dogs/v1/data"
+            },
+            {
+                "name": "fishes",
+                "host": "fishes-service",
+                "port": "7007",
+                "context": "/fishes/v1/data"
+            }
+        ]
+    }
+#@ end
+---
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name:  #@ data.values.service.name +"-kservice"
+  labels:
+  #  networking.knative.dev/visibility: cluster-local
+    networking.knative.dev/ingress.class: istio
+  annotations:
+    service.subdomain: #@ data.values.service.name+".svc"
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "1"
+    spec:
+      #serviceAccountName: service-account
+      volumes:
+        - name: config-volume
+          configMap:
+            name:  #@ data.values.service.name + "-config"
+            items:            
+            - key: pets_config.json
+              path: pets_config.json    
+      containers:
+        - name:  #@ data.values.service.name
+          image: #@ data.values.service.image
+          securityContext:
+            runAsUser: 1000
+          volumeMounts:
+            - name: config-volume
+              mountPath: /config/
+          env:
+            - name: SERVICE_CONFIG_DIR
+              value: /config

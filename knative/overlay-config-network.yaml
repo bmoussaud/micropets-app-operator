@@ -1,0 +1,21 @@
+# https://bsideup.github.io/posts/knative_custom_domains/
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.subset({"kind": "ConfigMap", "metadata":{"name": "config-network"}})
+---
+data:
+  #@overlay/remove
+  _example:
+
+  #@overlay/match missing_ok=True  
+  domain-template: |-
+    {{if index .Annotations "service.subdomain" -}}
+      {{- index .Annotations "service.subdomain" -}}
+    {{else -}}
+      {{- .Name}}.{{.Namespace -}}
+    {{end -}}
+    .{{.Domain}}
+  #@overlay/match missing_ok=True     
+  domain-template-1: "x{{.Name}}.{{.Domain}}"
+
