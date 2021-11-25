@@ -94,7 +94,7 @@ data:
 apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
-  name:  #@ data.values.service.name +"-kservice"
+  name:  #@ data.values.service.name +"-service"
   labels:
   #  networking.knative.dev/visibility: cluster-local
     networking.knative.dev/ingress.class: istio
