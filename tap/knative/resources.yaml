@@ -71,19 +71,19 @@ data:
             {
                 "name": "cats",
                 "host": "cats-service",
-                "port": "7002",
+                "port": "8080",
                 "context": "/cats/v1/data"
             },
             {
                 "name": "dogs",
                 "host": "dogs-service",
-                "port": "7003",
+                "port": "8080",
                 "context": "/dogs/v1/data"
             },
             {
                 "name": "fishes",
                 "host": "fishes-service",
-                "port": "7007",
+                "port": "8080",
                 "context": "/fishes/v1/data"
             }
         ]
