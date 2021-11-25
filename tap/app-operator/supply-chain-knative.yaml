@@ -1,0 +1,87 @@
+apiVersion: carto.run/v1alpha1
+kind: ClusterSupplyChain
+metadata:
+  name: micropet-service-knative-supply-chain
+spec:
+  selector:
+    app.tanzu.vmware.com/workload-type: micropet-service-knative
+  #
+  #
+  #   source-provider <--[src]-- image-builder  <--[img]--- config <--[config]--- deployer
+  #     GitRepository               Image                     App                   App
+  #
+  #
+  resources:
+    - name: source-provider
+      templateRef:
+        kind: ClusterSourceTemplate
+        name: micropet-source
+    - name: image-builder
+      templateRef:
+        kind: ClusterImageTemplate
+        name: micropet-image
+      sources:
+        - resource: source-provider
+          name: source
+    - name: configuration
+      templateRef:
+        kind: ClusterConfigTemplate
+        name: micropet-service-config
+      sources:
+        - resource: source-provider
+          name: source
+      images:
+        - resource: image-builder
+          name: image
+      params:        
+        - name: mode
+          value: $(workload.spec.params[?(@.name=="mode")].value)$
+        - name: port
+          value: 8080
+        - name: observability
+          value: $(workload.spec.params[?(@.name=="observability")].value)$
+    - name: deploy
+      templateRef:
+        kind: ClusterTemplate
+        name: micropet-deploy-knative     
+      configs:
+        - resource: configuration
+          name: petconfig
+---
+#
+#
+# `app-deploy` instantiates a `kapp-ctrl/App` making use of an image that comes
+# as input in the form of `$(images.image.image)$`.
+#
+# the use of `App` here is important because of how `knative` updates the
+# knative service under the hood to include some extra annotations that _can't_
+# be mutated once applied by knative's controller. As `kapp` is able to be
+# configured to not patch certain features (something `cartographer` can't
+# yet), we're able to bridge that gap with the use of `kapp-ctrl/App`.
+#
+#
+apiVersion: carto.run/v1alpha1
+kind: ClusterTemplate
+metadata:
+  name: micropet-deploy-knative     
+spec:
+  template:
+    apiVersion: kappctrl.k14s.io/v1alpha1
+    kind: App
+    metadata:
+      name: $(workload.metadata.name)$-application
+    spec:
+      serviceAccountName: default  
+      fetch:
+        - git:
+            url: https://github.com/bmoussaud/micropets-app-operator
+            ref: main
+            subPath: tap/knative
+      template:
+        - ytt:
+            ignoreUnknownComments: true
+            valuesFrom:
+              - configMapRef:
+                  name: micropet-service-$(workload.metadata.name)$-config   
+      deploy:
+        - kapp: {}
