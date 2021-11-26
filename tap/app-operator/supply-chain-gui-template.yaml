@@ -54,8 +54,8 @@ spec:
           image: $(images.image.image)$
           color: green
           port: 8080
-          stage: supply_chain
-          config_path: /workspace/src/assets/config
+          stage: supply_chain_dev
+          config_path: /workspace/src/assets
           observability: false
         application: 
           name: micro-pet
