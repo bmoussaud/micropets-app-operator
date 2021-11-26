@@ -55,7 +55,7 @@ spec:
           color: green
           port: 8080
           stage: supply_chain_dev
-          config_path: /workspace/src/assets
+          config_path: /workspace/src/assets/benoit
           observability: false
         application: 
           name: micro-pet
