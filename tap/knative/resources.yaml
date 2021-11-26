@@ -63,7 +63,7 @@ data:
             "mode": "(@=  str(data.values.service.mode) @)",
             "frequencyError": 10,
             "delay": {
-              "period": 100,
+              "period": -1,
               "amplitude": 0.3
             }
         },
