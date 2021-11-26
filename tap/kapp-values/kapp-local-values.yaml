@@ -14,6 +14,7 @@ service:
   color: green
   config_path: /workspace/src/assets/config
   observability: false
+  broker_service: http://pets.svc.cnr.mytanzu.xyz/pets
 application:
   name: mypet
 registry:

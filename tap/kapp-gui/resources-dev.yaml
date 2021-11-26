@@ -13,7 +13,7 @@ metadata:
 data:
   config.json: |-
     {  
-      "petServiceUrl": "http://(@=  data.values.service.virtual_host @)/pets",
+      "petServiceUrl": "(@=  data.values.service.broker_service @)",
       "stage": "(@=  data.values.service.stage @)",
       "debug": "False",
       "stage_color": "(@=  data.values.service.color @)"

@@ -25,7 +25,7 @@ spec:
       build:
         env:
           - name: BP_IMAGE_LABELS
-            value: watermark.project=micropet  watermark.author=benoit@moussaud
+            value: watermark.project=micropet watermark.author=benoit@moussaud
           - name: NPM_CONFIG_LOGLEVEL
             value: DEBUG
           - name: BP_NODE_RUN_SCRIPTS
@@ -49,12 +49,13 @@ spec:
         service:  
           name: $(workload.metadata.name)$          
           replicas: 1          
-          virtual_host: front.mytanzu.xyz
+          virtual_host: front.mytanzu.xyz  
+          broker_service: http://pets.svc.cnr.mytanzu.xyz/pets
           image: $(images.image.image)$
           color: green
           port: 8080
           stage: supply_chain
-          config_path: /tmp/workspace/src/assets/config
+          config_path: /workspace/src/assets/config
           observability: false
         application: 
           name: micro-pet
