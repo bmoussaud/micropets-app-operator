@@ -6,6 +6,9 @@ kind: ConfigMap
 metadata:  
   annotations:
     kapp.k14s.io/versioned : ""    
+  labels:
+    app.kubernetes.io/component: #@ data.values.service.name
+    app.kubernetes.io/part-of: #@ data.values.application.name 
   name: #@ data.values.service.name + "-config"
 data:
 #@ if data.values.service.observability:
@@ -98,6 +101,8 @@ metadata:
   labels:
   #  networking.knative.dev/visibility: cluster-local
     networking.knative.dev/ingress.class: istio
+    app.kubernetes.io/component: #@ data.values.service.name
+    app.kubernetes.io/part-of: #@ data.values.application.name
   annotations:
     service.subdomain: #@ data.values.service.name+".svc"    
     #kapp.k14s.io/versioned-explicit-ref: |

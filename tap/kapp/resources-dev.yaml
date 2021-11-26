@@ -7,6 +7,9 @@ metadata:
   annotations:
     kapp.k14s.io/versioned : ""
   name: #@ data.values.service.name + "-config"
+  labels:
+    app.kubernetes.io/component: #@ data.values.service.name
+    app.kubernetes.io/part-of: #@ data.values.application.name 
 data:
 #@ if data.values.service.observability:
   pets_config.json: |-
@@ -94,6 +97,9 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: #@ data.values.service.name + "-db-credentials"
+  labels:
+    app.kubernetes.io/component: #@ data.values.service.name
+    app.kubernetes.io/part-of: #@ data.values.application.name 
 type: Opaque
 data:
   user: YWRtaW4K
@@ -105,18 +111,24 @@ metadata:
   name: #@ data.values.service.name +"-app"
   labels:
     service: #@ data.values.service.name    
-    k8s-app: #@ data.values.application.name    
+    k8s-app: #@ data.values.application.name 
+    app.kubernetes.io/component: #@ data.values.service.name
+    app.kubernetes.io/part-of: #@ data.values.application.name 
 spec:
   replicas: #@ data.values.service.replicas
   selector:
     matchLabels:
       service: #@ data.values.service.name      
       k8s-app: #@ data.values.application.name
+      app.kubernetes.io/component: #@ data.values.service.name
+      app.kubernetes.io/part-of: #@ data.values.application.name 
   template:
     metadata:
       labels:
         service: #@ data.values.service.name        
         k8s-app: #@ data.values.application.name
+        app.kubernetes.io/component: #@ data.values.service.name
+        app.kubernetes.io/part-of: #@ data.values.application.name 
     spec:
       volumes:
         - name: config-volume
@@ -174,6 +186,8 @@ metadata:
   labels:
     service: #@ data.values.service.name    
     k8s-app: #@ data.values.application.name
+    app.kubernetes.io/component: #@ data.values.service.name
+    app.kubernetes.io/part-of: #@ data.values.application.name 
 spec:
   ports:
     - protocol: TCP
@@ -182,10 +196,15 @@ spec:
   selector:
     service: #@ data.values.service.name    
     k8s-app: #@ data.values.application.name
+    app.kubernetes.io/component: #@ data.values.service.name
+    app.kubernetes.io/part-of: #@ data.values.application.name 
 ---
 kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:
+  labels:
+    app.kubernetes.io/component: #@ data.values.service.name
+    app.kubernetes.io/part-of: #@ data.values.application.name 
   annotations:
     kubernetes.io/ingress.class: istio
   name: #@ data.values.service.name + "-ingress"
