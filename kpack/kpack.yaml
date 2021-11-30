@@ -11,7 +11,7 @@ spec:
     - image: gcr.io/paketo-buildpacks/nodejs
     - image: harbor.mytanzu.xyz/library/watermark-labels-buildpack:0.0.4
     - image: gcr.io/paketo-buildpacks/nginx 
-    - image: paketo-community/staticfile
+    - image: paketocommunity/staticfile
 ---
 apiVersion: kpack.io/v1alpha1
 kind: ClusterStack
