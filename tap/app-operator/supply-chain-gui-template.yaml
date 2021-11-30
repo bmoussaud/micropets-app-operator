@@ -54,7 +54,7 @@ spec:
           image: $(images.image.image)$
           color: green
           port: 8080
-          stage: supply_chain_dev
+          stage: DEV
           config_path: /workspace/dist/assets
           observability: false
         application: 
