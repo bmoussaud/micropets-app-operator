@@ -63,7 +63,7 @@ spec:
               mountPath: #@ data.values.service.config_path  
           env:
             - name: PORT
-              value: #@ data.values.service.port            
+              value: #@ str(data.values.service.port)
       restartPolicy: Always
       schedulerName: default-scheduler
       terminationGracePeriodSeconds: 5
