@@ -8,8 +8,10 @@ metadata:
 spec:
   sources:
     - image: gcr.io/paketo-buildpacks/go    
-    - image: gcr.io/paketo-buildpacks/nodejs:0.9.0
+    - image: gcr.io/paketo-buildpacks/nodejs
     - image: harbor.mytanzu.xyz/library/watermark-labels-buildpack:0.0.4
+    - image: gcr.io/paketo-buildpacks/nginx 
+    - image: paketo-community/staticfile
 ---
 apiVersion: kpack.io/v1alpha1
 kind: ClusterStack
@@ -44,3 +46,5 @@ spec:
     - group:
       - id: paketo-buildpacks/nodejs
       - id: bmoussaud/watermark
+      - id: paketo-buildpacks/nginx 
+      - id: paketo-community/staticfile

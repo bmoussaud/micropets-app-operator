@@ -95,6 +95,7 @@ spec:
           virtual_host: front.mytanzu.xyz
           image: $(images.image.image)$
           observability: $(params.observability)$
+          broker_service: http://front.mytanzu.xyz/pets
         application: 
           name: micro-pet
         registry:
