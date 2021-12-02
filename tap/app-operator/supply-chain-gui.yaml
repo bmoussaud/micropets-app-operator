@@ -34,7 +34,7 @@ spec:
         - resource: image-builder
           name: image      
       params:        
-        - name: broker_service
+        - name: brokerService
           value: $(workload.spec.params[?(@.name=="broker_service")].value)$        
         - name: observability
           value: $(workload.spec.params[?(@.name=="observability")].value)$
