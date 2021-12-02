@@ -38,24 +38,24 @@ kind: ClusterConfigTemplate
 metadata:
   name: micropet-gui-service-config
 spec:  
+  params:
+    - name: brokerService
+      default: "http://front.mytanzu.xyz/pets/v1/default" 
+    - name: observability
+      default: false 
   configPath: .metadata.name
   template:
     apiVersion: v1
     kind: ConfigMap
     metadata:
-      name: micropet-service-$(workload.metadata.name)$-config   
-    params:
-    - name: broker_service
-      default: http://front.mytanzu.xyz/pets/v1/data 
-    - name: observability
-      default: false 
+      name: micropet-service-$(workload.metadata.name)$-config       
     data:
       values.yml: |  
         service:  
           name: $(workload.metadata.name)$          
           replicas: 1          
           virtual_host: front.mytanzu.xyz  
-          broker_service: $(params.broker_service)$
+          broker_service: $(params.brokerService)$
           image: $(images.image.image)$
           color: green
           port: 8080
