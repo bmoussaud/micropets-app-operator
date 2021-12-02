@@ -7,10 +7,10 @@ namespace:
 kpack: namespace		
 	ytt --ignore-unknown-comments --data-values-env MICROPETS -f kpack | kapp deploy --yes --dangerous-override-ownership-of-existing-resources --into-ns $(MICROPETS_SP_NS) -a micropet-kpack -f-
 
-tap: namespace
+supplychain: namespace
 	ytt --ignore-unknown-comments -f tap/app-operator | kapp deploy --yes --dangerous-override-ownership-of-existing-resources --into-ns $(MICROPETS_SP_NS) -a micropet-tap -f-
 
-untap:
+unsupplychain:
 	kapp delete --yes -a micropet-tap -n  $(MICROPETS_SP_NS) 
 
 local-kapp:

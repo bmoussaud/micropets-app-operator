@@ -131,7 +131,7 @@ kubectl apply -f https://github.com/vmware-tanzu/cartographer/releases/latest/do
 ### install the micropet Supply Chains
 
 ````
-❯ make tap
+❯ make supplychain
 kubectl create namespace "micropets-supplychain" --dry-run=client -o yaml | kubectl apply -f -
 namespace/micropets-supplychain configured
 kubectl get namespace "micropets-supplychain"
