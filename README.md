@@ -1,19 +1,23 @@
 # micropets-app-operator
 
-This repository gathers all the configurations that will be managed by an `app-operator` to provide on top a on an infrastructure-ready kubernetest cluster an application-ready cluster
+This repository gathers all the configurations that will be managed by an `app-operator` to provide on top a on an infrastructure-ready kubernetes cluster an application-ready cluster
+
+1. Configure Cloud Native Build Pack
+2. Configure Supply Chains for dev to turn a commit into a Kubernetes Configuration ready to be deployed
+3. Configure Cloud Native Runtime (KNative)
 
 ## Cloud Native Build Pack
 
-Set up the project to use [Cloud Native Buildpack](https://buildpacks.io/) instead of managing Dockerfile to create the image
+Set up the project to use [Cloud Native Buildpack](https://buildpacks.io/) instead of managing Dockerfile files to create the image
 
 The project will use [kPack](https://github.com/pivotal/kpack). 
+
 If you're looking for a supported version of [kPack](https://github.com/pivotal/kpack), please look at [Tanzu Build Service by vmware](https://tanzu.vmware.com/build-service)
 
 ### Install kPack into the cluster
 
 ```
-kapp deploy --yes -a kpack \
-	-f https://github.com/pivotal/kpack/releases/download/v0.3.1/release-0.3.1.yaml
+kapp deploy --yes -a kpack -f https://github.com/pivotal/kpack/releases/download/v0.4.3/release-0.4.3.yaml
 ```
 
 ### Configure kPack 
@@ -118,45 +122,102 @@ micropets-supplychain    └─SourceResolver/micropet-dogs-source          True
 
 Several resources (kpack image, kapp-controler app, kubernetes config map, fluxcd git repository) are created and connected all together by the workload.
 
-### install cartographer
+### install cartographer and other components
 
 Source : https://cartographer.sh/docs/install/ 
 v0.0.7
 
 ````
+# fluxcd
+kubectl create clusterrolebinding gitops-toolkit-admin --clusterrole=cluster-admin --serviceaccount=gitops-toolkit:default
+kubectl create namespace gitops-toolkit
+kapp deploy --yes -a gitops-toolkit --into-ns gitops-toolkit -f https://github.com/fluxcd/source-controller/releases/download/v0.15.4/source-controller.crds.yaml -f https://github.com/fluxcd/source-controller/releases/download/v0.15.4/source-controller.deployment.yaml
+# cert-manager
+kapp deploy -a cert-manager -f https://github.com/jetstack/cert-manager/releases/download/v1.6.1/cert-manager.yaml
+# kapp-controler (if not there already)
+kapp deploy -a kapp-controler -f https://github.com/vmware-tanzu/carvel-kapp-controller/releases/latest/download/release.yml
+# cartographer
 kubectl create namespace cartographer-system
-kubectl apply -f https://github.com/vmware-tanzu/cartographer/releases/latest/download/cartographer.yaml
+kapp deploy -a cartographer -f https://github.com/vmware-tanzu/cartographer/releases/latest/download/cartographer.yaml
+````
+
+or 
+
+```
+make fluxcd cert-manager (kapp-controler) cartographer
 ````
 
 ### install the micropet Supply Chains
 
+Edit [supplychains/app-operator/supply_chain_values.yaml](supplychains/app-operator/supply_chain_values.yaml) and change values.
+
+```
+---
+image_prefix: library/micropet
+registry:
+  server: harbor.mytanzu.xyz
+service:
+  domain: micropets.europe.mytanzu.xyz
+```
+
 ````
-❯ make supplychain
-kubectl create namespace "micropets-supplychain" --dry-run=client -o yaml | kubectl apply -f -
+➜ make supplychain
+kubectl create namespace micropets-supplychain --dry-run=client -o yaml | kubectl apply -f -
 namespace/micropets-supplychain configured
-kubectl get namespace "micropets-supplychain"
+kubectl get namespace micropets-supplychain
 NAME                    STATUS   AGE
-micropets-supplychain   Active   58d
-ytt --ignore-unknown-comments -f tap/app-operator | kapp deploy --yes --dangerous-override-ownership-of-existing-resources --into-ns "micropets-supplychain" -a micropet-tap -f-
-Target cluster 'https://gimckc2x2x1ar31iv6sd8124v6od-k8s-312336063.eu-west-3.elb.amazonaws.com:443' (nodes: ip-10-0-1-199.eu-west-3.compute.internal, 3+)
+micropets-supplychain   Active   78m
+ytt --ignore-unknown-comments -f supplychains/app-operator | kapp deploy --yes --dangerous-override-ownership-of-existing-resources --into-ns micropets-supplychain -a micropet-tap -f-
+Target cluster 'https://aws-europe-apiserver-1113135057.eu-west-3.elb.amazonaws.com:6443' (nodes: ip-10-0-0-136.eu-west-3.compute.internal, 3+)
+
+04:35:31PM: info: Resources: Ignoring group version: schema.GroupVersionResource{Group:"stats.antrea.tanzu.vmware.com", Version:"v1alpha1", Resource:"antreanetworkpolicystats"}: feature NetworkPolicyStats disabled
+04:35:31PM: info: Resources: Ignoring group version: schema.GroupVersionResource{Group:"stats.antrea.tanzu.vmware.com", Version:"v1alpha1", Resource:"networkpolicystats"}: feature NetworkPolicyStats disabled
+04:35:31PM: info: Resources: Ignoring group version: schema.GroupVersionResource{Group:"stats.antrea.tanzu.vmware.com", Version:"v1alpha1", Resource:"antreaclusternetworkpolicystats"}: feature NetworkPolicyStats disabled
 
 Changes
 
-Namespace  Name                               Kind                Conds.  Age  Op      Op st.  Wait to    Rs  Ri
-(cluster)  micropet-gui-service-supply-chain  ClusterSupplyChain  -       -    create  -       reconcile  -   -
-^          micropet-service-supply-chain      ClusterSupplyChain  -       -    create  -       reconcile  -   -
+Namespace  Name                                   Kind                   Conds.  Age  Op      Op st.  Wait to    Rs  Ri
+(cluster)  micropet-deploy                        ClusterTemplate        -       -    create  -       reconcile  -   -
+^          micropet-deploy-knative                ClusterTemplate        -       -    create  -       reconcile  -   -
+^          micropet-gui-deploy                    ClusterTemplate        -       -    create  -       reconcile  -   -
+^          micropet-gui-image                     ClusterImageTemplate   -       -    create  -       reconcile  -   -
+^          micropet-gui-service-config            ClusterConfigTemplate  -       -    create  -       reconcile  -   -
+^          micropet-gui-service-supply-chain      ClusterSupplyChain     -       -    create  -       reconcile  -   -
+^          micropet-image                         ClusterImageTemplate   -       -    create  -       reconcile  -   -
+^          micropet-service-config                ClusterConfigTemplate  -       -    create  -       reconcile  -   -
+^          micropet-service-knative-supply-chain  ClusterSupplyChain     -       -    create  -       reconcile  -   -
+^          micropet-service-supply-chain          ClusterSupplyChain     -       -    create  -       reconcile  -   -
+^          micropet-source                        ClusterSourceTemplate  -       -    create  -       reconcile  -   -
 
-Op:      2 create, 0 delete, 0 update, 0 noop
-Wait to: 2 reconcile, 0 delete, 0 noop
+Op:      11 create, 0 delete, 0 update, 0 noop
+Wait to: 11 reconcile, 0 delete, 0 noop
 
-4:44:06PM: ---- applying 2 changes [0/2 done] ----
-4:44:07PM: create clustersupplychain/micropet-gui-service-supply-chain (carto.run/v1alpha1) cluster
-4:44:07PM: create clustersupplychain/micropet-service-supply-chain (carto.run/v1alpha1) cluster
-4:44:07PM: ---- waiting on 2 changes [0/2 done] ----
-4:44:07PM: ok: reconcile clustersupplychain/micropet-service-supply-chain (carto.run/v1alpha1) cluster
-4:44:07PM: ok: reconcile clustersupplychain/micropet-gui-service-supply-chain (carto.run/v1alpha1) cluster
-4:44:07PM: ---- applying complete [2/2 done] ----
-4:44:07PM: ---- waiting complete [2/2 done] ----
+4:35:31PM: ---- applying 11 changes [0/11 done] ----
+4:35:31PM: create clustertemplate/micropet-gui-deploy (carto.run/v1alpha1) cluster
+4:35:31PM: create clustersupplychain/micropet-service-supply-chain (carto.run/v1alpha1) cluster
+4:35:31PM: create clustersupplychain/micropet-service-knative-supply-chain (carto.run/v1alpha1) cluster
+4:35:31PM: create clusterconfigtemplate/micropet-gui-service-config (carto.run/v1alpha1) cluster
+4:35:31PM: create clusterimagetemplate/micropet-image (carto.run/v1alpha1) cluster
+4:35:31PM: create clustersupplychain/micropet-gui-service-supply-chain (carto.run/v1alpha1) cluster
+4:35:31PM: create clustertemplate/micropet-deploy-knative (carto.run/v1alpha1) cluster
+4:35:31PM: create clusterimagetemplate/micropet-gui-image (carto.run/v1alpha1) cluster
+4:35:31PM: create clusterconfigtemplate/micropet-service-config (carto.run/v1alpha1) cluster
+4:35:31PM: create clustersourcetemplate/micropet-source (carto.run/v1alpha1) cluster
+4:35:31PM: create clustertemplate/micropet-deploy (carto.run/v1alpha1) cluster
+4:35:31PM: ---- waiting on 11 changes [0/11 done] ----
+4:35:31PM: ok: reconcile clustertemplate/micropet-gui-deploy (carto.run/v1alpha1) cluster
+4:35:31PM: ok: reconcile clusterimagetemplate/micropet-image (carto.run/v1alpha1) cluster
+4:35:31PM: ok: reconcile clusterimagetemplate/micropet-gui-image (carto.run/v1alpha1) cluster
+4:35:31PM: ok: reconcile clustertemplate/micropet-deploy (carto.run/v1alpha1) cluster
+4:35:31PM: ok: reconcile clustersupplychain/micropet-gui-service-supply-chain (carto.run/v1alpha1) cluster
+4:35:31PM: ok: reconcile clusterconfigtemplate/micropet-service-config (carto.run/v1alpha1) cluster
+4:35:31PM: ok: reconcile clustertemplate/micropet-deploy-knative (carto.run/v1alpha1) cluster
+4:35:31PM: ok: reconcile clustersupplychain/micropet-service-knative-supply-chain (carto.run/v1alpha1) cluster
+4:35:31PM: ok: reconcile clustersupplychain/micropet-service-supply-chain (carto.run/v1alpha1) cluster
+4:35:31PM: ok: reconcile clustersourcetemplate/micropet-source (carto.run/v1alpha1) cluster
+4:35:32PM: ok: reconcile clusterconfigtemplate/micropet-gui-service-config (carto.run/v1alpha1) cluster
+4:35:32PM: ---- applying complete [11/11 done] ----
+4:35:32PM: ---- waiting complete [11/11 done] ----
 
 Succeeded
 ````

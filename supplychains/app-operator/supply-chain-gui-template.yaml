@@ -13,7 +13,7 @@ spec:
     metadata:
       name: micropet-$(workload.metadata.name)$
     spec:
-      tag: #@ data.values.image_prefix + "-tap-$(workload.metadata.name)$"
+      tag: #@ data.values.registry.server+ "/"+ data.values.image_prefix + "-tap-$(workload.metadata.name)$"
       serviceAccount: micropet-service-account
       builder:
         kind: ClusterBuilder
@@ -32,6 +32,7 @@ spec:
             value: build
           - name: NODE_ENV
             value: development  
+#@yaml/text-templated-strings
 ---
 apiVersion: carto.run/v1alpha1
 kind: ClusterConfigTemplate
@@ -40,7 +41,7 @@ metadata:
 spec:  
   params:
     - name: brokerService
-      default: "http://front.mytanzu.xyz/pets/v1/default" 
+      default: #@ "http://"+ data.values.service.domain+ "/pets/v1/default" 
     - name: observability
       default: false 
   configPath: .metadata.name
@@ -54,18 +55,18 @@ spec:
         service:  
           name: $(workload.metadata.name)$          
           replicas: 1          
-          virtual_host: front.mytanzu.xyz  
+          virtual_host: (@= data.values.service.domain @)
           broker_service: $(params.brokerService)$
           image: $(images.image.image)$
           color: green
           port: 8080
           stage: DEV
           config_path: /workspace/dist/assets
-          observability: $(params.observability)$          
+          observability: $(params.observability)$                    
         application: 
           name: micro-pet
-        registry:
-          server: harbor.mytanzu.xyz/library
+        registry:          
+          server: (@= data.values.registry.server @)/library
 ---
 apiVersion: carto.run/v1alpha1
 kind: ClusterTemplate
@@ -83,7 +84,7 @@ spec:
         - git:
             url: https://github.com/bmoussaud/micropets-app-operator
             ref: main
-            subPath: tap/kapp-gui
+            subPath: kapp/gui
       template:
         - ytt:
             ignoreUnknownComments: true
