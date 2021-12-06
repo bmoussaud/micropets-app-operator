@@ -5,13 +5,13 @@ namespace:
 	kubectl get namespace $(MICROPETS_SP_NS) 
 
 kpack: namespace		
-	ytt --ignore-unknown-comments --data-values-env MICROPETS -f kpack | kapp deploy --yes --dangerous-override-ownership-of-existing-resources --into-ns $(MICROPETS_SP_NS) -a micropet-supplychain -f-
+	ytt --ignore-unknown-comments --data-values-env MICROPETS -f kpack | kapp deploy --yes --dangerous-override-ownership-of-existing-resources --into-ns $(MICROPETS_SP_NS) -a micropet-kpack -f-
 
 supplychain: namespace
 	ytt --ignore-unknown-comments -f supplychains/app-operator | kapp deploy --yes --dangerous-override-ownership-of-existing-resources --into-ns $(MICROPETS_SP_NS) -a micropet-supplychain -f-
 
 unsupplychain:
-	kapp delete --yes -a micropet-tap -n  $(MICROPETS_SP_NS) 
+	kapp delete --yes -a micropet-supplychain -n  $(MICROPETS_SP_NS) 
 
 local-kapp:
 	ytt --ignore-unknown-comments -f kapp/service -f kapp/values/kapp-local-values.yaml

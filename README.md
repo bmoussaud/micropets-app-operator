@@ -17,7 +17,11 @@ If you're looking for a supported version of [kPack](https://github.com/pivotal/
 ### Install kPack into the cluster
 
 ```
-kapp deploy --yes -a kpack -f https://github.com/pivotal/kpack/releases/download/v0.4.3/release-0.4.3.yaml
+#kapp deploy --yes -a kpack -f https://github.com/pivotal/kpack/releases/download/v0.4.3/release-0.4.3.yaml
+
+kapp deploy --yes -a kpack -f https://github.com/pivotal/kpack/releases/download/v0.3.1/release-0.3.1.yaml
+
+
 ```
 
 ### Configure kPack 

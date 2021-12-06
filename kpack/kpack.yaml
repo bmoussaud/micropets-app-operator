@@ -1,5 +1,4 @@
 #@ load("@ytt:data", "data")
-# TODO Test  gcr.io/paketo-buildpacks/nodejs:0.10.0
 ---
 apiVersion: kpack.io/v1alpha1
 kind: ClusterStore
@@ -9,9 +8,9 @@ spec:
   sources:
     - image: gcr.io/paketo-buildpacks/go    
     - image: gcr.io/paketo-buildpacks/nodejs
-    - image: harbor.mytanzu.xyz/library/watermark-labels-buildpack:0.0.4
+    #- image: harbor.mytanzu.xyz/library/watermark-labels-buildpack:0.0.4
     - image: gcr.io/paketo-buildpacks/nginx 
-    - image: paketocommunity/staticfile
+    - image: paketocommunity/staticfile  
 ---
 apiVersion: kpack.io/v1alpha1
 kind: ClusterStack
@@ -28,9 +27,9 @@ apiVersion: kpack.io/v1alpha1
 kind: ClusterBuilder
 metadata:
   name: micropet-builder
-spec:
+spec:  
   serviceAccountRef:
-    name: micropet-service-account
+    name: micropet-service-account  
     namespace: #@ data.values.into_ns
   tag: #@ data.values.image_prefix + "-builder"
   stack:
@@ -42,9 +41,9 @@ spec:
   order:    
     - group:
       - id: paketo-buildpacks/go
-      - id: bmoussaud/watermark
+      #- id: bmoussaud/watermark
     - group:
       - id: paketo-buildpacks/nodejs
-      - id: bmoussaud/watermark
+      #- id: bmoussaud/watermark
       - id: paketo-buildpacks/nginx 
       - id: paketo-community/staticfile
