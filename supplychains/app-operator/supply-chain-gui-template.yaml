@@ -8,13 +8,13 @@ metadata:
 spec:
   imagePath: .status.latestImage
   template:
-    apiVersion: kpack.io/v1alpha1
+    apiVersion: kpack.io/v1alpha2
     kind: Image
     metadata:
       name: micropet-$(workload.metadata.name)$
     spec:
       tag: #@ data.values.registry.server+ "/"+ data.values.image_prefix + "-tap-$(workload.metadata.name)$"
-      serviceAccount: micropet-service-account
+      serviceAccountName: micropet-service-account
       builder:
         kind: ClusterBuilder
         name: micropet-builder
@@ -41,7 +41,7 @@ metadata:
 spec:  
   params:
     - name: brokerService
-      default: #@ "http://"+ data.values.service.domain+ "/pets/v1/default" 
+      default: #@ "http://" + data.values.service.domain+ "/pets/v1/default" 
     - name: observability
       default: false 
   configPath: .metadata.name
