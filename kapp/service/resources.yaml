@@ -36,19 +36,19 @@ data:
         "backends": [
             {
                 "name": "cats",
-                "host": "cats-service.bmoussaud.xyz",
+                "host": "cats-service.bmoussaud.gns",
                 "port": "7002",
                 "context": "/cats/v1/data"
             },
             {
                 "name": "dogs",
-                "host": "dogs-service.bmoussaud.xyz",
+                "host": "dogs-service.bmoussaud.gns",
                 "port": "7003",
                 "context": "/dogs/v1/data"
             },
             {
                 "name": "fishes",
-                "host": "fishes-service.bmoussaud.xyz",
+                "host": "fishes-service.bmoussaud.gns",
                 "port": "7007",
                 "context": "/fishes/v1/data"
             }
@@ -73,19 +73,19 @@ data:
         "backends": [
             {
                 "name": "cats",
-                "host": "cats-service.bmoussaud.xyz",
+                "host": "cats-service.bmoussaud.gns",
                 "port": "7002",
                 "context": "/cats/v1/data"
             },
             {
                 "name": "dogs",
-                "host": "dogs-service.bmoussaud.xyz",
+                "host": "dogs-service.bmoussaud.gns",
                 "port": "7003",
                 "context": "/dogs/v1/data"
             },
             {
                 "name": "fishes",
-                "host": "fishes-service.bmoussaud.xyz",
+                "host": "fishes-service.bmoussaud.gns",
                 "port": "7007",
                 "context": "/fishes/v1/data"
             }
