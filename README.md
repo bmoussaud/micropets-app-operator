@@ -17,10 +17,7 @@ If you're looking for a supported version of [kPack](https://github.com/pivotal/
 ### Install kPack into the cluster
 
 ```
-#kapp deploy --yes -a kpack -f https://github.com/pivotal/kpack/releases/download/v0.4.3/release-0.4.3.yaml
-
-kapp deploy --yes -a kpack -f https://github.com/pivotal/kpack/releases/download/v0.3.1/release-0.3.1.yaml
-
+kapp deploy --yes -a kpack -f https://github.com/pivotal/kpack/releases/download/v0.4.3/release-0.4.3.yaml
 
 ```
 
@@ -139,6 +136,7 @@ kapp deploy --yes -a gitops-toolkit --into-ns gitops-toolkit -f https://github.c
 # cert-manager
 kapp deploy -a cert-manager -f https://github.com/jetstack/cert-manager/releases/download/v1.6.1/cert-manager.yaml
 # kapp-controler (if not there already)
+kubectl create clusterrolebinding kapp-controler-admin --clusterrole=cluster-admin --serviceaccount=micropets-supplychain:default
 kapp deploy -a kapp-controler -f https://github.com/vmware-tanzu/carvel-kapp-controller/releases/latest/download/release.yml
 # cartographer
 kubectl create namespace cartographer-system

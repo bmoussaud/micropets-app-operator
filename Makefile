@@ -43,6 +43,8 @@ deploy-knative:
 	| kapp deploy --yes -n default -a knative-serving-1.0 -f-
 	kubectl --namespace istio-system get service istio-ingressgateway
 
+cnb:
+	kapp deploy --yes -a kpack -f https://github.com/pivotal/kpack/releases/download/v0.4.3/release-0.4.3.yaml
 
 fluxcd:
 	kubectl create clusterrolebinding gitops-toolkit-admin --clusterrole=cluster-admin --serviceaccount=gitops-toolkit:default
@@ -50,11 +52,14 @@ fluxcd:
 	kapp deploy --yes -a gitops-toolkit --into-ns gitops-toolkit -f https://github.com/fluxcd/source-controller/releases/download/v0.15.4/source-controller.crds.yaml -f https://github.com/fluxcd/source-controller/releases/download/v0.15.4/source-controller.deployment.yaml
 
 cert-manager:
-	kapp deploy -a cert-manager -f https://github.com/jetstack/cert-manager/releases/download/v1.6.1/cert-manager.yaml
+	kapp deploy --yes -a cert-manager -f https://github.com/jetstack/cert-manager/releases/download/v1.6.1/cert-manager.yaml
 
 kapp-controler:
-	kapp deploy -a kapp-controler -f https://github.com/vmware-tanzu/carvel-kapp-controller/releases/latest/download/release.yml
+	kubectl create clusterrolebinding kapp-controler-admin --clusterrole=cluster-admin --serviceaccount=micropets-supplychain:default
+	kapp deploy --dangerous-override-ownership-of-existing-resources --yes -a kapp-controler -f https://github.com/vmware-tanzu/carvel-kapp-controller/releases/latest/download/release.yml
 
 cartographer: 
 	kubectl create namespace cartographer-system
-	kapp deploy -a cartographer -f https://github.com/vmware-tanzu/cartographer/releases/latest/download/cartographer.yaml
+	kapp deploy --yes -a cartographer -f https://github.com/vmware-tanzu/cartographer/releases/latest/download/cartographer.yaml
+
+deploy-packages: fluxcd cnb cert-manager cartographer kapp-controler
