@@ -48,7 +48,7 @@ data:
             },
             {
                 "name": "fishes",
-                "host": "fishes-service.bmoussaud.xyz ",
+                "host": "fishes-service.bmoussaud.xyz",
                 "port": "7007",
                 "context": "/fishes/v1/data"
             }
