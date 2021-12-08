@@ -63,3 +63,10 @@ cartographer:
 	kapp deploy --yes -a cartographer -f https://github.com/vmware-tanzu/cartographer/releases/latest/download/cartographer.yaml
 
 deploy-packages: fluxcd cnb cert-manager cartographer kapp-controler
+
+undeploy-packages:
+	kapp delete --yes -a cartographer 
+	kapp delete --yes -a kapp-controler
+	kapp delete --yes -a cert-manager
+	kapp delete --yes -a gitops-toolkit
+	kapp delete --yes -a kpack

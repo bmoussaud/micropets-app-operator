@@ -4,4 +4,4 @@ image_prefix: library/micropet
 registry:
   server: harbor.mytanzu.xyz
 service:
-  domain: micropets.europe.mytanzu.xyz
+  domain: front.mytanzu.xyz
