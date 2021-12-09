@@ -18,6 +18,11 @@ spec:
       builder:
         kind: ClusterBuilder
         name: micropet-builder
+      failedBuildHistoryLimit: 2
+      successBuildHistoryLimit: 2
+      cache:
+        volume:
+          size: "1.5Gi" 
       source:
         blob:
           url: $(sources.source.url)$

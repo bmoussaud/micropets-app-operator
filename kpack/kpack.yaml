@@ -1,18 +1,18 @@
 #@ load("@ytt:data", "data")
 ---
-apiVersion: kpack.io/v1alpha1
+apiVersion: kpack.io/v1alpha2
 kind: ClusterStore
 metadata:
   name: micropet-store
 spec:
   sources:
-    - image: gcr.io/paketo-buildpacks/go    
+    - image: gcr.io/paketo-buildpacks/go:0.12.0  
     - image: gcr.io/paketo-buildpacks/nodejs
     #- image: harbor.mytanzu.xyz/library/watermark-labels-buildpack:0.0.4
     - image: gcr.io/paketo-buildpacks/nginx 
     - image: paketocommunity/staticfile  
 ---
-apiVersion: kpack.io/v1alpha1
+apiVersion: kpack.io/v1alpha2
 kind: ClusterStack
 metadata:
   name: micropet-stack
@@ -23,7 +23,7 @@ spec:
   runImage:
     image: "paketobuildpacks/run:base-cnb"
 ---
-apiVersion: kpack.io/v1alpha1
+apiVersion: kpack.io/v1alpha2
 kind: ClusterBuilder
 metadata:
   name: micropet-builder
