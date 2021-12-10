@@ -15,6 +15,7 @@ service:
   config_path: /workspace/src/assets
   observability: false
   broker_service: http://pets.svc.cnr.mytanzu.xyz/pets
+  dns_suffix: .micropets-supplychain.svc.cluster.local
 application:
   name: mypet
 registry:

@@ -100,6 +100,7 @@ spec:
           image: $(images.image.image)$
           observability: $(params.observability)$
           broker_service: http://(@= data.values.service.domain @)/pets
+          dns_suffix: .micropets-supplychain.svc.cluster.local
         application: 
           name: micro-pet
         registry:          

@@ -11,6 +11,7 @@ service:
   stage: europe
   config_path: /workspace/dist/assets
   observability: false
+  dns_suffix: .micropets-europe2.svc.cluster.local
 application:
   name: micro-pet
 registry:

@@ -36,19 +36,19 @@ data:
         "backends": [
             {
                 "name": "cats",
-                "host": "cats-service",
+                "host": "cats-service(@= data.values.service.dns_suffix @)",
                 "port": "7002",
                 "context": "/cats/v1/data"
             },
             {
                 "name": "dogs",
-                "host": "dogs-service",
+                "host": "dogs-service(@= data.values.service.dns_suffix @)",
                 "port": "7003",
                 "context": "/dogs/v1/data"
             },
             {
                 "name": "fishes",
-                "host": "fishes-service",
+                "host": "fishes-service(@= data.values.service.dns_suffix @)",
                 "port": "7007",
                 "context": "/fishes/v1/data"
             }
@@ -73,19 +73,19 @@ data:
         "backends": [
             {
                 "name": "cats",
-                "host": "cats-service",
+                "host": "cats-service(@= data.values.service.dns_suffix @)",
                 "port": "7002",
                 "context": "/cats/v1/data"
             },
             {
                 "name": "dogs",
-                "host": "dogs-service",
+                "host": "dogs-service(@= data.values.service.dns_suffix @)",
                 "port": "7003",
                 "context": "/dogs/v1/data"
             },
             {
                 "name": "fishes",
-                "host": "fishes-service",
+                "host": "fishes-service(@= data.values.service.dns_suffix @)",
                 "port": "7007",
                 "context": "/fishes/v1/data"
             }

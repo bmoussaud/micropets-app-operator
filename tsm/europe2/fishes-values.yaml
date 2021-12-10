@@ -10,6 +10,7 @@ service:
   image: harbor.mytanzu.xyz/library/micropet-tap-fishes:1.0.0
   observability: false
   broker_service: http://europe2.mytanzu.xyz/pets
+  dns_suffix: .micropets-europe2.svc.cluster.local
 application:
   name: micro-pet
 registry:
