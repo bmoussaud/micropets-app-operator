@@ -22,7 +22,8 @@ data:
             "delay": {
               "period": 100,
               "amplitude": 0.3
-            }
+            },
+            "from": "AWS Europ"
         },
         "observability": {          
           "enable": true,          
@@ -65,7 +66,8 @@ data:
             "delay": {
               "period": 100,
               "amplitude": 0.3
-            }
+            },
+            "from": "AWS Europ"
         },
         "observability": {          
           "enable": false                   
