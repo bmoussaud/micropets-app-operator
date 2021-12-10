@@ -1,0 +1,16 @@
+#@data/values
+---
+service:
+  name: pets
+  port: 9000
+  mode: RANDOM_NUMBER
+  replicas: 1
+  version: latest
+  virtual_host: europe2.mytanzu.xyz
+  image: harbor.mytanzu.xyz/library/micropet-tap-pets:1.0.0
+  observability: false
+  broker_service: http://europe2.mytanzu.xyz/pets
+application:
+  name: micro-pet
+registry:
+  server: harbor.mytanzu.xyz/library

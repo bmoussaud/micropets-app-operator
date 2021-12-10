@@ -1,0 +1,17 @@
+#@data/values
+---
+service:
+  name: gui
+  replicas: 1
+  virtual_host: europe2.mytanzu.xyz
+  broker_service: http://europe2.mytanzu.xyz/pets
+  image: harbor.mytanzu.xyz/library/micropet-tap-gui:1.0.0
+  color: green
+  port: 8080
+  stage: europe
+  config_path: /workspace/dist/assets
+  observability: false
+application:
+  name: micro-pet
+registry:
+  server: harbor.mytanzu.xyz/library

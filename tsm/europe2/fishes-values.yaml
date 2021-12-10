@@ -1,0 +1,17 @@
+#@data/values
+---
+service:
+  name: fishes
+  port: 7007
+  mode: RANDOM_NUMBER
+  replicas: 1
+  version: latest
+  virtual_host: europe2.mytanzu.xyz
+  image: harbor.mytanzu.xyz/library/micropet-tap-fishes:1.0.0
+  observability: false
+  broker_service: http://europe2.mytanzu.xyz/pets
+application:
+  name: micro-pet
+registry:
+  server: harbor.mytanzu.xyz/library
+
