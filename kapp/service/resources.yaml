@@ -11,19 +11,19 @@ metadata:
     app.kubernetes.io/component: #@ data.values.service.name
     app.kubernetes.io/part-of: #@ data.values.application.name 
 data:
-#@ if data.values.service.observability:
+#@ if data.values.service.backend.observability:
   pets_config.json: |-
     {
         "service": {
             "port": ":(@=  str(data.values.service.port) @)",
             "listen": "true",
-            "mode": "(@=  str(data.values.service.mode) @)",
+            "mode": "(@=  data.values.service.backend.mode @)",
             "frequencyError": 10,
             "delay": {
               "period": 100,
               "amplitude": 0.3
             },
-            "from": "AWS Europ"
+            "from": "(@=  data.values.environment.name @)"
         },
         "observability": {          
           "enable": true,          
@@ -37,19 +37,19 @@ data:
         "backends": [
             {
                 "name": "cats",
-                "host": "cats-service(@= data.values.service.dns_suffix @)",
+                "host": "cats-service(@= data.values.environment.domain.internal @)",
                 "port": "7002",
                 "context": "/cats/v1/data"
             },
             {
                 "name": "dogs",
-                "host": "dogs-service(@= data.values.service.dns_suffix @)",
+                "host": "dogs-service(@= data.values.environment.domain.internal @)",
                 "port": "7003",
                 "context": "/dogs/v1/data"
             },
             {
                 "name": "fishes",
-                "host": "fishes-service(@= data.values.service.dns_suffix @)",
+                "host": "fishes-service(@= data.values.environment.domain.internal @)",
                 "port": "7007",
                 "context": "/fishes/v1/data"
             }
@@ -61,13 +61,13 @@ data:
         "service": {
             "port": ":(@=  str(data.values.service.port) @)",
             "listen": "true",
-            "mode": "(@=  str(data.values.service.mode) @)",
+            "mode": "(@=  data.values.service.backend.mode @)",
             "frequencyError": 10,
             "delay": {
               "period": 100,
               "amplitude": 0.3
             },
-            "from": "AWS Europ"
+            "from": "(@=  data.values.environment.name @)"
         },
         "observability": {          
           "enable": false                   
@@ -75,19 +75,19 @@ data:
         "backends": [
             {
                 "name": "cats",
-                "host": "cats-service(@= data.values.service.dns_suffix @)",
+                "host": "cats-service(@= data.values.environment.domain.internal @)",
                 "port": "7002",
                 "context": "/cats/v1/data"
             },
             {
                 "name": "dogs",
-                "host": "dogs-service(@= data.values.service.dns_suffix @)",
+                "host": "dogs-service(@= data.values.environment.domain.internal @)",
                 "port": "7003",
                 "context": "/dogs/v1/data"
             },
             {
                 "name": "fishes",
-                "host": "fishes-service(@= data.values.service.dns_suffix @)",
+                "host": "fishes-service(@= data.values.environment.domain.internal @)",
                 "port": "7007",
                 "context": "/fishes/v1/data"
             }
@@ -212,7 +212,7 @@ metadata:
   name: #@ data.values.service.name + "-ingress"
 spec:
   rules:
-    - host: #@ data.values.service.virtual_host
+    - host: #@ data.values.environment.domain.exposed
       http:
         paths:
           - path: #@ "/"+ data.values.service.name

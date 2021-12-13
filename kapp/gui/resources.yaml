@@ -13,10 +13,10 @@ metadata:
 data:
   config.json: |-
     {  
-      "petServiceUrl": "(@=  data.values.service.broker_service @)",
-      "stage": "(@=  data.values.service.stage @)",
+      "petServiceUrl": "(@=  data.values.service.gui.broker_service @)",
+      "stage": "(@=  data.values.service.gui.stage @)",
       "debug": "False",
-      "stage_color": "(@=  data.values.service.color @)"
+      "stage_color": "(@=  data.values.service.gui.color @)"
     }
 ---
 kind: Deployment
@@ -60,7 +60,7 @@ spec:
               containerPort: #@ data.values.service.port
           volumeMounts:
             - name: config-volume
-              mountPath: #@ data.values.service.config_path  
+              mountPath: #@ data.values.service.gui.config_path  
           env:
             - name: PORT
               value: #@ str(data.values.service.port)
@@ -99,7 +99,7 @@ metadata:
   name: #@ data.values.service.name + "-ingress"
 spec:
   rules:
-    - host: #@ data.values.service.virtual_host
+    - host: #@ data.values.environment.domain.exposed
       http:
         paths:
           - path: /

@@ -1,23 +1,24 @@
 #@data/values
 ---
+application:
+  name: mypet
 service:  
   name: dogs
   port: 8080
-  mode: RANDOM_NUMBER
-  frequencyError: 10
-  replicas: 1
-  version: latest
-  domain: cnr.mytanzu.xyz
-  virtual_host: front.mytanzu.xyz
   image: harbor.mytanzu.xyz/library/micropet-tap-dogs@sha256:b24abdf40753f64cdcfd40b4c9cdbfc45254e53e83243d9e5329b9daf2521be8
-  stage: LOCAL_DEV
-  color: green
-  config_path: /workspace/src/assets
-  observability: false
-  broker_service: http://pets.svc.cnr.mytanzu.xyz/pets
-  dns_suffix: .micropets-supplychain.svc.cluster.local
-application:
-  name: mypet
-registry:
-  server: harbor.mytanzu.xyz/library
+  replicas: 1    
+  backend:
+    observability: false
+    mode: RANDOM_NUMBER
+    frequencyError: 10
+  gui:
+    stage: LOCAL_DEV
+    color: green
+    config_path: /workspace/src/assets
+    broker_service: http://pets.svc.cnr.mytanzu.xyz/pets 
+environment:
+  name: AWS-LOCAL
+  domain:
+    internal: micropets-supplychain.svc.cluster.local
+    exposed: front.mytanzu.xyz
   

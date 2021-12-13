@@ -58,6 +58,9 @@ kapp-controler:
 	kubectl create clusterrolebinding kapp-controler-admin --clusterrole=cluster-admin --serviceaccount=micropets-supplychain:default
 	kapp deploy --dangerous-override-ownership-of-existing-resources --yes -a kapp-controler -f https://github.com/vmware-tanzu/carvel-kapp-controller/releases/latest/download/release.yml
 
+contour:
+	kapp deploy -a contour -f https://projectcontour.io/quickstart/contour.yaml
+	
 cartographer: 
 	kubectl create namespace cartographer-system
 	kapp deploy --yes -a cartographer -f https://github.com/vmware-tanzu/cartographer/releases/latest/download/cartographer.yaml

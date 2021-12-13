@@ -46,7 +46,7 @@ metadata:
 spec:  
   params:
     - name: brokerService
-      default: #@ "http://" + data.values.service.domain+ "/pets/v1/default" 
+      default: #@ "http://not_set/pets/v1/default" 
     - name: observability
       default: false 
   configPath: .metadata.name
@@ -56,23 +56,23 @@ spec:
     metadata:
       name: micropet-service-$(workload.metadata.name)$-config       
     data:
-      values.yml: |  
+      values.yml: |          
+        application:
+          name: micro-pet
         service:  
           name: $(workload.metadata.name)$          
-          replicas: 1          
-          virtual_host: (@= data.values.service.domain @)
-          broker_service: $(params.brokerService)$
-          image: $(images.image.image)$
-          color: green
           port: 8080
-          stage: DEV
-          config_path: /workspace/dist/assets
-          observability: $(params.observability)$    
-          dns_suffix: .micropets-supplychain.svc.cluster.local                
-        application: 
-          name: micro-pet
-        registry:          
-          server: (@= data.values.registry.server @)/library
+          image: $(images.image.image)$
+          replicas: 1    
+          gui:
+            stage: (@= data.values.environment.name @)
+            color: green
+            config_path: /workspace/src/assets
+            broker_service: $(params.brokerService)$
+        environment:
+          name: AWS-LOCAL
+          domain:            
+            exposed: front.mytanzu.xyz
 ---
 apiVersion: carto.run/v1alpha1
 kind: ClusterTemplate

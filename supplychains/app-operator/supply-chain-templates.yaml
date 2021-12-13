@@ -90,21 +90,22 @@ spec:
       name: micropet-service-$(workload.metadata.name)$-config     
     data:
       values.yml: |  
+        application:
+          name: micro-pet
         service:  
           name: $(workload.metadata.name)$
           port: $(params.port)$
-          mode: $(params.mode)$
-          replicas: 1
-          version: latest
-          virtual_host: (@= data.values.service.domain @)
           image: $(images.image.image)$
-          observability: $(params.observability)$
-          broker_service: http://(@= data.values.service.domain @)/pets
-          dns_suffix: .micropets-supplychain.svc.cluster.local
-        application: 
-          name: micro-pet
-        registry:          
-          server: (@= data.values.registry.server @)/library
+          replicas: 1    
+          backend:
+            observability: $(params.observability)$
+            mode: $(params.mode)$
+            frequencyError: 10          
+        environment:
+          name: AWS-LOCAL
+          domain:
+            internal: .micropets-supplychain.svc.cluster.local
+            exposed: front.mytanzu.xyz
 ---
 #
 #
