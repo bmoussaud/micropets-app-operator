@@ -65,7 +65,7 @@ spec:
           image: $(images.image.image)$
           replicas: 1    
           gui:
-            stage: (@= data.values.environment.name @)
+            stage: AWS-LOCAL
             color: green
             config_path: /workspace/src/assets
             broker_service: $(params.brokerService)$
