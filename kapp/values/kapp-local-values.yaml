@@ -11,8 +11,7 @@ service:
     observability: false
     mode: RANDOM_NUMBER
     frequencyError: 10
-  gui:
-    stage: LOCAL_DEV
+  gui:    
     color: green
     config_path: /workspace/src/assets
     broker_service: http://pets.svc.cnr.mytanzu.xyz/pets 

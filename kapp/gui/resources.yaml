@@ -14,7 +14,7 @@ data:
   config.json: |-
     {  
       "petServiceUrl": "(@=  data.values.service.gui.broker_service @)",
-      "stage": "(@=  data.values.service.gui.stage @)",
+      "stage": "(@=  data.values.environment.name @)",
       "debug": "False",
       "stage_color": "(@=  data.values.service.gui.color @)"
     }

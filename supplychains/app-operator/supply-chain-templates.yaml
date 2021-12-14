@@ -102,7 +102,7 @@ spec:
             mode: $(params.mode)$
             frequencyError: 10          
         environment:
-          name: AWS-LOCAL
+          name: aws/europ
           domain:
             internal: .micropets-supplychain.svc.cluster.local
             exposed: front.mytanzu.xyz

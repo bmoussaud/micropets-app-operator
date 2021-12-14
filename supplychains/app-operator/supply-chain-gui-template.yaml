@@ -64,13 +64,12 @@ spec:
           port: 8080
           image: $(images.image.image)$
           replicas: 1    
-          gui:
-            stage: AWS-LOCAL
+          gui:            
             color: green
             config_path: /workspace/src/assets
             broker_service: $(params.brokerService)$
         environment:
-          name: AWS-LOCAL
+          name: aws/europ
           domain:            
             exposed: front.mytanzu.xyz
 ---
