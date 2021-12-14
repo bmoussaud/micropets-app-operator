@@ -1,18 +1,7 @@
-#@data/values
+#@ load("@ytt:overlay", "overlay")
+#@data/values-schema
 ---
 service:
-  name: cats
+  name: cats  
   port: 7002
-  mode: RANDOM_NUMBER
-  replicas: 1
-  version: latest
-  virtual_host: europe2.mytanzu.xyz
-  image: harbor.mytanzu.xyz/library/micropet-tap-cats:1.0.0
-  observability: false
-  broker_service: http://europe2.mytanzu.xyz/pets
-  dns_suffix: .micropets-europe2.svc.cluster.local
-application:
-  name: micro-pet
-registry:
-  server: harbor.mytanzu.xyz/library
-
+  image: harbor.mytanzu.xyz/library/micropet-tap-cats@sha256:2cf1a045fce6aa227900b5536936f3efd120ba3a5bf56e5acc75dd998bb55f83    

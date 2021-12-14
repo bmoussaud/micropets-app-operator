@@ -1,18 +1,12 @@
-#@data/values
+#@ load("@ytt:overlay", "overlay")
+#@data/values-schema
 ---
 service:
-  name: gui
-  replicas: 1
-  virtual_host: europe2.mytanzu.xyz
-  broker_service: http://europe2.mytanzu.xyz/pets
-  image: harbor.mytanzu.xyz/library/micropet-tap-gui:1.0.0
-  color: green
+  name: gui  
   port: 8080
-  stage: europe
-  config_path: /workspace/dist/assets
-  observability: false
-  dns_suffix: .micropets-europe2.svc.cluster.local
-application:
-  name: micro-pet
-registry:
-  server: harbor.mytanzu.xyz/library
+  image: harbor.mytanzu.xyz/library/micropet-tap-gui@sha256:83026911c8f816956ef7ad3b81fe2dfcece9392905791b3bd46495c81c28a5b9  
+  gui:
+    color: green
+    config_path: /workspace/dist/assets
+    broker_service: http://europ2.mytanzu.xyz/pets
+ 
