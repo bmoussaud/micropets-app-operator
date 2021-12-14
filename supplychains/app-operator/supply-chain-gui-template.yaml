@@ -65,8 +65,8 @@ spec:
           image: $(images.image.image)$
           replicas: 1    
           gui:            
-            color: green
-            config_path: /workspace/src/assets
+            color: red
+            config_path: /workspace/dist/assets
             broker_service: $(params.brokerService)$
         environment:
           name: aws/europ
