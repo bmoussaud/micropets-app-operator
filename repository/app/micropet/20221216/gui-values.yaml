@@ -5,8 +5,4 @@ service:
   name: gui  
   port: 8080
   image: harbor.mytanzu.xyz/library/micropet-tap-gui@sha256:83026911c8f816956ef7ad3b81fe2dfcece9392905791b3bd46495c81c28a5b9  
-  gui:
-    color: green
-    config_path: /workspace/dist/assets
-    broker_service: http://europ2.mytanzu.xyz/pets
- 
+  

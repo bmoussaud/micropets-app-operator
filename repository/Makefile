@@ -40,7 +40,8 @@ undeploy-all:
 	kapp delete --yes -a micropet-fishes
 	kapp delete --yes -a micropet-gui
 
-load:
-	vegeta attack -targets=targets.txt -name=300qps -rate=300 -duration=10s | vegeta plot > plot.300qps.html
+
+vload:	
+	vegeta attack -targets=$(ENV)/targets.txt -name=300qps -rate=300 -duration=10s | vegeta plot > plot.300qps.html
 	
 	

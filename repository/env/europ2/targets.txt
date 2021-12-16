@@ -1,0 +1,5 @@
+GET http://europ2.mytanzu.xyz/
+GET http://europ2.mytanzu.xyz/assets/config.json
+GET http://europ2.mytanzu.xyz/favicon.ico
+GET http://europ2.mytanzu.xyz/pets
+

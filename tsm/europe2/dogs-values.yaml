@@ -1,8 +1,0 @@
-#@ load("@ytt:overlay", "overlay")
-#@data/values-schema
----
-service:
-  name: dogs  
-  port: 7003
-  image: harbor.mytanzu.xyz/library/micropet-tap-dogs@sha256:014772bdca04e25634af2aa0c963bfeab55abd975ecd6f78aff3c669fec4a08e  
-  
