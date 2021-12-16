@@ -1,0 +1,16 @@
+#@data/values
+---
+application:
+  name: micro-pet
+service:  
+  replicas: 1
+  backend:
+    observability: true
+    mode: RANDOM_NUMBER
+    frequencyError: 10
+environment:
+  name: aws/europ2
+  domain:
+    internal: .micropets-supplychain.svc.cluster.local
+    exposed: europ2.mytanzu.xyz
+
