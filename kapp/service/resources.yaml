@@ -208,7 +208,7 @@ metadata:
     app.kubernetes.io/component: #@ data.values.service.name
     app.kubernetes.io/part-of: #@ data.values.application.name 
   annotations:
-    kubernetes.io/ingress.class: istio
+    kubernetes.io/ingress.class: #@ data.values.environment.ingress 
   name: #@ data.values.service.name + "-ingress"
 spec:
   rules:

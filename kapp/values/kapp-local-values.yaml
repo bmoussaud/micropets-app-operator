@@ -17,6 +17,7 @@ service:
     broker_service: http://pets.svc.cnr.mytanzu.xyz/pets 
 environment:
   name: AWS-LOCAL
+  ingress: istio
   domain:
     internal: micropets-supplychain.svc.cluster.local
     exposed: front.mytanzu.xyz

@@ -70,6 +70,7 @@ spec:
             broker_service: $(params.brokerService)$
         environment:
           name: aws/europ
+          ingress: contour
           domain:            
             exposed: front.mytanzu.xyz
 ---

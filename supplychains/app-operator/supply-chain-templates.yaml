@@ -103,6 +103,7 @@ spec:
             frequencyError: 10          
         environment:
           name: aws/europ
+          ingress: contour
           domain:
             internal: .micropets-supplychain.svc.cluster.local
             exposed: front.mytanzu.xyz

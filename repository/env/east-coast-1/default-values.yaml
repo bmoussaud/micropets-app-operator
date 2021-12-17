@@ -14,6 +14,7 @@ service:
     broker_service: http://east1.mytanzu.xyz/pets
 environment:
   name: aks/east1
+  ingress: istio
   domain:
     internal: .micropets-supplychain.svc.cluster.local
     exposed: east1.mytanzu.xyz
