@@ -142,7 +142,7 @@ spec:
       containers:
         - name: #@ data.values.service.name
           image: #@ data.values.service.image
-          imagePullPolicy: Always
+          #imagePullPolicy: Always
           ports:
             - name: #@ data.values.service.name+ "-http"
               containerPort: #@ data.values.service.port
@@ -189,11 +189,14 @@ metadata:
     service: #@ data.values.service.name    
     k8s-app: #@ data.values.application.name
     app.kubernetes.io/component: #@ data.values.service.name
-    app.kubernetes.io/part-of: #@ data.values.application.name 
+    app.kubernetes.io/part-of: #@ data.values.application.name         
+  annotations:
+    kapp.k14s.io/disable-default-label-scoping-rules: ""
+    kapp.k14s.io/disable-label-scoping: ""
+    kapp.k14s.io/disable-default-ownership-label-rules: ""
 spec:
   ports:
-    - protocol: TCP
-      name: #@ data.values.service.name+ "-http"
+    - name: #@ data.values.service.name+ "-http"
       port: #@ data.values.service.port
   selector:
     service: #@ data.values.service.name    
@@ -222,6 +225,8 @@ spec:
                 name: #@ data.values.service.name +"-service"
                 port: 
                   number: #@ data.values.service.port
+---
+---
 
 
 
