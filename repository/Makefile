@@ -48,7 +48,7 @@ undeploy-all: undeploy-services undeploy-front
 
 
 vload:	
-	vegeta attack -targets=$(ENV)/targets.txt -name=300qps -rate=300 -duration=10s | vegeta plot > plot.300qps.html
+	vegeta attack -targets=$(ENV)/targets.txt -name=100qps -rate=100 -duration=10s | vegeta plot > plot.100qps.html
 	
 	
 	

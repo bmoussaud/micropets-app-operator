@@ -17,35 +17,27 @@ make namespace deploy-services ENV=env/c1 OVERRIDE_VALUES=OVERRIDE_WITH_environm
 
 
 k delete ns micropets-supplychain --context aks-east-coast-1
-k delete ns micropets-supplychain --context aws-europe-2
+k delete ns micropets-supplychain --context bmoussaud-aws-europ2-admin@bmoussaud-aws-europ2
 k delete ns micropets-supplychain --context c1-admin@c1
 
 
 ## Manual Deploy
 
 ```
-kctx aks-east-coast-1
-rm aks-east-coast-1.yaml
-make pets gui ENV=env/east-coast-1 OVERRIDE_VALUES=OVERRIDE_WITH_environment__domain__internal=.bmoussaud.prod DEPLOY=">> aks-east-coast-1.yaml && echo '---' >> aks-east-coast-1.yaml"
-kubectl apply -f aks-east-coast-1.yaml -n micropets-supplychain
+make clean generate-cats generate-dogs generate-fishes ENV=env/east-coast-1 OVERRIDE_VALUES=OVERRIDE_WITH_environment__domain__internal=.bmoussaud.prod 
+kubectl apply --context aks-east-coast-1  -n micropets-supplychain -f env/east-coast-1/generated/cats -f env/east-coast-1/generated/dogs  -f env/east-coast-1/generated/fishes 
+
+make clean generate-pets ENV=env/east-coast-1 OVERRIDE_VALUES=OVERRIDE_WITH_environment__domain__internal=.bmoussaud.prod 
+kubectl apply --context aks-east-coast-1  -n micropets-supplychain -f env/east-coast-1/generated/pets
 curl http://east1.mytanzu.xyz/pets
 ```
 
 ```
-kctx aws-europe-2
-rm europ2.yaml
-make cats dogs fishes ENV=env/europ2 OVERRIDE_VALUES=OVERRIDE_WITH_environment__domain__internal=.bmoussaud.prod DEPLOY=">> europ2.yaml && echo '---' >> europ2.yaml"
-kubectl apply -f europ2.yaml -n micropets-supplychain
-curl http://europ2.mytanzu.xyz/pets
+make clean generate-cats generate-dogs generate-fishes ENV=env/europ2 OVERRIDE_VALUES=OVERRIDE_WITH_environment__domain__internal=.bmoussaud.prod 
+kubectl apply --context bmoussaud-aws-europ2-admin@bmoussaud-aws-europ2 -n micropets-supplychain -f env/europ2/generated/cats -f env/europ2/generated/dogs  -f env/europ2/generated/fishes 
+curl http://micropet.europ2.mytanzu.xyz/fishes/v1/data
 ```
 
-```
-kctx aws-europe-2
-rm europ2-pets.yaml
-make pets ENV=env/europ2 OVERRIDE_VALUES=OVERRIDE_WITH_environment__domain__internal=.bmoussaud.prod DEPLOY=">> europ2-pets.yaml"
-kubectl apply -f europ2-pets.yaml -n micropets-supplychain
-curl http://europ2.mytanzu.xyz/pets
-```
 
 
 ## links
