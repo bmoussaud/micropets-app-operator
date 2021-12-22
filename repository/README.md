@@ -1,5 +1,6 @@
 
-make generate OVERRIDE_VALUES=OVERRIDE_WITH_environment__domain__internal=.bmoussaud.prod
+KAPP_KUBECONFIG_CONTEXT=bmoussaud-aws-europ2-admin@bmoussaud-aws-europ2 make clean deploy-all ENV=env/europ2 OVERRIDE_VALUES=OVERRIDE_WITH_environment__domain__internal=.bmoussaud.prod
+KAPP_KUBECONFIG_CONTEXT=aks-east-coast-1 make clean deploy-all ENV=env/east-coast-1 OVERRIDE_VALUES=OVERRIDE_WITH_environment__domain__internal=.bmoussaud.prod
 
 
 kctx aws-europe-2

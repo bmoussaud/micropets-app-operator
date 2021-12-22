@@ -1,2 +1,4 @@
+GET http://east1.mytanzu.xyz/
+GET http://east1.mytanzu.xyz/assets/config.json
+GET http://east1.mytanzu.xyz/favicon.ico
 GET http://east1.mytanzu.xyz/pets
-

@@ -6,3 +6,4 @@ repository/europ2-pets.yaml
 repository/tsm.sh
 .DS_Store
 repository/env/*/generated
+repository/env/*/vegeta.html
