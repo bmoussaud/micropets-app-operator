@@ -144,7 +144,7 @@ spec:
           image: #@ data.values.service.image
           #imagePullPolicy: Always
           ports:
-            - name: #@ data.values.service.name
+            - name: #@ "http-{}".format(data.values.service.name)              
               containerPort: #@ data.values.service.port
           volumeMounts:
             - name: config-volume
@@ -196,9 +196,9 @@ metadata:
     kapp.k14s.io/disable-default-ownership-label-rules: ""
 spec:
   ports:
-    - name: #@ data.values.service.name
+    - name: #@ "http-{}".format(data.values.service.name)   
       port: #@ data.values.service.port
-      appProtocol: http
+      #appProtocol: http
   selector:
     service: #@ data.values.service.name    
     k8s-app: #@ data.values.application.name

@@ -56,7 +56,7 @@ spec:
           image: #@ data.values.service.image
           #imagePullPolicy: Always
           ports:
-            - name: #@ data.values.service.name+ "-http"
+            - name: #@ "http-{}".format(data.values.service.name)      
               containerPort: #@ data.values.service.port
           volumeMounts:
             - name: config-volume
@@ -80,7 +80,7 @@ metadata:
 spec:
   ports:
     - protocol: TCP
-      name: #@ data.values.service.name+ "-http"
+      name: #@ "http-{}".format(data.values.service.name)      
       port: #@ data.values.service.port
   selector:
     service: #@ data.values.service.name    
