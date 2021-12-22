@@ -1,0 +1,23 @@
+#@data/values-schema
+---
+application:
+  name: name
+service:
+  name: name
+  port: 0
+  image: image
+  replicas: 1
+  backend:
+    observability: true
+    mode: "RANDOM_NUMBER"
+    frequencyError: 0
+  gui:
+    color: color
+    config_path: config_path
+    broker_service: broker_service
+environment:
+  name: name
+  ingress: ingress
+  domain:
+    internal: internal
+    exposed: exposed

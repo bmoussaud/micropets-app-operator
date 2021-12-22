@@ -11,7 +11,7 @@ service:
   gui:
     color: green
     config_path: /workspace/dist/assets
-    broker_service: http://east1.mytanzu.xyz/pets
+    broker_service: /pets
 environment:
   name: aks/east1
   ingress: istio

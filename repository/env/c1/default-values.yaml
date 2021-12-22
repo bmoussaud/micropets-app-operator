@@ -9,13 +9,12 @@ service:
     mode: RANDOM_NUMBER
     frequencyError: 10
   gui:
-    color: green
+    color: red
     config_path: /workspace/dist/assets
     broker_service: /pets
 environment:
-  name: aws/europ2
+  name: showroom/c1
   ingress: istio
   domain:
     internal: .micropets-supplychain.svc.cluster.local
-    exposed: micropet.europ2.mytanzu.xyz
-
+    exposed: c1.azure.avilab.fun

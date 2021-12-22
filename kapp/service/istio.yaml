@@ -1,0 +1,39 @@
+#@ load("@ytt:data", "data")
+---
+#@ if data.values.environment.ingress == 'genistio':
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: #@ data.values.service.name +"-gateway"
+spec:
+  selector:
+    istio: ingressgateway 
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+#@ end
+---
+#@ if data.values.environment.ingress == 'genistio':
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: #@ data.values.service.name +"-virtual-service"
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - #@ data.values.service.name + "-gateway"
+  http:
+  - match:
+    - uri:
+        prefix: #@ "/"+ data.values.service.name
+    route:
+    - destination:
+        host: #@ data.values.service.name +"-service"
+        port:
+          number: #@ data.values.service.port
+#@ end

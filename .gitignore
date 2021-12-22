@@ -1,2 +1,7 @@
 plot*.html
 plot.300qps.html
+repository/aks-east-coast-1.yaml
+repository/europ2.yaml
+repository/europ2-pets.yaml
+repository/tsm.sh
+.DS_Store
