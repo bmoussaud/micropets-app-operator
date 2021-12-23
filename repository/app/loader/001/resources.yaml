@@ -27,7 +27,7 @@ spec:
       containers:
       - name: vegeta
         image: peterevans/vegeta:6.9.1        
-        command: ["/bin/vegeta","attack","-targets=/config/targets.txt","-name=vegata","-rate=50","-duration=0"]
+        command: ["/bin/vegeta","attack","-targets=/config/targets.txt","-name=vegata","-rate=2","-duration=0"]
         volumeMounts:
         - name: config-volume
           mountPath: /config/

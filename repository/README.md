@@ -1,7 +1,28 @@
 
-KAPP_KUBECONFIG_CONTEXT=bmoussaud-aws-europ2-admin@bmoussaud-aws-europ2 make clean deploy-all ENV=env/europ2 OVERRIDE_VALUES=OVERRIDE_WITH_environment__domain__internal=.bmoussaud.prod
-KAPP_KUBECONFIG_CONTEXT=aks-east-coast-1 make clean deploy-all ENV=env/east-coast-1 OVERRIDE_VALUES=OVERRIDE_WITH_environment__domain__internal=.bmoussaud.prod
+## All components in both clusters
 
+* on Europ2
+````bash
+KAPP_KUBECONFIG_CONTEXT=bmoussaud-aws-europ2-admin@bmoussaud-aws-europ2 make clean deploy-all ENV=env/europ2 OVERRIDE_VALUES=OVERRIDE_WITH_environment__domain__internal=.bmoussaud.prod
+````
+* on Aks-East-Coast-1
+```bash
+KAPP_KUBECONFIG_CONTEXT=aks-east-coast-1 make clean deploy-all ENV=env/east-coast-1 OVERRIDE_VALUES=OVERRIDE_WITH_environment__domain__internal=.bmoussaud.prod
+````
+
+
+## Split
+* Backend services on Europ2
+```bash
+KAPP_KUBECONFIG_CONTEXT=bmoussaud-aws-europ2-admin@bmoussaud-aws-europ2 make clean deploy-services ENV=env/europ2 OVERRIDE_VALUES=OVERRIDE_WITH_environment__domain__internal=.bmoussaud.prod
+```
+
+* Fronted services on Aks-East-Coast-1
+```bash
+KAPP_KUBECONFIG_CONTEXT=aks-east-coast-1 make clean deploy-front ENV=env/east-coast-1 OVERRIDE_VALUES=OVERRIDE_WITH_environment__domain__internal=.bmoussaud.prod
+```
+
+## other
 
 kctx aws-europe-2
 make deploy-services ENV=env/europ2 OVERRIDE_VALUES=OVERRIDE_WITH_environment__domain__internal=.bmoussaud.prod
