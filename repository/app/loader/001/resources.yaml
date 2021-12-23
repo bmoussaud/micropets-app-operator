@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  annotations:
+    kapp.k14s.io/versioned: ""
+  name: vegeta-config
+  labels:
+    app.kubernetes.io/component: loader
+    app.kubernetes.io/part-of: vegeta
+data:
+  targets.txt: "GET http://pets-service.bmoussaud.prod:9000/pets"
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: vegeta
+spec:
+  template:
+    spec:
+      volumes:
+      - name: config-volume
+        configMap:
+          name: vegeta-config
+          items:
+          - key: targets.txt
+            path: targets.txt
+      containers:
+      - name: vegeta
+        image: peterevans/vegeta:6.9.1        
+        command: ["/bin/vegeta","attack","-targets=/config/targets.txt","-name=vegata","-rate=50","-duration=0"]
+        volumeMounts:
+        - name: config-volume
+          mountPath: /config/
+      restartPolicy: Never
+  backoffLimit: 4
