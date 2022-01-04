@@ -16,7 +16,8 @@ data:
       "petServiceUrl": "(@=  data.values.service.gui.broker_service @)",
       "stage": "(@=  data.values.environment.name @)",
       "debug": "False",
-      "stage_color": "(@=  data.values.service.gui.color @)"
+      "stage_color": "(@=  data.values.service.gui.color @)",
+      "load_one_by_one": "True"
     }
 ---
 kind: Deployment
