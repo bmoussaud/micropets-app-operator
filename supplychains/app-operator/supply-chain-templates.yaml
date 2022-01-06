@@ -126,7 +126,7 @@ metadata:
   name: micropet-deploy
 spec:
   template:
-    apiVersion: kappctrl.k14s.io/v1alpha1
+    apiVersion: kappctrl.k14s.io/v1alpha1f
     kind: App
     metadata:
       name: $(workload.metadata.name)$-application

@@ -7,3 +7,5 @@ repository/tsm.sh
 .DS_Store
 repository/env/*/generated
 repository/env/*/vegeta.html
+delivery/generated
+.secrets.yaml

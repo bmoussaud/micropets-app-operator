@@ -12,27 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#@ load("@ytt:data", "data")
+#@data/values
 ---
-#@ if data.values.workload:
-apiVersion: carto.run/v1alpha1
-kind: Workload
-metadata:
-  name: cats
-  labels:
-    app.tanzu.vmware.com/workload-type: micropet-service-git
-spec:
-  serviceAccountName: #@ data.values.service_account_name
-  source:
-    git:
-      url: https://github.com/bmoussaud/micropets-app/
-      ref:
-        branch: master
-  params:
-    - name: mode
-      value: "RANDOM_NUMBER"
-    - name: port
-      value: 7002
-    - name: observability
-      value: true
-#@ end
+deliverable: false
+git_writer:
+  server: github.com
+  repository: bmoussaud/mygitwriter.git
+  branch: main
+  #cat ~/.ssh/id_rsa | base64
+  base64_encoded_ssh_key: XXXXX
+  #cat ~/.ssh/known_hosts_github | base64
+  base64_encoded_known_hosts: YYYYY

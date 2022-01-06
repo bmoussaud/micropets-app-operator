@@ -1,0 +1,70 @@
+# Copyright 2021 VMware
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: carto.run/v1alpha1
+kind: ClusterConfigTemplate
+metadata:
+  name: micropet-service-intermediate-config-gui
+spec: 
+  params:
+    - name: broker_service
+      default: #@ "http://not_set/pets/v1/default" 
+    - name: color
+      default: "green"  
+  configPath: .data
+  ytt: |
+    #@ load("@ytt:data", "data")
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: #@ data.values.workload.metadata.name
+    data:
+      #@yaml/text-templated-strings
+      values: |
+        #@data/values
+        ---       
+        application:
+          name: micro-pet
+        service:  
+          name: $(workload.metadata.name)$
+          port: 8080
+          image: (@= data.values.image @)        
+          gui:            
+            color: $(params.color)$
+            config_path: /workspace/dist/assets
+            broker_service: $(params.broker_service)$
+      schema: |
+        #@data/values-schema
+        ---
+        application:
+          name: name
+        service:
+          name: name
+          port: 0
+          image: image
+          replicas: 1
+          backend:
+            observability: true
+            mode: "RANDOM_NUMBER"
+            frequencyError: 0
+          gui:
+            color: color
+            config_path: config_path
+            broker_service: broker_service
+        environment:
+          name: name
+          ingress: ingress
+          domain:
+            internal: internal
+            exposed: exposed

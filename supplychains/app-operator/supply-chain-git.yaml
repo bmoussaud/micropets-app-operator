@@ -1,0 +1,50 @@
+apiVersion: carto.run/v1alpha1
+kind: ClusterSupplyChain
+metadata:
+  name: micropet-service-supply-chain-git
+spec:
+  selector:
+    app.tanzu.vmware.com/workload-type: micropet-service-git
+  #
+  #
+  #   source-provider <--[src]-- image-builder <--[img]--- config-provider  <--[configmap]---  git-writer
+  #     GitRepository               Image                    ConfigMap                         Git Commit
+  #
+  resources:
+    - name: source-provider
+      templateRef:
+        kind: ClusterSourceTemplate
+        name: micropet-source
+    
+    - name: image-builder
+      templateRef:
+        kind: ClusterImageTemplate
+        name: micropet-image
+      sources:
+        - resource: source-provider
+          name: source
+    
+    - name: config-provider
+      templateRef:
+        kind: ClusterConfigTemplate
+        name: micropet-service-intermediate-config
+      sources:
+        - resource: source-provider
+          name: source
+      images:
+        - resource: image-builder
+          name: image
+      params:        
+        - name: mode
+          value: $(workload.spec.params[?(@.name=="mode")].value)$
+        - name: port
+          value: $(workload.spec.params[?(@.name=="port")].value)$
+        - name: observability
+          value: $(workload.spec.params[?(@.name=="observability")].value)$    
+    - name: git-writer
+      templateRef:
+        kind: ClusterTemplate
+        name: git-writer
+      configs:
+        - resource: config-provider
+          name: data

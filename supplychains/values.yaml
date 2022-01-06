@@ -1,0 +1,22 @@
+#@data/values
+---
+workload: false
+image_prefix: library/micropet
+registry:
+  server: harbor.mytanzu.xyz
+service:
+  domain: front.mytanzu.xyz
+service_account_name: cartographer-workload-sa
+git_writer:
+  message: "Update app configuration"
+  ssh_user: git
+  server: github.com
+  repository: bmoussaud/mygitwriter.git
+  #cat ~/.ssh/id_rsa | base64
+  base64_encoded_ssh_key: XXXX
+  #cat ~/.ssh/known_hosts_github | base64
+  base64_encoded_known_hosts: YYYYYY
+  branch: main
+  username: bmoussaud
+  user_email: bmoussaud@gmail.com
+  port: ""

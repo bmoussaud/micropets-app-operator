@@ -13,26 +13,22 @@
 # limitations under the License.
 
 #@ load("@ytt:data", "data")
----
-#@ if data.values.workload:
+#@ if data.values.deliverable:
 apiVersion: carto.run/v1alpha1
-kind: Workload
+kind: Deliverable
 metadata:
   name: cats
   labels:
-    app.tanzu.vmware.com/workload-type: micropet-service-git
+    app.tanzu.vmware.com/workload-type: micropets-delivery
 spec:
-  serviceAccountName: #@ data.values.service_account_name
   source:
     git:
-      url: https://github.com/bmoussaud/micropets-app/
+      url: #@ "http://" + data.values.git_writer.server + "/" + data.values.git_writer.repository
       ref:
-        branch: master
+        branch: #@ data.values.git_writer.branch
   params:
-    - name: mode
-      value: "RANDOM_NUMBER"
-    - name: port
-      value: 7002
-    - name: observability
-      value: true
+  - name: environment
+    value: aws/tkg-uat-1
+  - name: application
+    value: micropets
 #@ end

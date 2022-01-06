@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: zipkin
+  namespace: istio-system
+spec:
+  type: ExternalName
+  externalName: wavefront-proxy.wavefront.svc.cluster.local    
+
