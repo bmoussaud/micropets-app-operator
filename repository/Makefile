@@ -21,17 +21,19 @@ generate:
 	@printf "`tput bold`= $@`tput sgr0`\n"
 	$(OVERRIDE_VALUES) ytt --ignore-unknown-comments -f $(KAPPDIR)/service -f $(VERSION)/default-schema.yaml -f $(ENV)/default-values.yaml -f $(VERSION)/cats-values.yaml --data-values-env OVERRIDE_WITH
 
-deploy-%: $(ENV)/generated/%	
+deploy-%: $(ENV)/generated/%/resources.yaml	
 	@printf "`tput bold`= Deploy $@ (micropet-$*) `tput sgr0`\n"
 	kapp deploy $(KAPP_FLAGS) -a micropet-$* -f $<
 
-generate-%: $(ENV)/generated/%	
+generate-%: $(ENV)/generated/%/resources.yaml	
 	
-$(ENV)/generated/gui: $(VERSION)/gui-values.yaml
+.PRECIOUS: $(ENV)/generated/gui/resources.yaml
+$(ENV)/generated/gui/resources.yaml: $(VERSION)/gui-values.yaml
 	@printf "`tput bold`= Generate $@`tput sgr0`\n"
 	$(OVERRIDE_VALUES) ytt --ignore-unknown-comments -f $(KAPPDIR)/gui -f $(VERSION)/default-schema.yaml -f $(ENV)/default-values.yaml -f $< --data-values-env OVERRIDE_WITH --output-files $@
 
-$(ENV)/generated/%: $(VERSION)/%-values.yaml
+.PRECIOUS: $(ENV)/generated/%/resources.yaml
+$(ENV)/generated/%/resources.yaml: $(VERSION)/%-values.yaml
 	@printf "`tput bold`= Generate $@`tput sgr0`\n"
 	$(OVERRIDE_VALUES) ytt --ignore-unknown-comments -f $(KAPPDIR)/service -f $(VERSION)/default-schema.yaml -f $(ENV)/default-values.yaml -f $< --data-values-env OVERRIDE_WITH --output-files $@
 

@@ -11,11 +11,11 @@ service:
   gui:
     color: green
     config_path: /workspace/dist/assets
-    broker_service: /pets
+    broker_service: http://pets.hermes.avilab.top/pets
 environment:
   name: aks/east1
   ingress: istio
   domain:
     internal: .micropets-supplychain.svc.cluster.local
-    exposed: east1.mytanzu.xyz
+    exposed: azu.hermes.avilab.top
 

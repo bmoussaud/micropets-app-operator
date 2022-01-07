@@ -11,11 +11,11 @@ service:
   gui:
     color: green
     config_path: /workspace/dist/assets
-    broker_service: /pets
+    broker_service: http://pets.hermes.avilab.top/pets
 environment:
   name: aws/europ2
   ingress: istio
   domain:
     internal: .micropets-supplychain.svc.cluster.local
-    exposed: micropet.europ2.mytanzu.xyz
+    exposed: aws.hermes.avilab.top
 
