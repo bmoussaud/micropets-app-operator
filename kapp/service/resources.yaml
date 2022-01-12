@@ -18,7 +18,7 @@ data:
             "port": ":(@=  str(data.values.service.port) @)",
             "listen": "true",
             "mode": "(@=  data.values.service.backend.mode @)",
-            "frequencyError": 10,
+            "frequencyError": (@= str(data.values.service.backend.frequencyError) @),
             "delay": {
               "period": 100,
               "amplitude": 0.3
@@ -62,7 +62,7 @@ data:
             "port": ":(@=  str(data.values.service.port) @)",
             "listen": "true",
             "mode": "(@=  data.values.service.backend.mode @)",
-            "frequencyError": 10,
+            "frequencyError": (@= str(data.values.service.backend.frequencyError) @),
             "delay": {
               "period": 100,
               "amplitude": 0.3
