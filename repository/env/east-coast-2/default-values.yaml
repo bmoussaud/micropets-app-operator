@@ -13,7 +13,7 @@ service:
     config_path: /workspace/dist/assets
     broker_service: http://pets.hermes.avilab.top/pets
 environment:
-  name: aks/east1
+  name: aks/east2
   ingress: istio
   domain:
     internal: .micropets-supplychain.svc.cluster.local

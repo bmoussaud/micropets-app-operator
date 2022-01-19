@@ -5,5 +5,5 @@ git_writer:
   server: github.com
   repository: bmoussaud/mygitwriter.git
   branch: main
-environment: azure/aks-east1
+environment: azure/aks-east-2
 application: micropets
