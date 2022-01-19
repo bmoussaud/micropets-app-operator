@@ -14,7 +14,7 @@ supplychain: gen_secrets
 
 .PHONY: delivery
 delivery: gen_secrets	
-	ytt --ignore-unknown-comments -f delivery --data-values-file $(SECRET_OUTPUT_FILE) | kapp deploy -c --yes --dangerous-override-ownership-of-existing-resources --into-ns $(MICROPETS_SP_NS) -a micropet-delivery -f-
+	ytt --ignore-unknown-comments -f delivery --data-values-file $(SECRET_OUTPUT_FILE) | kapp deploy -c --yes  --into-ns $(MICROPETS_SP_NS) -a micropet-delivery -f-
 	-rm $(SECRET_OUTPUT_FILE)
 
 gen_secrets:	
@@ -68,13 +68,12 @@ cert-manager:
 	kapp deploy -c --yes -a cert-manager -f https://github.com/jetstack/cert-manager/releases/download/v1.6.1/cert-manager.yaml
 
 kapp-controler:
-	kubectl create clusterrolebinding kapp-controler-admin --clusterrole=cluster-admin --serviceaccount=micropets-supplychain:default
-	kapp deploy -c --dangerous-override-ownership-of-existing-resources --yes -a kapp-controler -f https://github.com/vmware-tanzu/carvel-kapp-controller/releases/download/v0.31.0/release.yml
+	kapp deploy -c  --yes -a kapp-controler -f https://github.com/vmware-tanzu/carvel-kapp-controller/releases/download/v0.31.0/release.yml
 
 contour:
 	kapp deploy -c -a contour -f https://projectcontour.io/quickstart/contour.yaml
 	
-cartographer: cert-manager
+cartographer: 
 	kubectl create namespace cartographer-system --dry-run=client -o yaml | kubectl apply -f -
 	kapp deploy -c --yes -a cartographer  -f https://github.com/vmware-tanzu/cartographer/releases/download/v0.1.0/cartographer.yaml
 

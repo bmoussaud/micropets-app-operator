@@ -285,3 +285,75 @@ Check the configuration using :
 kubectl get cm  -n knative-serving config-network  -o yaml
 kubectl get cm  -n knative-serving config-domain  -o yaml
 ````
+
+
+## Deploy Deliverable & ClusterDelivery
+
+### Concepts
+
+Provided by the [https://cartographer.sh](https://cartographer.sh) project,
+
+* _Deliverable_ allows the operator to pass information about the configuration to be applied to the environment to the delivery. 
+
+* A _ClusterDelivery_ is a cluster-scoped resources that enables application operators to define a continuous delivery workflow. Delivery is analogous to SupplyChain, in that it specifies a list of resources that are created when requested by the developer. Early resources in the delivery are expected to configure the k8s environment (for example by deploying an application). Later resources validate the environment is healthy.
+
+
+### Procedure
+
+Note 1: If your cluster has already been enrolled by TSM (Tanzu Service Mesh), exclude the following namespaces
+* cartographer-system
+* cert-manager
+
+Note 2: create an AKS Cluster using `--network-plugin="azure"`and `--network-policy="calico"`
+
+Ex:
+````
+az group create --location eastus --resource-group aks-east-coast-2
+az aks create \
+ --network-plugin="azure" \
+ --network-policy="calico" \
+ --node-count 5 \
+ --enable-managed-identity \
+ --name="aks-east-coast-2" \
+ --resource-group "aks-east-coast-2"
+````
+
+
+1. Deploy the mandatory components:
+````
+make fluxcd cert-manager kapp-controler cartographer
+````
+
+2. Check with the ` kapp list` all the packages have been deployed.
+````
+➜ kapp list                                                                                                                                                                         
+Target cluster 'https://xxxxx-aws-xxxx-apiserver-1764530553.eu-west-3.elb.amazonaws.com:6443' (nodes: 3+)
+
+Apps in namespace 'default'
+
+Name                                       Namespaces                             Lcs   Lca
+bmoussaud-aws-europ2-kapp-controller-ctrl  (cluster),kube-system,tkg-system       true  48m
+cartographer                               (cluster),cartographer-system          true  2m
+cert-manager                               (cluster),cert-manager,kube-system     true  3m
+gitops-toolkit                             (cluster),gitops-toolkit               true  48m
+kapp-controler                             (cluster),kapp-controller,kube-system  true  47m
+`````
+
+3. Deploy the Delivery. 
+
+````
+make delivery
+````
+
+The command-line above generates secrets based on 2 files:
+* `~/.ssh/id_rsa for the key` (env SSH_KEY_FILE)
+* `~/.ssh/known_hosts_github` for the known_hosts (env SSH_KNOWN_HOST_FILE)
+you can set the associated env in front of the make command: `SSH_KNOWN_HOST_FILE=~/.ssh/known_hosts make delivery`
+
+4. Create a deliverable per service (cats,dogs,fishes,pets,gui)
+
+````
+cd repository 
+make deliverables ENV=env/europ2
+````
+

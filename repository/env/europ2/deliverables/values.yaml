@@ -1,0 +1,8 @@
+#@data/values
+---
+git_writer:
+  server: github.com
+  repository: bmoussaud/mygitwriter.git
+  branch: main
+environment: aws/tkg-europ2
+application: micropets

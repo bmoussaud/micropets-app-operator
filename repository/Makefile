@@ -48,6 +48,12 @@ undeploy-front:
 
 undeploy-all: undeploy-services undeploy-front
 
+deliverables:	
+	$(OVERRIDE_VALUES) ytt --ignore-unknown-comments -f $(ENV)/deliverables | kapp deploy -c --yes -a deliverables-`echo $(ENV) | sed "s/\//-/g"` --into-ns $(MICROPETS_SP_NS)  -f-
+
+undeliverables:	
+	kapp delete --yes -a deliverables-`echo $(ENV) | sed "s/\//-/g"` 
+
 
 vload:	
 	vegeta attack -targets=$(ENV)/targets.txt -name=100qps -rate=100 -duration=10s | vegeta plot > $(ENV)/vegeta.html

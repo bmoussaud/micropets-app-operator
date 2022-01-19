@@ -37,12 +37,17 @@ spec:
         - git:
             url: https://github.com/bmoussaud/micropets-app-operator
             ref: main
-            subPath: kapp/service             
-        - http:
-            url: $(deployment.url)$ 
+            subPath: kapp/service  
+#   on AKS Connection reset / refused when downloading the content, so switch to git
+#        - http:
+#            url: $(deployment.url)$            
+        - git:
+            url: $(deliverable.spec.source.git.url)$
+            ref: main
             subPath: applications/$(params.application)$/$(deliverable.metadata.name)$
-        - http:
-            url: $(deployment.url)$ 
+        - git:
+            url: $(deliverable.spec.source.git.url)$
+            ref: main
             subPath: environments/$(params.environment)$
       template:
         - ytt: 
