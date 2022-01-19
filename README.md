@@ -303,8 +303,9 @@ Provided by the [https://cartographer.sh](https://cartographer.sh) project,
 Note 1: If your cluster has already been enrolled by TSM (Tanzu Service Mesh), exclude the following namespaces
 * cartographer-system
 * cert-manager
+* cartographer
 
-Note 2: create an AKS Cluster using `--network-plugin="azure"`and `--network-policy="calico"`
+Note 2: create an AKS Cluster using `--network-plugin="azure"`and `--network-policy="calico"` (https://fluxcd.io/docs/use-cases/azure/)
 
 Ex:
 ````
