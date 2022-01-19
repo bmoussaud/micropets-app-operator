@@ -7,6 +7,7 @@ metadata:
   labels:
     app.tanzu.vmware.com/workload-type: micropets-delivery
 spec:
+  serviceAccountName: #@ data.values.service_account_name
   source:
     git:
       url: #@ "http://" + data.values.git_writer.server + "/" + data.values.git_writer.repository
@@ -25,6 +26,7 @@ metadata:
   labels:
     app.tanzu.vmware.com/workload-type: micropets-delivery
 spec:
+  serviceAccountName: #@ data.values.service_account_name
   source:
     git:
       url: #@ "http://" + data.values.git_writer.server + "/" + data.values.git_writer.repository
@@ -43,6 +45,7 @@ metadata:
   labels:
     app.tanzu.vmware.com/workload-type: micropets-delivery
 spec:
+  serviceAccountName: #@ data.values.service_account_name
   source:
     git:
       url: #@ "http://" + data.values.git_writer.server + "/" + data.values.git_writer.repository
@@ -61,6 +64,7 @@ metadata:
   labels:
     app.tanzu.vmware.com/workload-type: micropets-delivery
 spec:
+  serviceAccountName: #@ data.values.service_account_name
   source:
     git:
       url: #@ "http://" + data.values.git_writer.server + "/" + data.values.git_writer.repository
@@ -79,6 +83,7 @@ metadata:
   labels:
     app.tanzu.vmware.com/workload-type: micropets-delivery-gui
 spec:
+  serviceAccountName: #@ data.values.service_account_name
   source:
     git:
       url: #@ "http://" + data.values.git_writer.server + "/" + data.values.git_writer.repository

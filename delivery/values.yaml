@@ -15,6 +15,7 @@
 #@data/values
 ---
 deliverable: false
+service_account_name: cartographer-deliverable-sa
 git_writer:
   server: github.com
   repository: bmoussaud/mygitwriter.git
