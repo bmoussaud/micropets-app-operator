@@ -3,7 +3,7 @@
 service_account_name: cartographer-deliverable-sa
 git_writer:
   server: github.com
-  repository: bmoussaud/mygitwriter.git
+  repository: bmoussaud/micropets-app-gitops.git
   branch: main
 environment: azure/aks-east-2
 application: micropets

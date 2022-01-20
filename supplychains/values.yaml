@@ -11,7 +11,7 @@ git_writer:
   message: "Update app configuration"
   ssh_user: git
   server: github.com
-  repository: bmoussaud/mygitwriter.git
+  repository: bmoussaud/micropets-app-gitops.git
   #cat ~/.ssh/id_rsa | base64
   base64_encoded_ssh_key: XXXX
   #cat ~/.ssh/known_hosts_github | base64
