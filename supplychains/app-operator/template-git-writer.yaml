@@ -55,7 +55,10 @@ spec:
 
         git_username: $(params.git_writer_username)$
         git_user_email: $(params.git_writer_user_email)$
-        commit_message: $(params.git_writer_commit_message)$
+        commit_message: $(params.git_writer_commit_message)$                
+        git_revision: $(sources.source.revision)$
+        git_url: $(workload.spec.source.git.url)$
+        
         git_ssh_user: $(params.git_writer_ssh_user)$
         git_server: $(params.git_writer_server)$
         git_server_port: $(params.git_writer_port)$
@@ -65,4 +68,5 @@ spec:
         git_ssh_variant: $(params.git_writer_ssh_variant)$
         values: $(config.values)$
         schema: $(config.schema)$
+        
         

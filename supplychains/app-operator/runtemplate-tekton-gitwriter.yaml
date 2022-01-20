@@ -44,7 +44,14 @@ spec:
           value: /root
         - name: GIT_SCRIPT
           value: |
-            export COMMIT_MESSAGE="$(runnable.spec.inputs.commit_message)$"
+            export COMMIT_MESSAGE="$(runnable.spec.inputs.commit_message)$"            
+            export REVISION_ID="$(runnable.spec.inputs.git_revision)$"
+            COMMIT=`echo ${REVISION_ID} | cut -d '/' -f 2`
+            export GIT_URL="$(runnable.spec.inputs.git_url)$"   
+               
+            echo "-- REVISION_ID IS ${REVISION_ID}"
+            echo "-- COMMIT IS ${COMMIT}"
+
             export BRANCH="$(runnable.spec.inputs.branch)$"
             if [[ -n "$(runnable.spec.inputs.skip_host_checking)$" && "$(runnable.spec.inputs.skip_host_checking)$" = true ]]
             then
@@ -61,15 +68,13 @@ spec:
               git remote add origin $(runnable.spec.inputs.git_ssh_user)$@$(runnable.spec.inputs.git_server)$:$(runnable.spec.inputs.git_repository)$
             fi
             # TODO remove the fetch and branch
-            echo "---debug----"
-            cat /root/.ssh/id_rsa
-            echo "---/debug----"
             git fetch
             git branch
             git pull origin "`git remote show origin | grep "HEAD branch" | sed 's/.*: //'`"
             git pull origin "$BRANCH" || git branch "$BRANCH"
             git checkout "$BRANCH"
             
+            export CONFIG_MAP_NAME=$(runnable.spec.inputs.input_config_map_name)$
             export CONFIG_MAP_FIELD=$(runnable.spec.inputs.input_config_map_field)$
             export CONFIG_MAP_PATH=$(runnable.spec.inputs.input_config_map_path)$
             export SCHEMA="$(runnable.spec.inputs.schema)$"
@@ -83,7 +88,8 @@ spec:
             echo "${SCHEMA}" | tee "${CONFIG_MAP_PATH}/schema.yaml"
             echo "${VALUES}" | tee "${CONFIG_MAP_PATH}/values.yaml"
             
+            
             git add .
             git status
-            git commit --allow-empty -m "$COMMIT_MESSAGE"
+            git commit --allow-empty -m "$CONFIG_MAP_NAME: $COMMIT_MESSAGE ${GIT_URL}commit/${COMMIT}"
             git push --set-upstream origin "$BRANCH"

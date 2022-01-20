@@ -8,7 +8,7 @@ service:
   domain: front.mytanzu.xyz
 service_account_name: cartographer-workload-sa
 git_writer:
-  message: "Update app configuration"
+  message: "Update service configuration"
   ssh_user: git
   server: github.com
   repository: bmoussaud/micropets-app-gitops.git
