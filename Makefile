@@ -68,7 +68,10 @@ cert-manager:
 	kapp deploy -c --yes -a cert-manager -f https://github.com/jetstack/cert-manager/releases/download/v1.6.1/cert-manager.yaml
 
 kapp-controler:
-	kapp deploy -c  --yes -a kapp-controler -f https://github.com/vmware-tanzu/carvel-kapp-controller/releases/download/v0.31.0/release.yml
+	kapp deploy -c --dangerous-override-ownership-of-existing-resources -a kapp-controler -f https://github.com/vmware-tanzu/carvel-kapp-controller/releases/download/v0.31.0/release.yml
+
+kapp-controler-tkgm:
+	kubectl apply -f https://github.com/vmware-tanzu/carvel-kapp-controller/releases/download/v0.31.0/release.yml
 
 contour:
 	kapp deploy -c -a contour -f https://projectcontour.io/quickstart/contour.yaml

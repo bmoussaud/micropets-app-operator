@@ -319,10 +319,20 @@ az aks create \
  --resource-group "aks-east-coast-2"
 ````
 
+Note 3: if your cluster is a TKGm 1.4, Follow [this documentation](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.4/tap/GUID-install-tkg.html#kapp-controller) to pause it.
+* connect the management cluster 
+* kubectl patch app/<WORKLOAD-CLUSTER>-kapp-controller -n default -p '{"spec":{"paused":true}}' --type=merge
+* connect the workload cluster 
+* kubectl delete deployment kapp-controller -n tkg-system
+
+```
+kapp delete -a <clustername>-kapp-controller-ctrl
+```
 
 1. Deploy the mandatory components:
+
 ````
-make fluxcd cert-manager kapp-controler cartographer
+make fluxcd cert-manager cartographer kapp-controler(-tkgm) 
 ````
 
 2. Check with the ` kapp list` all the packages have been deployed.
@@ -343,7 +353,7 @@ kapp-controler                             (cluster),kapp-controller,kube-system
 3. Deploy the Delivery. 
 
 ````
-make delivery
+make namespace delivery
 ````
 
 The command-line above generates secrets based on 2 files:
@@ -355,6 +365,6 @@ you can set the associated env in front of the make command: `SSH_KNOWN_HOST_FIL
 
 ````
 cd repository 
-make deliverables ENV=env/europ2
+make deliverables ENV=env/europe-3
 ````
 

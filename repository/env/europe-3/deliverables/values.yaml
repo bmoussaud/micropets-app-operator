@@ -1,8 +1,9 @@
 #@data/values
 ---
+service_account_name: cartographer-deliverable-sa
 git_writer:
   server: github.com
   repository: bmoussaud/mygitwriter.git
   branch: main
-environment: aws/tkg-europ2
+environment: aws/tkg-europe-3
 application: micropets
