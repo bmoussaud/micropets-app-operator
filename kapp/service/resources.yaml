@@ -107,10 +107,12 @@ data:
   user: YWRtaW4K
   password: cGxlYXNlY2hhbmdlbWU=
 ---
+#@ load("helpers.star","deployment")
+---
 kind: Deployment
 apiVersion: apps/v1
 metadata:  
-  name: #@ data.values.service.name +"-app"
+  name: #@ deployment(data.values.service.name, data.values.environment)
   labels:
     service: #@ data.values.service.name    
     k8s-app: #@ data.values.application.name 

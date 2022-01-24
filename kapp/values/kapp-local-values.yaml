@@ -16,7 +16,7 @@ service:
     config_path: /workspace/src/assets
     broker_service: http://pets.svc.cnr.mytanzu.xyz/pets 
 environment:
-  name: AWS-LOCAL
+  name: aws/eu-west-3
   ingress: istio
   domain:
     internal: micropets-supplychain.svc.cluster.local
