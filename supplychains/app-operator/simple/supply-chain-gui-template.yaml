@@ -63,9 +63,10 @@ spec:
           port: 8080
           image: $(images.image.image)$
           replicas: 1    
+          config_path: /workspace/dist/assets
+          config_filename: config.json   
           gui:            
-            color: red
-            config_path: /workspace/dist/assets
+            color: red            
             broker_service: $(params.brokerService)$
         environment:
           name: aws/europ
