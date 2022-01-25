@@ -54,10 +54,10 @@ spec:
           port: 0
           image: image
           replicas: 1
+          config_path: config_path
+          config_filename: config_filename   
           backend:
             frequencyError: 0
-            config_path: config_path
-            config_filename: config_filename   
             observability: true
             mode: "RANDOM_NUMBER"                            
         environment:

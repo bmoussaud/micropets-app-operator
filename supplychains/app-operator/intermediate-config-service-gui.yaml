@@ -39,12 +39,12 @@ spec:
         service:  
           name: $(workload.metadata.name)$
           port: 8080
-          image: (@= data.values.image @)        
+          image: (@= data.values.image @)    
+          config_path: /workspace/dist/assets
+          config_filename: config.json          
           gui:            
             broker_service: $(params.broker_service)$
-            color: $(params.color)$
-            config_path: /workspace/dist/assets
-            config_filename: config.json                   
+            color: $(params.color)$                               
       schema: |
         #@data/values-schema
         ---
@@ -55,14 +55,10 @@ spec:
           port: 0
           image: image
           replicas: 1
-          backend:
-            observability: true
-            mode: "RANDOM_NUMBER"
-            frequencyError: 0
+          config_path: config_path
+          config_filename: config_filename                       
           gui:
             color: color
-            config_path: config_path
-            config_filename: config_filename
             broker_service: broker_service
         environment:
           name: name

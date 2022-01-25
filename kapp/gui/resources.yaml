@@ -11,7 +11,7 @@ metadata:
     kapp.k14s.io/versioned : ""
   name: #@ data.values.service.name + "-config"
 data:
-  (@=  data.values.service.gui.config_filename @): |-
+  (@=  data.values.service.config_filename @): |-
     {  
       "petServiceUrl": "(@=  data.values.service.gui.broker_service @)",
       "stage": "(@=  data.values.environment.name @)",
@@ -52,8 +52,8 @@ spec:
           configMap:
             name:  #@ data.values.service.name + "-config"
             items:            
-            - key: #@ data.values.service.gui.config_filename
-              path: #@ data.values.service.gui.config_filename                
+            - key: #@ data.values.service.config_filename
+              path: #@ data.values.service.config_filename                
       containers:
         - name: #@ data.values.service.name
           image: #@ data.values.service.image
@@ -63,7 +63,7 @@ spec:
               containerPort: #@ data.values.service.port
           volumeMounts:
             - name: config-volume
-              mountPath: #@ data.values.service.gui.config_path  
+              mountPath: #@ data.values.service.config_path  
           env:
             - name: PORT
               value: #@ str(data.values.service.port)
