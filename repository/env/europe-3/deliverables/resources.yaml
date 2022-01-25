@@ -81,7 +81,7 @@ kind: Deliverable
 metadata:
   name: gui
   labels:
-    app.tanzu.vmware.com/workload-type: micropets-delivery-gui
+    app.tanzu.vmware.com/workload-type: micropets-delivery
 spec:
   serviceAccountName: #@ data.values.service_account_name
   source:
