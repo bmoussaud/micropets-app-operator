@@ -90,7 +90,7 @@ spec:
         - git:
             url: https://github.com/bmoussaud/micropets-app-operator
             ref: main
-            subPath: kapp/gui
+            subPath: kapp/service
       template:
         - ytt:
             ignoreUnknownComments: true
