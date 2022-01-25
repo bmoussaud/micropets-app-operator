@@ -12,7 +12,7 @@ metadata:
     app.kubernetes.io/part-of: #@ data.values.application.name 
 data:
 #@ if data.values.service.backend.observability:
-  pets_config.json: |-
+  (@=  data.values.service.backend.config_filename @): |-
     {
         "service": {
             "port": ":(@=  str(data.values.service.port) @)",
@@ -56,7 +56,7 @@ data:
         ]
     }
 #@ else:
-  pets_config.json: |-
+  (@=  data.values.service.backend.config_filename @)  : |-
     {
         "service": {
             "port": ":(@=  str(data.values.service.port) @)",
@@ -139,8 +139,8 @@ spec:
           configMap:
             name:  #@ data.values.service.name + "-config"
             items:            
-            - key: pets_config.json
-              path: pets_config.json            
+            - key: #@ data.values.service.backend.config_filename  
+              path: #@ data.values.service.backend.config_filename          
       containers:
         - name: #@ data.values.service.name
           image: #@ data.values.service.image
@@ -150,7 +150,7 @@ spec:
               containerPort: #@ data.values.service.port
           volumeMounts:
             - name: config-volume
-              mountPath: /config/
+              mountPath: #@ data.values.service.backend.config_path  
           livenessProbe:
             httpGet:
               port: #@ data.values.service.port
@@ -165,7 +165,7 @@ spec:
             periodSeconds: 2
           env:
             - name: SERVICE_CONFIG_DIR
-              value: /config
+              value: #@ data.values.service.backend.config_path  
             - name: DATABASE_URL
               value: #@ "jdbc:postgresql://"+data.values.service.name+"-db:5432/"+ data.values.service.name
             - name: DATABASE_USER

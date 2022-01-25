@@ -43,6 +43,7 @@ spec:
           port: $(params.port)$
           image: (@= data.values.image @)    
           config_path: /config
+          config_filename: pets_config.json
       schema: |
         #@data/values-schema
         ---
@@ -54,14 +55,11 @@ spec:
           image: image
           replicas: 1
           backend:
-            config_path: config_path
-            observability: true
-            mode: "RANDOM_NUMBER"
             frequencyError: 0
-          gui:
-            color: color
             config_path: config_path
-            broker_service: broker_service
+            config_filename: config_filename   
+            observability: true
+            mode: "RANDOM_NUMBER"                            
         environment:
           name: name
           ingress: ingress

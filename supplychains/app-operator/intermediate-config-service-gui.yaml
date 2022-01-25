@@ -41,9 +41,10 @@ spec:
           port: 8080
           image: (@= data.values.image @)        
           gui:            
+            broker_service: $(params.broker_service)$
             color: $(params.color)$
             config_path: /workspace/dist/assets
-            broker_service: $(params.broker_service)$
+            config_filename: config.json                   
       schema: |
         #@data/values-schema
         ---
@@ -61,6 +62,7 @@ spec:
           gui:
             color: color
             config_path: config_path
+            config_filename: config_filename
             broker_service: broker_service
         environment:
           name: name

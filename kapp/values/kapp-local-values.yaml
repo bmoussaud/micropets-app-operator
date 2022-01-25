@@ -11,10 +11,13 @@ service:
     observability: false
     mode: RANDOM_NUMBER
     frequencyError: 10
+    config_path: /config
+    config_filename: pets_config.json
   gui:    
     color: green
     config_path: /workspace/src/assets
     broker_service: http://pets.svc.cnr.mytanzu.xyz/pets 
+    config_filename: config.json       
 environment:
   name: aws/eu-west-3
   ingress: istio
