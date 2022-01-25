@@ -41,7 +41,8 @@ spec:
         service:  
           name: $(workload.metadata.name)$
           port: $(params.port)$
-          image: (@= data.values.image @)     
+          image: (@= data.values.image @)    
+          config_path: /config
       schema: |
         #@data/values-schema
         ---
@@ -53,6 +54,7 @@ spec:
           image: image
           replicas: 1
           backend:
+            config_path: config_path
             observability: true
             mode: "RANDOM_NUMBER"
             frequencyError: 0
