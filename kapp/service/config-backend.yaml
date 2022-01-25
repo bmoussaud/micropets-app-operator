@@ -1,0 +1,98 @@
+#@ load("@ytt:data", "data")
+#@yaml/text-templated-strings
+#@ if/end data.values.service.name != "gui":
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  annotations:
+    kapp.k14s.io/versioned : ""
+  name: #@ data.values.service.name + "-config"
+  labels:
+    app.kubernetes.io/component: #@ data.values.service.name
+    app.kubernetes.io/part-of: #@ data.values.application.name 
+data:
+#@ if data.values.service.backend.observability:
+  (@=  data.values.service.config_filename @): |-
+    {
+        "service": {
+            "port": ":(@=  str(data.values.service.port) @)",
+            "listen": "true",
+            "mode": "(@=  data.values.service.backend.mode @)",
+            "frequencyError": (@= str(data.values.service.backend.frequencyError) @),
+            "delay": {
+              "period": 100,
+              "amplitude": 0.3
+            },
+            "from": "(@=  data.values.environment.name @)"
+        },
+        "observability": {          
+          "enable": true,          
+          "application": "micropets",
+          "service": "(@=  str(data.values.service.name) @)",
+          "cluster": "(@=  str(data.values.environment.name) @)",
+          "shard": "primary",
+          "server": "https://vmware.wavefront.com",
+          "token": "df3e4928-3fdc-44b5-80d5-01bcc522f97b"
+        },
+        "backends": [
+            {
+                "name": "cats",
+                "host": "cats-service(@= data.values.environment.domain.internal @)",
+                "port": "7002",
+                "context": "/cats/v1/data"
+            },
+            {
+                "name": "dogs",
+                "host": "dogs-service(@= data.values.environment.domain.internal @)",
+                "port": "7003",
+                "context": "/dogs/v1/data"
+            },
+            {
+                "name": "fishes",
+                "host": "fishes-service(@= data.values.environment.domain.internal @)",
+                "port": "7007",
+                "context": "/fishes/v1/data"
+            }
+        ]
+    }
+#@ else:
+  (@=  data.values.service.config_filename @)  : |-
+    {
+        "service": {
+            "port": ":(@=  str(data.values.service.port) @)",
+            "listen": "true",
+            "mode": "(@=  data.values.service.backend.mode @)",
+            "frequencyError": (@= str(data.values.service.backend.frequencyError) @),
+            "delay": {
+              "period": 100,
+              "amplitude": 0.3
+            },
+            "from": "(@=  data.values.environment.name @)"
+        },
+        "observability": {          
+          "enable": false                   
+        },
+        "backends": [
+            {
+                "name": "cats",
+                "host": "cats-service(@= data.values.environment.domain.internal @)",
+                "port": "7002",
+                "context": "/cats/v1/data"
+            },
+            {
+                "name": "dogs",
+                "host": "dogs-service(@= data.values.environment.domain.internal @)",
+                "port": "7003",
+                "context": "/dogs/v1/data"
+            },
+            {
+                "name": "fishes",
+                "host": "fishes-service(@= data.values.environment.domain.internal @)",
+                "port": "7007",
+                "context": "/fishes/v1/data"
+            }
+        ]
+    }
+#@ end
+---

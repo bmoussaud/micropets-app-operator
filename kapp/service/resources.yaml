@@ -2,100 +2,6 @@
 #@yaml/text-templated-strings
 ---
 apiVersion: v1
-kind: ConfigMap
-metadata:
-  annotations:
-    kapp.k14s.io/versioned : ""
-  name: #@ data.values.service.name + "-config"
-  labels:
-    app.kubernetes.io/component: #@ data.values.service.name
-    app.kubernetes.io/part-of: #@ data.values.application.name 
-data:
-#@ if data.values.service.backend.observability:
-  (@=  data.values.service.config_filename @): |-
-    {
-        "service": {
-            "port": ":(@=  str(data.values.service.port) @)",
-            "listen": "true",
-            "mode": "(@=  data.values.service.backend.mode @)",
-            "frequencyError": (@= str(data.values.service.backend.frequencyError) @),
-            "delay": {
-              "period": 100,
-              "amplitude": 0.3
-            },
-            "from": "(@=  data.values.environment.name @)"
-        },
-        "observability": {          
-          "enable": true,          
-          "application": "micropets",
-          "service": "(@=  str(data.values.service.name) @)",
-          "cluster": "(@=  str(data.values.environment.name) @)",
-          "shard": "primary",
-          "server": "https://vmware.wavefront.com",
-          "token": "df3e4928-3fdc-44b5-80d5-01bcc522f97b"
-        },
-        "backends": [
-            {
-                "name": "cats",
-                "host": "cats-service(@= data.values.environment.domain.internal @)",
-                "port": "7002",
-                "context": "/cats/v1/data"
-            },
-            {
-                "name": "dogs",
-                "host": "dogs-service(@= data.values.environment.domain.internal @)",
-                "port": "7003",
-                "context": "/dogs/v1/data"
-            },
-            {
-                "name": "fishes",
-                "host": "fishes-service(@= data.values.environment.domain.internal @)",
-                "port": "7007",
-                "context": "/fishes/v1/data"
-            }
-        ]
-    }
-#@ else:
-  (@=  data.values.service.config_filename @)  : |-
-    {
-        "service": {
-            "port": ":(@=  str(data.values.service.port) @)",
-            "listen": "true",
-            "mode": "(@=  data.values.service.backend.mode @)",
-            "frequencyError": (@= str(data.values.service.backend.frequencyError) @),
-            "delay": {
-              "period": 100,
-              "amplitude": 0.3
-            },
-            "from": "(@=  data.values.environment.name @)"
-        },
-        "observability": {          
-          "enable": false                   
-        },
-        "backends": [
-            {
-                "name": "cats",
-                "host": "cats-service(@= data.values.environment.domain.internal @)",
-                "port": "7002",
-                "context": "/cats/v1/data"
-            },
-            {
-                "name": "dogs",
-                "host": "dogs-service(@= data.values.environment.domain.internal @)",
-                "port": "7003",
-                "context": "/dogs/v1/data"
-            },
-            {
-                "name": "fishes",
-                "host": "fishes-service(@= data.values.environment.domain.internal @)",
-                "port": "7007",
-                "context": "/fishes/v1/data"
-            }
-        ]
-    }
-#@ end
----
-apiVersion: v1
 kind: Secret
 metadata:
   name: #@ data.values.service.name + "-db-credentials"
@@ -166,6 +72,10 @@ spec:
           env:
             - name: SERVICE_CONFIG_DIR
               value: #@ data.values.service.config_path  
+            #@ if data.values.service.name == "gui":
+            - name: PORT
+              value: #@ str(data.values.service.port)
+            #@ end
             - name: DATABASE_URL
               value: #@ "jdbc:postgresql://"+data.values.service.name+"-db:5432/"+ data.values.service.name
             - name: DATABASE_USER
@@ -221,15 +131,25 @@ spec:
     - host: #@ data.values.environment.domain.exposed
       http:
         paths:
-          - path: #@ "/"+ data.values.service.name
+        #@ if data.values.service.name == "gui":
+          - path: /
             pathType: Prefix
             backend:
               service:
                 name: #@ data.values.service.name +"-service"
                 port: 
                   number: #@ data.values.service.port
+        #@ else:
+          - path: #@ "/"+ data.values.service.name        
+            pathType: Prefix
+            backend:
+              service:
+                name: #@ data.values.service.name +"-service"
+                port: 
+                  number: #@ data.values.service.port
+        #@ end
 ---
----
+
 
 
 

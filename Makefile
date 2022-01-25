@@ -32,8 +32,8 @@ local-kapp:
 local-knative:
 	ytt --ignore-unknown-comments -f kapp/kservice -f kapp/values/kapp-local-values.yaml
 
-local-gui-kapp:
-	ytt --ignore-unknown-comments -f kapp/gui -f kapp/values/kapp-local-values.yaml
+local-kapp-gui:
+	ytt --ignore-unknown-comments -f kapp/service -f kapp/values/kapp-local-values-gui.yaml
 
 deploy-knative-app:
 	ytt --ignore-unknown-comments -f kapp/kservice -f kapp/values/kapp-local-values.yaml | kapp deploy -c --yes --dangerous-override-ownership-of-existing-resources -n  $(MICROPETS_SP_NS) --into-ns $(MICROPETS_SP_NS) -a micropet-local-knative -f-
