@@ -42,6 +42,9 @@ spec:
           replicas: 1
           config_path: config_path
           config_filename: config_filename   
+          gui:
+            color: color
+            broker_service: broker_service
           backend:
             frequencyError: 0
             observability: true
