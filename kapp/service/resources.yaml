@@ -18,7 +18,7 @@ data:
 kind: Deployment
 apiVersion: apps/v1
 metadata:  
-  name: #@ deployment(data.values.service.name, data.values.environment)
+  name:  #@ "app-"+data.values.service.name
   labels:
     service: #@ data.values.service.name    
     k8s-app: #@ data.values.application.name 
