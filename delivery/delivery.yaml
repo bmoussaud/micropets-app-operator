@@ -24,7 +24,7 @@ spec:
     - name: deployer
       templateRef:
         kind: ClusterDeploymentTemplate
-        name: app-deploy
+        name: micropet-app-deploy
       deployment:
         resource: source-provider
 ---
