@@ -12,7 +12,7 @@ spec:
     metadata:
       name: $(deliverable.metadata.name)$
     spec:
-      interval: 1m0s      
+      interval: 1s      
       url: $(deliverable.spec.source.git.url)$
       ref: $(deliverable.spec.source.git.ref)$
       secretRef:
