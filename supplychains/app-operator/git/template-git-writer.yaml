@@ -35,6 +35,9 @@ spec:
       serviceAccountName: $(workload.spec.serviceAccountName)$
       runTemplateRef:
         name: git-writer
+      retentionPolicy:
+        maxFailedRuns: 2
+        maxSuccessfulRuns: 1
       inputs:
         input_config_map_name: $(workload.metadata.name)$
         input_config_map_path: applications/micropets/$(workload.metadata.name)$
