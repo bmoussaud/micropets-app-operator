@@ -13,47 +13,27 @@ spec:
       default: aws/prod-1
   #
   #
-  #   source-provider <--[src]--  Service deployer
+  #   gitops-provider <--[src]--  Service deployer
   #     GitRepository               App
-  resources:
-    - name: source-provider
+  resources:    
+    - name: gitops-provider
       templateRef:
         kind: ClusterSourceTemplate
         name: gitops-source
-
-    - name: deployer
-      templateRef:
-        kind: ClusterDeploymentTemplate
-        name: micropet-app-deploy
-      deployment:
-        resource: source-provider
----
-apiVersion: carto.run/v1alpha1
-kind: ClusterDelivery
-metadata:
-  name: simple-delivery
-spec:
-  selector:
-    app.tanzu.vmware.com/workload-type: simple-delivery
-
-  params:
-    - name: application
-      default: micropets
-    - name: environment
-      default: aws/prod-1
-  #
-  #
-  #   source-provider <--[src]--   K8S deployer
-  #     GitRepository               App
-  resources:
-    - name: source-provider
+    - name: deployment-rules-provider
       templateRef:
         kind: ClusterSourceTemplate
-        name: gitops-source
-
-    - name: deployer
+        name: deployment-source
+        
+    - name: deployment-provider  
       templateRef:
         kind: ClusterDeploymentTemplate
-        name: deploy-apply
+        name: micropet-app-deploy      
       deployment:
-        resource: source-provider
+        resource: gitops-provider
+      sources:
+        - resource: gitops-provider
+          name: gitops
+        - resource: deployment-rules-provider
+          name: rules
+

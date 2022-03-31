@@ -12,7 +12,6 @@ spec:
     failed:
       key: '.status.conditions[?(@.type=="ReconcileSucceeded")].status'
       value: 'False'
-      
   template:
     apiVersion: kappctrl.k14s.io/v1alpha1
     kind: App
@@ -21,18 +20,17 @@ spec:
     spec:
       serviceAccountName: #@ data.values.service_account_name
       fetch:
-        - git:
-            url: https://github.com/bmoussaud/micropets-app-operator
-            ref: main
+        - http:
+            url: $(sources.rules.url)$               
             subPath: kapp/service  
 #   on AKS Connection reset / refused when downloading the content, so switch to git
 #        - http:
-#            url: $(deployment.url)$            
+#            url: $(source.url)$            
         - http:
-            url: $(deployment.url)$            
+            url: $(sources.gitops.url)$       
             subPath: applications/$(params.application)$/$(deliverable.metadata.name)$
         - http:
-            url: $(deployment.url)$            
+            url: $(sources.gitops.url)$        
             subPath: environments/$(params.environment)$
       template:
         - ytt: 

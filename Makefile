@@ -62,29 +62,29 @@ cnb:
 fluxcd:
 	kubectl create clusterrolebinding gitops-toolkit-admin --clusterrole=cluster-admin --serviceaccount=gitops-toolkit:default
 	kubectl create namespace gitops-toolkit
-	kapp deploy -c --yes -a gitops-toolkit --into-ns gitops-toolkit -f https://github.com/fluxcd/source-controller/releases/download/v0.15.4/source-controller.crds.yaml -f https://github.com/fluxcd/source-controller/releases/download/v0.15.4/source-controller.deployment.yaml
+	kapp deploy -c --yes -a gitops-toolkit --into-ns gitops-toolkit -f https://github.com/fluxcd/source-controller/releases/download/v0.22.4/source-controller.crds.yaml -f https://github.com/fluxcd/source-controller/releases/download/v0.22.4/source-controller.deployment.yaml
 
 cert-manager:
-	kapp deploy -c --yes -a cert-manager -f https://github.com/jetstack/cert-manager/releases/download/v1.6.1/cert-manager.yaml
+	kapp deploy -c --yes -a cert-manager -f https://github.com/jetstack/cert-manager/releases/download/v1.7.2/cert-manager.yaml
 
 kapp-controler:
-	kapp deploy -c --dangerous-override-ownership-of-existing-resources -a kapp-controler -f https://github.com/vmware-tanzu/carvel-kapp-controller/releases/download/v0.31.0/release.yml
+	kapp deploy -c --yes --dangerous-override-ownership-of-existing-resources -a kapp-controler -f https://github.com/vmware-tanzu/carvel-kapp-controller/releases/download/v0.34.0/release.yml
 
 kapp-controler-tkgm:
 	kubectl apply -f https://github.com/vmware-tanzu/carvel-kapp-controller/releases/download/v0.31.0/release.yml
 
 contour:
-	kapp deploy -c -a contour -f https://projectcontour.io/quickstart/contour.yaml
+	kapp deploy --yes -c -a contour -f https://projectcontour.io/quickstart/contour.yaml
 	
 cartographer: 
 	kubectl create namespace cartographer-system --dry-run=client -o yaml | kubectl apply -f -
-	kapp deploy -c --yes -a cartographer  -f https://github.com/vmware-tanzu/cartographer/releases/download/v0.1.0/cartographer.yaml
-
-tekton:
+	kapp deploy -c --yes -a cartographer  -f https://github.com/vmware-tanzu/cartographer/releases/download/v0.3.0-build.4/cartographer.yaml
+	
+tekton: namespace
 	kapp deploy -c --yes -a tekton -f https://storage.googleapis.com/tekton-releases/pipeline/previous/v0.31.0/release.yaml
 	kapp deploy -c --into-ns $(MICROPETS_SP_NS) --yes -a tekton-git-cli -f https://raw.githubusercontent.com/tektoncd/catalog/main/task/git-cli/0.2/git-cli.yaml
 
-deploy-packages: fluxcd cnb cert-manager cartographer kapp-controler
+deploy-packages: fluxcd contour cnb cert-manager cartographer kapp-controler tekton
 
 undeploy-packages:
 	kapp delete --yes -a cartographer 
