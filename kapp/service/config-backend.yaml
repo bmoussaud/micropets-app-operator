@@ -9,6 +9,7 @@ metadata:
     kapp.k14s.io/versioned : ""
   name: #@ data.values.service.name + "-config"
   labels:
+    mylabel: benoit
     app.kubernetes.io/component: #@ data.values.service.name
     app.kubernetes.io/part-of: #@ data.values.application.name 
 data:
