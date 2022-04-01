@@ -11,8 +11,7 @@ spec:
       value: 'True'
     failed:
       key: '.status.conditions[?(@.type=="ReconcileSucceeded")].status'
-      value: 'False'
-      
+      value: 'False'      
   template:
     apiVersion: kappctrl.k14s.io/v1alpha1
     kind: App

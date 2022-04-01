@@ -13,8 +13,12 @@ spec:
       default: aws/prod-1
   #
   #
-  #   gitops-provider <--[src]--  Service deployer
-  #     GitRepository               App
+  #   gitops-provider <--[gitops]---------   Service deployer
+  #     GitRepository                           App
+  #                                        |
+  #   deployment-provider   <--[rules]-----| 
+  #     GitRepository               
+  #
   resources:    
     - name: gitops-provider
       templateRef:

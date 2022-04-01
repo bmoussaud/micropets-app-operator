@@ -1,0 +1,23 @@
+apiVersion: carto.run/v1alpha1
+kind: ClusterDelivery
+metadata:
+  name: simple-delivery
+spec:
+  selector:
+    app.tanzu.vmware.com/workload-type: simple-delivery
+  params:
+    - name: application
+      default: micropets
+    - name: environment
+      default: aws/prod-1
+  resources:
+    - name: source-provider
+      templateRef:
+        kind: ClusterSourceTemplate
+        name: gitops-source
+    - name: deployer
+      templateRef:
+        kind: ClusterDeploymentTemplate
+        name: deploy-apply
+      deployment:
+        resource: source-provider
