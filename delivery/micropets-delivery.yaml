@@ -10,7 +10,7 @@ spec:
     - name: application
       default: micropets
     - name: environment
-      default: aws/prod-1
+      default: aws/prod-1  
   #
   #
   #   gitops-provider <--[gitops]---------   Service deployer
@@ -27,8 +27,7 @@ spec:
     - name: deployment-rules-provider
       templateRef:
         kind: ClusterSourceTemplate
-        name: deployment-source
-        
+        name: deployment-source        
     - name: deployment-provider  
       templateRef:
         kind: ClusterDeploymentTemplate
@@ -40,4 +39,7 @@ spec:
           name: gitops
         - resource: deployment-rules-provider
           name: rules
+      params:
+        - name: deployment_rules
+          default: kapp/service 
 

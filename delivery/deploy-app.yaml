@@ -12,6 +12,9 @@ spec:
     failed:
       key: '.status.conditions[?(@.type=="ReconcileSucceeded")].status'
       value: 'False'
+  params:
+    - name: deployment_rules
+      default: kapp/service  
   template:
     apiVersion: kappctrl.k14s.io/v1alpha1
     kind: App
@@ -22,7 +25,7 @@ spec:
       fetch:
         - http:
             url: $(sources.rules.url)$               
-            subPath: kapp/service  
+            subPath: $(params.deployment_rules)$
 #   on AKS Connection reset / refused when downloading the content, so switch to git
 #        - http:
 #            url: $(source.url)$            
