@@ -10,7 +10,7 @@ metadata:
     app.kubernetes.io/part-of: #@ data.values.application.name 
 type: Opaque
 data:
-  user: YWRtaW4K
+  username: YWRtaW4K
   password: cGxlYXNlY2hhbmdlbWU=
 ---
 #@ load("helpers.star","deployment")
@@ -82,7 +82,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: #@ data.values.service.name+ "-app-user-db-secret"
-                  key: user
+                  key: username
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
