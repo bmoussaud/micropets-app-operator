@@ -4,7 +4,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: #@ data.values.service.name + "-db-credentials"
+  name: #@ data.values.service.name + "birds-app-user-db-secret"
   labels:
     app.kubernetes.io/component: #@ data.values.service.name
     app.kubernetes.io/part-of: #@ data.values.application.name 
@@ -81,12 +81,12 @@ spec:
             - name: SPRING_DATASOURCE_USER
               valueFrom:
                 secretKeyRef:
-                  name: #@ data.values.service.name+ "-db-credentials"
+                  name: #@ data.values.service.name+ "-app-user-db-secret"
                   key: user
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: #@ data.values.service.name+ "-db-credentials"
+                  name: #@ data.values.service.name+ "-app-user-db-secret"
                   key: password
 
       restartPolicy: Always
