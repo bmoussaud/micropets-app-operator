@@ -76,14 +76,14 @@ spec:
             - name: PORT
               value: #@ str(data.values.service.port)
             #@ end
-            - name: DATABASE_URL
-              value: #@ "jdbc:postgresql://"+data.values.service.name+"-db:5432/"+ data.values.service.name
-            - name: DATABASE_USER
+            - name: DATASOURCE_URL
+              value: #@ "jdbc:postgresql://"+data.values.service.name+"-db:5432/"+ data.values.service.name            
+            - name: DATASOURCE_USER
               valueFrom:
                 secretKeyRef:
                   name: #@ data.values.service.name+ "-db-credentials"
                   key: user
-            - name: DATABASE_PASSWORD
+            - name: DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: #@ data.values.service.name+ "-db-credentials"
