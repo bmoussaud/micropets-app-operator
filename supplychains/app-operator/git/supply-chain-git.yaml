@@ -10,12 +10,14 @@ spec:
   #   source-provider <--[src]-- image-builder <--[img]--- config-provider  <--[configmap]---  git-writer
   #     GitRepository               Image                    ConfigMap                         Git Commit
   #
+  params:
+    - name: usedb
+      default: false
   resources:
     - name: source-provider
       templateRef:
         kind: ClusterSourceTemplate
         name: micropet-source
-    
     - name: image-builder
       templateRef:
         kind: ClusterImageTemplate
@@ -23,7 +25,7 @@ spec:
       sources:
         - resource: source-provider
           name: source
-    
+          
     - name: config-provider
       templateRef:
         kind: ClusterConfigTemplate
@@ -40,7 +42,9 @@ spec:
         - name: port
           value: $(workload.spec.params[?(@.name=="port")].value)$
         - name: observability
-          value: $(workload.spec.params[?(@.name=="observability")].value)$    
+          value: $(workload.spec.params[?(@.name=="observability")].value)$   
+        - name: usedb
+          value: $(workload.spec.params[?(@.name=="usedb")].value)$  
     - name: git-writer
       templateRef:
         kind: ClusterTemplate

@@ -27,7 +27,8 @@ spec:
           port: 8080
           image: (@= data.values.image @)    
           config_path: /workspace/dist/assets
-          config_filename: config.json          
+          config_filename: config.json 
+          usedb: false          
           gui:            
             broker_service: $(params.broker_service)$
             color: $(params.color)$                               
@@ -42,11 +43,12 @@ spec:
           image: image
           replicas: 1
           config_path: config_path
-          config_filename: config_filename                       
+          config_filename: config_filename 
+          usedb: false                                
           gui:
             color: color
             broker_service: broker_service
-          backend:
+          backend:            
             frequencyError: 0
             observability: true
             mode: "RANDOM_NUMBER"  

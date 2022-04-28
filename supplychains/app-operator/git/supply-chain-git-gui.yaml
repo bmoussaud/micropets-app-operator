@@ -39,6 +39,8 @@ spec:
           value: $(workload.spec.params[?(@.name=="broker_service")].value)$        
         - name: color
           value: $(workload.spec.params[?(@.name=="color")].value)$
+        - name: usedb
+          value: false
     - name: git-writer
       templateRef:
         kind: ClusterTemplate
@@ -46,4 +48,7 @@ spec:
       configs:
         - resource: config-provider
           name: data
+      sources:
+        - resource: source-provider
+          name: source
       
