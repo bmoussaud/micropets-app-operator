@@ -68,6 +68,12 @@ spec:
         blob:
           url: $(sources.source.url)$
         subPath: $(workload.metadata.name)$
+      build:
+        env:
+          - name: BP_IMAGE_LABELS
+            value: watermark.project=micropet watermark.author=benoit@moussaud
+          - name: BP_JVM_VERSION
+            value: 17
 #@yaml/text-templated-strings
 ---
 apiVersion: carto.run/v1alpha1
