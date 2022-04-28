@@ -76,14 +76,14 @@ spec:
             - name: PORT
               value: #@ str(data.values.service.port)
             #@ end
-            - name: DATASOURCE_URL
+            - name: SPRING_DATASOURCE_URL
               value: #@ "jdbc:postgresql://"+data.values.service.name+"-db:5432/"+ data.values.service.name            
-            - name: DATASOURCE_USER
+            - name: SPRING_DATASOURCE_USER
               valueFrom:
                 secretKeyRef:
                   name: #@ data.values.service.name+ "-db-credentials"
                   key: user
-            - name: DATASOURCE_PASSWORD
+            - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: #@ data.values.service.name+ "-db-credentials"
