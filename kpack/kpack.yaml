@@ -8,6 +8,7 @@ spec:
   sources:
     - image: gcr.io/paketo-buildpacks/go:0.12.0
     - image: gcr.io/paketo-buildpacks/nodejs:0.11.0
+    - image: gcr.io/paketo-buildpacks/java:6.19.0
     #- image: harbor.mytanzu.xyz/library/watermark-labels-buildpack:0.0.4
     - image: gcr.io/paketo-buildpacks/nginx 
     - image: paketocommunity/staticfile  
@@ -47,3 +48,6 @@ spec:
       #- id: bmoussaud/watermark
       - id: paketo-buildpacks/nginx 
       - id: paketo-community/staticfile
+    - group:
+      - id: gcr.io/paketo-buildpacks/java
+      #- id: bmoussaud/watermark
