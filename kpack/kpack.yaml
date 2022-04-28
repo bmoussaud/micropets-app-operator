@@ -49,5 +49,5 @@ spec:
       - id: paketo-buildpacks/nginx 
       - id: paketo-community/staticfile
     - group:
-      - id: gcr.io/paketo-buildpacks/java
+      - id: paketo-buildpacks/java
       #- id: bmoussaud/watermark

@@ -57,7 +57,7 @@ deploy-knative:
 	kubectl --namespace istio-system get service istio-ingressgateway
 
 cnb:
-	kapp deploy -c --yes -a kpack -f https://github.com/pivotal/kpack/releases/download/v0.4.3/release-0.4.3.yaml
+	kapp deploy -c --yes -a kpack -f https://github.com/pivotal/kpack/releases/download/v0.5.3/release-0.5.3.yaml
 
 fluxcd:
 	kubectl create clusterrolebinding gitops-toolkit-admin --clusterrole=cluster-admin --serviceaccount=gitops-toolkit:default
@@ -78,7 +78,7 @@ contour:
 	
 cartographer: 
 	kubectl create namespace cartographer-system --dry-run=client -o yaml | kubectl apply -f -
-	kapp deploy -c --yes -a cartographer  -f https://github.com/vmware-tanzu/cartographer/releases/download/v0.3.0-build.4/cartographer.yaml
+	kapp deploy -c --yes -a cartographer  -f https://github.com/vmware-tanzu/cartographer/releases/download/v0.4.0-build.1/cartographer.yaml
 	
 tekton: namespace
 	kapp deploy -c --yes -a tekton -f https://storage.googleapis.com/tekton-releases/pipeline/previous/v0.31.0/release.yaml

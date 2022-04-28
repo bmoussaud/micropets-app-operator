@@ -8,4 +8,5 @@ repository/tsm.sh
 repository/env/*/generated
 repository/env/*/vegeta.html
 delivery/generated
-.secrets.yaml
+.secrets.yamldeploy-all.sh
+deploy-all.sh
