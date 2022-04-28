@@ -36,6 +36,10 @@ spec:
             echo "-- REVISION_ID IS ${REVISION_ID}"
             echo "-- COMMIT IS ${COMMIT}"
 
+            #echo "---- ID_RSA ----"
+            #cat /root/.ssh/id_rsa
+            #echo "---- /ID_RSA ----"
+
             export BRANCH="$(runnable.spec.inputs.branch)$"
             if [[ -n "$(runnable.spec.inputs.skip_host_checking)$" && "$(runnable.spec.inputs.skip_host_checking)$" = true ]]
             then

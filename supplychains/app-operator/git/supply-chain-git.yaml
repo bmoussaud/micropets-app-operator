@@ -48,4 +48,7 @@ spec:
       configs:
         - resource: config-provider
           name: data
+      sources:
+        - resource: source-provider
+          name: source
       
