@@ -76,6 +76,7 @@ spec:
             - name: PORT
               value: #@ str(data.values.service.port)
             #@ end
+            #@ if data.values.usedb:
             - name: POSTGRES_URL
               value: #@ "jdbc:postgresql://"+data.values.service.name+":5432/"+ data.values.service.name            
             - name: POSTGRES_USERNAME
@@ -88,7 +89,7 @@ spec:
                 secretKeyRef:
                   name: #@ data.values.service.name+ "-app-user-db-secret"
                   key: password
-
+            #@ end
       restartPolicy: Always
       schedulerName: default-scheduler
       terminationGracePeriodSeconds: 5
