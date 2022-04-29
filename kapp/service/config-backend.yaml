@@ -53,6 +53,12 @@ data:
                 "host": "fishes-service(@= data.values.environment.domain.internal @)",
                 "port": "7007",
                 "context": "/fishes/v1/data"
+            },
+            {
+                "name": "birds",
+                "host": "birds-service(@= data.values.environment.domain.internal @)",
+                "port": "8080",
+                "context": "/birds/v1/data"
             }
         ]
     }
@@ -91,6 +97,12 @@ data:
                 "host": "fishes-service(@= data.values.environment.domain.internal @)",
                 "port": "7007",
                 "context": "/fishes/v1/data"
+            },            
+            {
+                "name": "birds",
+                "host": "birds-service(@= data.values.environment.domain.internal @)",
+                "port": "8080",
+                "context": "/birds/v1/data"
             }
         ]
     }
