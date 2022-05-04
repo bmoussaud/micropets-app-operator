@@ -54,7 +54,7 @@ spec:
       templateRef:
         kind: ClusterTemplate
         name: smoke-micropets-smoke-test-template     
-      configs:
+      sources:
       - name: deployment
         resource: deployment-provider
 

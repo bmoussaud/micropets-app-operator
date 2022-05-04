@@ -9,10 +9,10 @@ spec:
     metadata:
       name: $(deliverable.metadata.name)$-smoke-test
     spec: 
-      url: http://$(deliverable.metadata.name)$-service.micropets-supplychain.svc.cluster.local:7003/$(deliverable.metadata.name)$/v1/data
+      url: http://front.mytanzu.xyz/$(deliverable.metadata.name)$/v1/data
       expectedResponseText: Total
-      retryIntervalSeconds: 1
-      startDelaySeconds: 1
+      retryIntervalSeconds: 5
+      startDelaySeconds: 30
       showPageContent: true
       timeout: 1
-      maxRetries: 1
+      maxRetries: 10
