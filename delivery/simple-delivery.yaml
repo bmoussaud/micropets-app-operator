@@ -19,11 +19,15 @@ spec:
   #   deployment-provider   <--[rules]-----| 
   #     GitRepository               
   #
-  resources:    
-    - name: gitops-provider
+  resources:     
+    - name: gitops-provider-app
       templateRef:
         kind: ClusterSourceTemplate
-        name: gitops-source
+        name: gitops-source-app
+    - name: gitops-provider-env
+      templateRef:
+        kind: ClusterSourceTemplate
+        name: gitops-source-env
     - name: deployment-rules-provider
       templateRef:
         kind: ClusterSourceTemplate
@@ -33,10 +37,12 @@ spec:
         kind: ClusterDeploymentTemplate
         name: micropet-app-deploy      
       deployment:
-        resource: gitops-provider
+        resource: gitops-provider-app
       sources:
-        - resource: gitops-provider
-          name: gitops
+        - resource: gitops-provider-app
+          name: gitops-app
+        - resource: gitops-provider-env
+          name: gitops-env
         - resource: deployment-rules-provider
           name: rules
       params:

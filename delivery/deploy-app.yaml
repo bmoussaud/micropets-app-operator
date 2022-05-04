@@ -30,10 +30,10 @@ spec:
 #        - http:
 #            url: $(source.url)$            
         - http:
-            url: $(sources.gitops.url)$       
+            url: $(sources.gitops-app.url)$       
             subPath: applications/$(params.application)$/$(deliverable.metadata.name)$
         - http:
-            url: $(sources.gitops.url)$        
+            url: $(sources.gitops-env.url)$        
             subPath: environments/$(params.environment)$
       template:
         - ytt: 
