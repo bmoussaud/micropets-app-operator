@@ -40,7 +40,7 @@ spec:
         maxSuccessfulRuns: 1
       inputs:
         input_config_map_name: $(workload.metadata.name)$
-        input_config_map_path: applications/micropets/$(workload.metadata.name)$
+        input_config_map_path: applications/micropets/current/$(workload.metadata.name)$
         input_config_map_field: $(workload.metadata.name)$.yaml
 
         git_username: $(params.git_writer_username)$
