@@ -1,0 +1,18 @@
+apiVersion: carto.run/v1alpha1
+kind: ClusterTemplate
+metadata:  
+  name: smoke-micropets-smoke-test-template  
+spec:
+  template:
+    apiVersion: katapult.org/v1alpha1   
+    kind: SmokeTest
+    metadata:
+      name: $(deliverable.metadata.name)$-smoke-test
+    spec: 
+      url: http://$(deliverable.metadata.name)$-service.micropets-supplychain.svc.cluster.local:7003/$(deliverable.metadata.name)$/v1/data
+      expectedResponseText: Total
+      retryIntervalSeconds: 1
+      startDelaySeconds: 1
+      showPageContent: true
+      timeout: 1
+      maxRetries: 1
