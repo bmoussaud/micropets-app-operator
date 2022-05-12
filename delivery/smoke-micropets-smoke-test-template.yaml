@@ -9,7 +9,7 @@ spec:
     metadata:
       name: $(deliverable.metadata.name)$-smoke-test
     spec: 
-      url: http://front.mytanzu.xyz/$(deliverable.metadata.name)$/v1/data
+      url: http://front.mytanzu.xyz/$(deliverable.metadata.name)$/v1/data?$(sources.deployment.revision)$
       expectedResponseText: Total
       retryIntervalSeconds: 5
       startDelaySeconds: 30

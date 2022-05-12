@@ -25,10 +25,7 @@ spec:
       fetch:
         - http:
             url: $(sources.rules.url)$               
-            subPath: $(params.deployment_rules)$
-#   on AKS Connection reset / refused when downloading the content, so switch to git
-#        - http:
-#            url: $(source.url)$            
+            subPath: $(params.deployment_rules)$       
         - http:
             url: $(sources.gitops-app.url)$       
             subPath: applications/$(params.application)$/$(deliverable.metadata.name)$
