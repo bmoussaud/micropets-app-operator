@@ -123,9 +123,10 @@ apiVersion: networking.k8s.io/v1
 metadata:
   labels:
     app.kubernetes.io/component: #@ data.values.service.name
-    app.kubernetes.io/part-of: #@ data.values.application.name 
-  annotations:
-    kubernetes.io/ingress.class: #@ data.values.environment.ingress 
+    app.kubernetes.io/part-of: #@ data.values.application.name   
+  annotations:     
+    #@ if/end data.values.environment.ingress != "none":
+    kubernetes.io/ingress.class: #@ data.values.environment.ingress   
   name: #@ data.values.service.name + "-ingress"
 spec:
   rules:
