@@ -33,6 +33,8 @@ spec:
       containers:
         - name:  #@ data.values.service.name
           image: #@ data.values.service.image
+          ports:
+          - containerPort: #@ data.values.service.port
           securityContext:
             runAsUser: 1000
           volumeMounts:
