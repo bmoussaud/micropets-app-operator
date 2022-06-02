@@ -39,25 +39,25 @@ data:
             {
                 "name": "cats",
                 "host": "cats-service(@= data.values.environment.domain.internal @)",
-                "port": "7002",
+                "port": "80",
                 "context": "/cats/v1/data"
             },
             {
                 "name": "dogs",
                 "host": "dogs-service(@= data.values.environment.domain.internal @)",
-                "port": "7003",
+                "port": "80",
                 "context": "/dogs/v1/data"
             },
             {
                 "name": "fishes",
                 "host": "fishes-service(@= data.values.environment.domain.internal @)",
-                "port": "7007",
+                "port": "80",
                 "context": "/fishes/v1/data"
             },
             {
                 "name": "birds",
                 "host": "birds-service(@= data.values.environment.domain.internal @)",
-                "port": "8080",
+                "port": "80",
                 "context": "/birds/v1/data"
             }
         ]
@@ -83,25 +83,25 @@ data:
             {
                 "name": "cats",
                 "host": "cats-service(@= data.values.environment.domain.internal @)",
-                "port": "7002",
+                "port": "80",
                 "context": "/cats/v1/data"
             },
             {
                 "name": "dogs",
                 "host": "dogs-service(@= data.values.environment.domain.internal @)",
-                "port": "7003",
+                "port": "80",
                 "context": "/dogs/v1/data"
             },
             {
                 "name": "fishes",
                 "host": "fishes-service(@= data.values.environment.domain.internal @)",
-                "port": "7007",
+                "port": "80",
                 "context": "/fishes/v1/data"
             },            
             {
                 "name": "birds",
                 "host": "birds-service(@= data.values.environment.domain.internal @)",
-                "port": "8080",
+                "port": "80",
                 "context": "/birds/v1/data"
             }
         ]
