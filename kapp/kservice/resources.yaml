@@ -44,6 +44,8 @@ spec:
           livenessProbe:
             httpGet:
               path: /liveness
+              port: #@ data.values.service.port
           readinessProbe:
             httpGet:
               path: /readiness
+              port: #@ data.values.service.port
