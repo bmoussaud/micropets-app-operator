@@ -1,106 +1,13 @@
 #@ load("@ytt:data", "data")
 #@yaml/text-templated-strings
 ---
-apiVersion: v1
-kind: ConfigMap
-metadata:  
-  annotations:
-    kapp.k14s.io/versioned : ""    
-  labels:
-    app.kubernetes.io/component: #@ data.values.service.name
-    app.kubernetes.io/part-of: #@ data.values.application.name 
-  name: #@ data.values.service.name + "-config"
-data:
-#@ if data.values.service.observability:
-  pets_config.json: |-
-    {
-        "service": {
-            "port": ":(@=  str(data.values.service.port) @)",
-            "listen": "true",
-            "mode": "(@=  str(data.values.service.mode) @)",
-            "frequencyError": 10,
-            "delay": {
-              "period": 100,
-              "amplitude": 0.3
-            }
-        },
-        "observability": {          
-          "enable": true,          
-          "application": "micropets",
-          "service": "(@=  str(data.values.service.name) @)",
-          "cluster": "us-west",
-          "shard": "primary",
-          "server": "https://vmware.wavefront.com",
-          "token": "df3e4928-3fdc-44b5-80d5-01bcc522f97b"
-        },
-        "backends": [
-            {
-                "name": "cats",
-                "host": "cats-service",
-                "port": "7002",
-                "context": "/cats/v1/data"
-            },
-            {
-                "name": "dogs",
-                "host": "dogs-service",
-                "port": "7003",
-                "context": "/dogs/v1/data"
-            },
-            {
-                "name": "fishes",
-                "host": "fishes-service",
-                "port": "7007",
-                "context": "/fishes/v1/data"
-            }
-        ]
-    }
-#@ else:
-  pets_config.json: |-
-    {
-        "service": {
-            "port": ":(@=  str(data.values.service.port) @)",
-            "listen": "true",
-            "mode": "(@=  str(data.values.service.mode) @)",
-            "frequencyError": 10,
-            "delay": {
-              "period": 10,
-              "amplitude": 0.3
-            }
-        },
-        "observability": {          
-          "enable": false                   
-        },
-        "backends": [
-            {
-                "name": "cats",
-                "host": "cats.svc.cnr.mytanzu.xyz",
-                "port": "80",
-                "context": "/cats/v1/data"
-            },
-            {
-                "name": "dogs",
-                "host": "dogs.svc.cnr.mytanzu.xyz",
-                "port": "80",
-                "context": "/dogs/v1/data"
-            },
-            {
-                "name": "fishes",
-                "host": "fishes.svc.cnr.mytanzu.xyz",
-                "port": "80",
-                "context": "/fishes/v1/data"
-            }
-        ]
-    }
-#@ end
-#@yaml/text-templated-strings
----
 apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
   name:  #@ data.values.service.name +"-service"
   labels:
   #  networking.knative.dev/visibility: cluster-local
-    networking.knative.dev/ingress.class: istio
+  #  networking.knative.dev/ingress.class: istio
     app.kubernetes.io/component: #@ data.values.service.name
     app.kubernetes.io/part-of: #@ data.values.application.name
   annotations:
@@ -121,8 +28,8 @@ spec:
           configMap:
             name:  #@ data.values.service.name + "-config"
             items:            
-            - key: pets_config.json
-              path: pets_config.json    
+            - key: #@ data.values.service.config_filename  
+              path: #@ data.values.service.config_filename          
       containers:
         - name:  #@ data.values.service.name
           image: #@ data.values.service.image
@@ -130,7 +37,7 @@ spec:
             runAsUser: 1000
           volumeMounts:
             - name: config-volume
-              mountPath: /config/
+              mountPath: #@ data.values.service.config_path  
           env:
             - name: SERVICE_CONFIG_DIR
-              value: /config
+              value: #@ data.values.service.config_path  
