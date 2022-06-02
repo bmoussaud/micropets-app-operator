@@ -41,3 +41,9 @@ spec:
           env:
             - name: SERVICE_CONFIG_DIR
               value: #@ data.values.service.config_path  
+          livenessProbe:
+            httpGet:
+              path: /liveness
+          readinessProbe:
+            httpGet:
+              path: /readiness
