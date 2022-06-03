@@ -1,13 +1,12 @@
 #@ load("@ytt:data", "data")
+#@ load("helpers.star","gen_labels")
 #@yaml/text-templated-strings
 ---
-#@ if data.values.service.name == "gui":
+#@ if data.values.service.component == "gui":
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  labels:
-    app.kubernetes.io/component: #@ data.values.service.name
-    app.kubernetes.io/part-of: #@ data.values.application.name 
+  labels: #@ gen_labels({ })   
   annotations:
     kapp.k14s.io/versioned : ""
   name: #@ data.values.service.name + "-config"
