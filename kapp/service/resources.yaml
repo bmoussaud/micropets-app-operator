@@ -96,11 +96,7 @@ spec:
     - name: #@ "http-{}".format(data.values.service.name)   
       port: #@ data.values.service.port
       #appProtocol: http
-  selector:
-    service: #@ data.values.service.name    
-    k8s-app: #@ data.values.application.name
-    app.kubernetes.io/component: #@ data.values.service.name
-    app.kubernetes.io/part-of: #@ data.values.application.name 
+  selector: #@ gen_labels({ })      
 ---
 kind: Ingress
 apiVersion: networking.k8s.io/v1
