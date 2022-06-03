@@ -13,6 +13,10 @@ spec:
   params:
     - name: usedb
       default: false
+    - name: component
+      default: backend 
+    - name: mode
+      default: "RANDOM_NUMBER"
   resources:
     - name: source-provider
       templateRef:
@@ -24,8 +28,7 @@ spec:
         name: micropet-image
       sources:
         - resource: source-provider
-          name: source
-          
+          name: source          
     - name: config-provider
       templateRef:
         kind: ClusterConfigTemplate
@@ -35,16 +38,7 @@ spec:
           name: source
       images:
         - resource: image-builder
-          name: image
-      params:        
-        - name: mode
-          value: $(workload.spec.params[?(@.name=="mode")].value)$
-        - name: port
-          value: $(workload.spec.params[?(@.name=="port")].value)$
-        - name: observability
-          value: $(workload.spec.params[?(@.name=="observability")].value)$   
-        - name: usedb
-          value: $(workload.spec.params[?(@.name=="usedb")].value)$  
+          name: image      
     - name: git-writer
       templateRef:
         kind: ClusterTemplate

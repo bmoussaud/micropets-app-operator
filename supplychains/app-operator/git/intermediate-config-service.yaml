@@ -12,6 +12,8 @@ spec:
       default: false 
     - name: usedb
       default: false
+    - name: component
+      default: backend
   configPath: .data
   ytt: |
     #@ load("@ytt:data", "data")
@@ -28,6 +30,7 @@ spec:
           name: micro-pet   
         service:  
           name: $(workload.metadata.name)$
+          component: $(params.component)$     
           port: $(params.port)$
           image: (@= data.values.image @)    
           config_path: /config
@@ -40,6 +43,7 @@ spec:
           name: name
         service:
           name: name
+          component: component
           port: 0
           image: image
           replicas: 1

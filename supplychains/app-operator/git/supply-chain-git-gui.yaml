@@ -41,6 +41,8 @@ spec:
           value: $(workload.spec.params[?(@.name=="color")].value)$
         - name: usedb
           value: false
+        - name: component
+          value: gui
     - name: git-writer
       templateRef:
         kind: ClusterTemplate

@@ -24,6 +24,7 @@ spec:
           name: micro-pet
         service:  
           name: $(workload.metadata.name)$
+          component: gui
           port: 8080
           image: (@= data.values.image @)    
           config_path: /workspace/dist/assets
@@ -39,6 +40,7 @@ spec:
           name: name
         service:
           name: name
+          component: component
           port: 0
           image: image
           replicas: 1
