@@ -1,11 +1,12 @@
 #@ load("@ytt:data", "data")
 #@yaml/text-templated-strings
+#@ load("helpers.star","labels")
 ---
 apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
   name:  #@ data.values.service.name
-  labels: #@ merge_labels({ })
+  labels: #@ labels({ })
   #  networking.knative.dev/visibility: cluster-local
   #  networking.knative.dev/ingress.class: istio   
   annotations:
