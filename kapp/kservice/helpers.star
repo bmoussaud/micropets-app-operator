@@ -6,7 +6,7 @@ def deployment(service, environment):
     return service+"-"+environment.name.replace('/','-')
 end
 
-def labels(fixed_values):
+def gen_labels(fixed_values):
     labels = {}
     if hasattr(data.values.deliverable.metadata, "labels"):
         labels.update(data.values.deliverable.metadata.labels)
