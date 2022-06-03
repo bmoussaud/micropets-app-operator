@@ -5,11 +5,9 @@ apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
   name:  #@ data.values.service.name
-  labels:
+  labels: #@ merge_labels({ })
   #  networking.knative.dev/visibility: cluster-local
-  #  networking.knative.dev/ingress.class: istio
-    app.kubernetes.io/component: #@ data.values.service.name
-    app.kubernetes.io/part-of: #@ data.values.application.name
+  #  networking.knative.dev/ingress.class: istio   
   annotations:
     service.subdomain: #@ data.values.service.name+".svc"    
     #kapp.k14s.io/versioned-explicit-ref: |
