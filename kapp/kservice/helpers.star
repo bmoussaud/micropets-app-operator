@@ -6,7 +6,8 @@ def deployment(service, environment):
     return service+"-"+environment.name.replace('/','-')
 end
 
-def gen_labels(fixed_values):    
+def gen_labels(fixed_values):  
+    labels = {}
     labels.update(fixed_values)
     labels.update("app.kubernetes.io/name", data.values.service.name)
     labels.update("app.kubernetes.io/component", data.values.service.component)
