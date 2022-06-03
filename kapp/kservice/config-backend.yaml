@@ -34,7 +34,7 @@ data:
           "server": "https://vmware.wavefront.com",
           "token": "df3e4928-3fdc-44b5-80d5-01bcc522f97b"
         },
-        "backends": [
+        "xxxxxbackends": [
             {
                 "name": "cats",
                 "host": "cats-service(@= data.values.environment.domain.internal @)",
@@ -78,7 +78,7 @@ data:
         "observability": {          
           "enable": false                   
         },
-        "backends": [
+        "xxxxxbackends": [
             {
                 "name": "cats",
                 "host": "cats-service(@= data.values.environment.domain.internal @)",
