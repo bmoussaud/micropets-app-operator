@@ -60,7 +60,7 @@ spec:
           env:
             - name: SERVICE_CONFIG_DIR
               value: #@ data.values.service.config_path  
-            #@ if data.values.service.name == "gui":
+            #@ if data.values.service.component == "gui":
             - name: PORT
               value: #@ str(data.values.service.port)
             #@ end
@@ -112,10 +112,10 @@ metadata:
   name: #@ data.values.service.name + "-ingress"
 spec:
   rules:
-    - host: #@ data.values.environment.domain.exposed
+    #@ if data.values.service.component == "gui":
+    - host: #@ "www.{}".format(data.values.environment.domain.exposed) 
       http:
         paths:
-        #@ if data.values.service.name == "gui":
           - path: /
             pathType: Prefix
             backend:
@@ -123,15 +123,18 @@ spec:
                 name: #@ data.values.service.name +"-service"
                 port: 
                   number: #@ data.values.service.port
-        #@ else:
-          - path: #@ "/"+ data.values.service.name        
+    #@ else:
+    - host: #@ data.values.environment.domain.exposed
+      http:
+        paths:
+          - path:  #@ "/"+ data.values.service.name   
             pathType: Prefix
             backend:
               service:
                 name: #@ data.values.service.name +"-service"
                 port: 
                   number: #@ data.values.service.port
-        #@ end
+    #@ end
 ---
 
 
