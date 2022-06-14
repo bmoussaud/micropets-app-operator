@@ -21,7 +21,7 @@ spec:
       annotations:
         autoscaling.knative.dev/minScale: "1"
     spec:
-      #serviceAccountName: service-account
+      serviceAccountName: tap-default
       volumes:
         - name: config-volume
           configMap:
