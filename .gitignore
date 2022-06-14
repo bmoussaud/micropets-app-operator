@@ -10,3 +10,4 @@ repository/env/*/vegeta.html
 delivery/generated
 .secrets.yamldeploy-all.sh
 deploy-all.sh
+.vscode
