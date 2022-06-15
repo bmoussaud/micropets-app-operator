@@ -35,7 +35,7 @@ spec:
     - name: deployment-provider  
       templateRef:
         kind: ClusterDeploymentTemplate
-        name: micropet-app-deploy      
+        name: deploy-apply      
       deployment:
         resource: gitops-provider-app
       sources:

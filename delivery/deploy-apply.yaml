@@ -11,7 +11,10 @@ spec:
       value: 'True'
     failed:
       key: '.status.conditions[?(@.type=="ReconcileSucceeded")].status'
-      value: 'False'        
+      value: 'False'    
+  params:
+    - name: deployment_rules
+      default: kapp/none     
   template:
     apiVersion: kappctrl.k14s.io/v1alpha1
     kind: App
@@ -19,12 +22,15 @@ spec:
       name: $(deliverable.metadata.name)$
     spec:
       serviceAccountName: $(deliverable.spec.serviceAccountName)$
-      fetch:       
+      fetch:
         - http:
-            url: $(deployment.url)$            
-            subPath: applications/$(params.application)$
+            url: $(sources.rules.url)$               
+            subPath: $(params.deployment_rules)$       
         - http:
-            url: $(deployment.url)$            
+            url: $(sources.gitops-app.url)$       
+            subPath: applications/$(params.application)$/$(deliverable.metadata.name)$
+        - http:
+            url: $(sources.gitops-env.url)$        
             subPath: environments/$(params.environment)$
       template:
         - ytt: 
