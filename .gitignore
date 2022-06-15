@@ -11,3 +11,6 @@ delivery/generated
 .secrets.yamldeploy-all.sh
 deploy-all.sh
 .vscode
+tap/tap-install-secrets.yml
+tap/tap-install-config.yml
+

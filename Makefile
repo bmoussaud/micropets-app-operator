@@ -82,6 +82,8 @@ cartographer:
 	
 tekton: namespace
 	kapp deploy -c --yes -a tekton -f https://storage.googleapis.com/tekton-releases/pipeline/previous/v0.31.0/release.yaml
+
+tekton-plugins:
 	kapp deploy -c --into-ns $(MICROPETS_SP_NS) --yes -a tekton-git-cli -f https://raw.githubusercontent.com/tektoncd/catalog/main/task/git-cli/0.2/git-cli.yaml
 
 deploy-packages: fluxcd contour cnb cert-manager cartographer kapp-controler tekton

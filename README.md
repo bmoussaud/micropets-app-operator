@@ -5,6 +5,7 @@ This repository gathers all the configurations that will be managed by an `app-o
 1. Configure Cloud Native Build Pack
 2. Configure Supply Chains for dev to turn a commit into a Kubernetes Configuration ready to be deployed
 3. Configure Cloud Native Runtime (KNative)
+4. Configure Tanzu Application Platform
 
 ## Cloud Native Build Pack
 
@@ -53,6 +54,33 @@ _undeploy everything_
 
 kapp delete -a micropet-kpack
 kubectl delete  ns ${MICROPETS_into_ns}
+
+
+## Configure Tanzu Application Platform
+
+Instead of installing the component one by one (kpack, cartographer, knative), Tanzu Application Platform can be used instead.
+
+Prerequisites are [Kapp Controler]() and [SecretGen Controler]()
+
+```shell
+kapp deploy -a kc -f https://github.com/vmware-tanzu/carvel-kapp-controller/releases/latest/download/release.yml -y
+kapp deploy -a sc -f https://github.com/vmware-tanzu/carvel-secretgen-controller/releases/download/v0.8.0/release.yml -y
+kubectl get deployments.apps -n kapp-controller kapp-controller -o yaml | rg "kapp-controller.carvel.dev/version"
+````
+
+* Rename [tap/tap-install-config.yml.tpl](tap/tap-install-config.yml.tpl) to [tap/tap-install-config.yml](tap/tap-install-config.yml) 
+* Rename [tap/tap-install-secrets.yml.tpl](tap/tap-install-secrets.yml.tpl) to [tap/tap-install-secrets.yml](tap/tap-install-secrets.yml) 
+* Provide the values for the tanzu registry,the target registry used by KPack, and the dns used for.
+
+Make sure these files are not publicly available (for obvious reasons!).
+
+You are now ready to apply the GitOps configuration (repository is the repository that will use these values)
+
+```shell
+kapp deploy -c -a tap-install-gitops -f <(ytt -f tap --data-value repository=https://github.com/bmoussaud/tap-install-gitops)
+```
+
+Then you can deploy the delivery & the supply chains
 
 ## Supply Chains
 
