@@ -1,0 +1,23 @@
+---
+apiVersion: kapp.k14s.io/v1alpha1
+kind: Config
+
+# Manage versioned configmap into serving.knative.dev/v1
+templateRules:
+- resourceMatchers:
+  - apiVersionKindMatcher: {apiVersion: v1, kind: ConfigMap}
+  affectedResources:
+    objectReferences:        
+    - path: [spec, template, {allIndexes: true}, ytt, valuesFrom,{allIndexes: true}, configMapRef]
+      resourceMatchers: 
+      - apiVersionKindMatcher: {apiVersion: kappctrl.k14s.io/v1alpha1, kind: App}
+- resourceMatchers:
+  - apiVersionKindMatcher: {apiVersion: v1, kind: Secret}
+  affectedResources:
+    objectReferences:        
+    - path: [spec, template, {allIndexes: true}, ytt, valuesFrom,{allIndexes: true}, secretRef]
+      resourceMatchers: 
+      - apiVersionKindMatcher: {apiVersion: kappctrl.k14s.io/v1alpha1, kind: App}
+    - path: [spec, fetch, {allIndexes: true}, git,secretRef]
+      resourceMatchers: 
+      - apiVersionKindMatcher: {apiVersion: kappctrl.k14s.io/v1alpha1, kind: App}
