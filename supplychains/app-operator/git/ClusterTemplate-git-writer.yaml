@@ -79,12 +79,12 @@ spec:
         git_ssh_variant:  #@ params("git_writer_ssh_variant")
         
         
-        #@ if hasattr(data.values.workload.spec.source, "image"):
-        git_revision: "dev"
+        #@ if hasattr(data.values.workload.spec.source, "image"):        
         git_url: #@ data.values.workload.spec.source.image        
+        git_revision: "dev"
         #@ else:        
         git_url: #@ data.values.workload.spec.source.git.url
-        git_revision: #@ data.values.sources.source.revision"
+        git_revision: #@ data.values.sources.source.revision
         #@ end       
 
 
