@@ -9,7 +9,7 @@ spec:
     - name: mode
       default: "RANDOM_NUMBER"
     - name: observability
-      default: false 
+      default: false
     - name: usedb
       default: false
     - name: component
@@ -20,7 +20,7 @@ spec:
     #@ load("@ytt:yaml", "yaml")
     #@ load("@ytt:json", "json")
 
-    #@ def values():
+    #@ def values(): 
     application:
       name: micro-pet   
     service:  
@@ -65,6 +65,5 @@ spec:
     metadata:
       name: #@ data.values.workload.metadata.name
     data:      
-      values: #@ yaml.encode(values())
-      schema: #@ yaml.encode(schema())
-      
+      values: #@ "\n".join(["#@data/values","---",yaml.encode(values())])
+      schema: #@ "\n".join(["#@data/values-schema","---",yaml.encode(schema())])
