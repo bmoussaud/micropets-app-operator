@@ -1,0 +1,82 @@
+apiVersion: carto.run/v1alpha1
+kind: ClusterImageTemplate
+metadata:
+  name: micropet-image
+spec:
+  healthRule:
+    singleConditionType: Ready
+  imagePath: .status.latestImage 
+  params:
+  - name: serviceAccount 
+    default: default
+  - name: clusterBuilder
+    default: micropet-builder    
+  - name: registry
+    default: {}    
+  - name: buildServiceBindings
+    default: []
+  ytt: |
+    #@ load("@ytt:data", "data")
+
+    #@ def merge_labels(fixed_values):
+    #@   labels = {}
+    #@   if hasattr(data.values.workload.metadata, "labels"):
+    #@     labels.update(data.values.workload.metadata.labels)
+    #@   end
+    #@   labels.update(fixed_values)
+    #@   return labels
+    #@ end
+
+    #@ def param(key):
+    #@   if not key in data.values.params:
+    #@     return None
+    #@   end
+    #@   return data.values.params[key]
+    #@ end
+
+    #@ def image():
+    #@   return "/".join([
+    #@    data.values.params.registry.server,
+    #@    data.values.params.registry.image_prefix,
+    #@    "-tap-".join([
+    #@      data.values.workload.metadata.name      
+    #@    ])
+    #@   ])
+    #@ end
+
+    #@ def tag() :
+    #@  return "/".join([data.values.params.registry.server,"-".join([data.values.params.registry.image_prefix,"tap",data.values.workload.metadata.name])])
+    #@ end
+
+    apiVersion: kpack.io/v1alpha2    
+    kind: Image
+    metadata:
+      name: #@ "micropet-{}".format(data.values.workload.metadata.name)
+      labels: #@ merge_labels({ "app.kubernetes.io/component": "build" })      
+    spec:      
+      tag: #@ tag()      
+      serviceAccountName: #@ data.values.params.serviceAccount
+      builder:
+        kind: ClusterBuilder
+        name: #@ data.values.params.clusterBuilder
+      failedBuildHistoryLimit: 2
+      successBuildHistoryLimit: 2
+      cache:
+        volume:
+          size: "1.5Gi" 
+      source:
+        blob:
+          url: #@ data.values.source.url
+        #@ if hasattr(data.values.workload.spec, "source"):
+        #@ if/end hasattr(data.values.workload.spec.source, "subPath"):
+        subPath: #@ data.values.workload.spec.source.subPath
+        #@ end
+      build:
+        env:
+          - name: BP_IMAGE_LABELS
+            value: watermark.project=micropet watermark.author=benoit@moussaud
+          - name: BP_JVM_VERSION
+            value: "17"
+          #@ if/end param("live-update"):
+          - name: BP_LIVE_RELOAD_ENABLED
+            value: 'true'
