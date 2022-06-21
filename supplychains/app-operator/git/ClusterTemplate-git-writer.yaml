@@ -1,0 +1,87 @@
+apiVersion: carto.run/v1alpha1
+kind: ClusterTemplate
+metadata:
+  name: git-writer
+spec:
+  healthRule:
+    singleConditionType: Ready
+  params:
+    - name: serviceAccount
+      default: default      
+    - name: git_writer_username
+      default: bmoussaud
+    - name: git_writer_user_email
+      default: bmoussaud@gmail.com
+    - name: git_writer_commit_message
+      default: "Update service configuration"
+    - name: git_writer_ssh_user
+      default: git
+    - name: git_writer_server
+      default: github.com
+    - name: git_writer_port
+      default: ""
+    - name: git_writer_repository
+      default: bmoussaud/micropets-app-gitops.git
+    - name: git_writer_branch
+      default: main
+    - name: git_writer_skip_host_checking
+      default: false
+    - name: git_writer_ssh_variant
+      default: ssh_user
+  ytt: |
+    #@ load("@ytt:data", "data")
+    #@ load("@ytt:json", "json")
+    #@ load("@ytt:base64", "base64")
+    #@ load("@ytt:assert", "assert")
+
+    #@ def merge_labels(fixed_values):
+    #@   labels = {}
+    #@   if hasattr(data.values.workload.metadata, "labels"):
+    #@     labels.update(data.values.workload.metadata.labels)
+    #@   end
+    #@   labels.update(fixed_values)
+    #@   return labels
+    #@ end
+
+    #@ def params(key):
+    #@   if not key in data.values.params:
+    #@     return None
+    #@   end
+    #@   return data.values.params[key]
+    #@ end
+    ---
+    apiVersion: carto.run/v1alpha1
+    kind: Runnable
+    metadata:      
+      name: #@ "{}-git-writer".format(data.values.workload.metadata.name)
+      labels: #@ merge_labels({ "app.kubernetes.io/component": "config-writer" })
+    spec:      
+      serviceAccountName: #@ data.values.params.serviceAccount
+      runTemplateRef:        
+        name: tekton-git-writer
+      retentionPolicy:
+        maxFailedRuns: 2
+        maxSuccessfulRuns: 1
+      inputs:
+        input_config_map_name: #@ data.values.workload.metadata.name
+        input_config_map_path: #@ "applications/micropets/current/{}".format(data.values.workload.metadata.name)
+        input_config_map_field: #@ "{}.yaml".format(data.values.workload.metadata.name)
+
+        git_username: #@ params("git_writer_username") 
+        git_user_email: #@ params("git_writer_user_email")
+        commit_message: #@ params("git_writer_commit_message")  
+        git_ssh_user: #@ params("git_writer_ssh_user") 
+        git_server: #@ params("git_writer_server") 
+        git_server_port: #@ params("git_writer_port")  
+        git_repository: #@ params("git_writer_repository") 
+        branch: #@ params("git_writer_branch") 
+        skip_host_checking: #@ params("git_writer_skip_host_checking") 
+        git_ssh_variant:  #@ params("git_writer_ssh_variant")
+
+        git_revision: "sources.source.revision"
+        git_url: "workload.spec.source.git.url"
+                
+        values: #@ data.values.config.values
+        schema: #@ data.values.config.schema
+        
+        

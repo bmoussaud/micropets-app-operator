@@ -48,12 +48,15 @@ spec:
         - resource: image-builder
           name: image      
     - name: git-writer
+      params:
+      - name: serviceAccount
+        value: cartographer-workload-sa
       templateRef:
         kind: ClusterTemplate
         name: git-writer
       configs:
         - resource: config-provider
-          name: data
+          name: config
       sources:
         - resource: source-provider
           name: source

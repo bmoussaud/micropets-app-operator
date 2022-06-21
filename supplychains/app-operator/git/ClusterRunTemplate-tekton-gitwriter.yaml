@@ -1,7 +1,7 @@
 apiVersion: carto.run/v1alpha1
 kind: ClusterRunTemplate
 metadata:
-  name: git-writer
+  name: tekton-git-writer
 spec:
   template:
     apiVersion: tekton.dev/v1beta1

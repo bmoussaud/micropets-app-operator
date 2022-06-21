@@ -24,7 +24,7 @@ rules:
       - kappctrl.k14s.io
       - serving.knative.dev/v1
       - carto.run
-      - source.apps.tanzu.vmware.com
+      - source.apps.tanzu.vmware.com      
     resources:
       - gitrepositories
       - images
@@ -33,7 +33,7 @@ rules:
       - services
       - runnables
       - workloads
-      - imagerepositories
+      - imagerepositories      
     verbs:
       - list
       - create
