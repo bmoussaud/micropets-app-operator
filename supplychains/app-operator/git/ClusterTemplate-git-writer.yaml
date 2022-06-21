@@ -77,10 +77,17 @@ spec:
         branch: #@ params("git_writer_branch") 
         skip_host_checking: #@ params("git_writer_skip_host_checking") 
         git_ssh_variant:  #@ params("git_writer_ssh_variant")
+        
+        
+        #@ if hasattr(data.values.workload.spec.source, "image"):
+        git_revision: "dev"
+        git_url: #@ data.values.workload.spec.source.image        
+        #@ else:        
+        git_url: #@ data.values.workload.spec.source.git.url
+        git_revision: #@ data.values.sources.source.revision"
+        #@ end       
 
-        git_revision: "sources.source.revision"
-        git_url: "workload.spec.source.git.url"
-                
+
         values: #@ data.values.config.values
         schema: #@ data.values.config.schema
         
