@@ -31,7 +31,7 @@ spec:
             - key: #@ data.values.service.config_filename  
               path: #@ data.values.service.config_filename          
       containers:
-        - name:  #@ data.values.service.name
+        - name:  workload
           image: #@ data.values.service.image
           ports:
           - containerPort: #@ data.values.service.port
