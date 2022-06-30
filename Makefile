@@ -1,4 +1,4 @@
-MICROPETS_SP_NS=micropets-supplychain
+MICROPETS_SP_NS=dev-tap
 SECRET_OUTPUT_FILE=.secrets.yaml
 
 namespace:
@@ -6,10 +6,10 @@ namespace:
 	kubectl get namespace $(MICROPETS_SP_NS) 
 
 kpack: namespace		
-	ytt --ignore-unknown-comments --data-values-env MICROPETS -f kpack | kapp deploy -c --yes --dangerous-override-ownership-of-existing-resources --into-ns $(MICROPETS_SP_NS) -a micropet-kpack -f-
+	ytt --ignore-unknown-comments --data-values-env MICROPETS -f kpack | kapp deploy -c --yes  --into-ns $(MICROPETS_SP_NS) -a micropet-kpack -f-
 
 supplychain: gen_secrets
-	ytt --ignore-unknown-comments -f supplychains --data-values-file $(SECRET_OUTPUT_FILE) | kapp deploy -c --yes --dangerous-override-ownership-of-existing-resources --into-ns $(MICROPETS_SP_NS) -a micropet-supplychain -f-
+	ytt --ignore-unknown-comments -f supplychains --data-values-file $(SECRET_OUTPUT_FILE) | kapp deploy -c --yes --into-ns $(MICROPETS_SP_NS) -a micropet-supplychain -f-
 	-rm $(SECRET_OUTPUT_FILE)
 
 .PHONY: delivery
@@ -82,9 +82,6 @@ cartographer:
 	
 tekton: namespace
 	kapp deploy -c --yes -a tekton -f https://storage.googleapis.com/tekton-releases/pipeline/previous/v0.31.0/release.yaml
-
-tekton-plugins:
-	kapp deploy -c --into-ns $(MICROPETS_SP_NS) --yes -a tekton-git-cli -f https://raw.githubusercontent.com/tektoncd/catalog/main/task/git-cli/0.2/git-cli.yaml
 
 deploy-packages: fluxcd contour cnb cert-manager cartographer kapp-controler tekton
 

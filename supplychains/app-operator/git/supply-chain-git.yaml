@@ -14,7 +14,7 @@ spec:
     - name: usedb
       default: false
     - name: component
-      default: backend 
+      default: backend
     - name: mode
       default: "RANDOM_NUMBER"
   resources:
@@ -24,19 +24,19 @@ spec:
         name: micropet-source
     - name: image-builder
       params:
-      - name: serviceAccount
-        value: micropet-service-account
-      - name: registry
-        value:
-          ca_cert_data: ""
-          image_prefix: library/micropet
-          server: harbor.mytanzu.xyz
+        - name: serviceAccount
+          value: tap-default
+        - name: registry
+          value:
+            ca_cert_data: ""
+            image_prefix: library/micropet
+            server: harbor.mytanzu.xyz
       templateRef:
         kind: ClusterImageTemplate
         name: micropet-image
       sources:
         - resource: source-provider
-          name: source          
+          name: source
     - name: config-provider
       templateRef:
         kind: ClusterConfigTemplate
@@ -46,11 +46,11 @@ spec:
           name: source
       images:
         - resource: image-builder
-          name: image      
+          name: image
     - name: git-writer
       params:
-      - name: serviceAccount
-        value: cartographer-workload-sa
+        - name: serviceAccount
+          value: tap-default
       templateRef:
         kind: ClusterTemplate
         name: git-writer
@@ -60,4 +60,10 @@ spec:
       sources:
         - resource: source-provider
           name: source
-      
+    - name: deliverable
+      params:
+        - name: environment
+          value: azure/aks-eu-tap-2
+      templateRef:
+        kind: ClusterTemplate
+        name: micropets-deliverable-template

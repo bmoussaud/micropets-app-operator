@@ -1,0 +1,72 @@
+apiVersion: tekton.dev/v1beta1
+kind: ClusterTask
+metadata:
+  name: micropets-notused-yet-git-writer  
+spec:
+  description: |-
+    A task that writes a given set of files (provided as a json base64-encoded)
+    to git repository under a specified directory.
+  params:
+  - description: The repository path
+    name: git_repository
+    type: string
+  - default: main
+    description: The git branch to read and write
+    name: git_branch
+    type: string
+  - default: example@example.com
+    description: User email address
+    name: git_user_email
+    type: string
+  - default: Example
+    description: User name
+    name: git_user_name
+    type: string
+  - default: New Commit
+    description: Message for the git commit
+    name: git_commit_message
+    type: string
+  - default: config
+    description: Sub directory in which to write
+    name: sub_path
+    type: string
+  - description: |
+      Base64-encoded json map of files to write to registry, for example - eyAiUkVBRE1FLm1kIjogIiMgUmVhZG1lIiB9
+    name: git_files
+    type: string
+  steps:
+  - image: registry.tanzu.vmware.com/tanzu-application-platform/tap-packages@sha256:e5e961933dfc7406d708c88b3226d7fe79266a58b75e2de93ca640ccd310f78d
+    name: git-clone-and-push
+    resources: {}
+    script: |
+      #!/usr/bin/env bash
+
+      set -o errexit
+      set -o xtrace
+
+      if [ -d $(credentials.path)/.ssh ] ; then
+        ln -s $(credentials.path)/.ssh /root/.ssh
+      fi
+
+      if git clone --depth 1 -b "$(params.git_branch)" "$(params.git_repository)" ./repo; then
+        cd ./repo
+      else
+        git clone --depth 1 "$(params.git_repository)" ./repo
+        cd ./repo
+        git checkout -b "$(params.git_branch)"
+      fi
+
+      git config user.email "$(params.git_user_email)"
+      git config user.name "$(params.git_user_name)"
+
+      mkdir -p $(params.sub_path) && rm -rf $(params.sub_path)/*
+      cd $(params.sub_path)
+
+      echo '$(params.git_files)' | base64 --decode > files.json
+      eval "$(cat files.json | jq -r 'to_entries | .[] | @sh "mkdir -p $(dirname \(.key)) && echo \(.value) > \(.key) && git add \(.key)"')"
+
+      git commit -m "$(params.git_commit_message)"
+      git push origin $(params.git_branch)
+    securityContext:
+      runAsUser: 0
+    workingDir: /root

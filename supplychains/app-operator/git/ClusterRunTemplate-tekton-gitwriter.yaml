@@ -9,8 +9,10 @@ spec:
     metadata:
       generateName: $(runnable.metadata.name)$-
     spec:
+      serviceAccountName: tap-default
       taskRef:
-        name: git-cli
+        kind: ClusterTask
+        name: micropets-git-cli
       workspaces:
         - name: source
           emptyDir: { }
@@ -18,7 +20,7 @@ spec:
           emptyDir: { }
         - name: ssh-directory
           secret:
-            secretName: git-ssh-secret
+            secretName: github-ssh-secret
       params:
         - name: GIT_USER_NAME
           value: $(runnable.spec.inputs.git_username)$

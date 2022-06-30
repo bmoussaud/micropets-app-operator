@@ -1,0 +1,44 @@
+apiVersion: carto.run/v1alpha1
+kind: ClusterTemplate
+metadata:    
+  name: micropets-deliverable-template  
+spec:
+  healthRule:
+    singleConditionType: Ready
+  params:
+  - name: environment
+    default: cloudprovider/env-name
+    
+  ytt: |
+    #@ load("@ytt:data", "data")
+    #@ load("@ytt:assert", "assert")
+
+    #@ def merge_labels(fixed_values):
+    #@   labels = {}
+    #@   if hasattr(data.values.workload.metadata, "labels"):
+    #@     labels.update(data.values.workload.metadata.labels)
+    #@   end
+    #@   labels.update(fixed_values)
+    #@   return labels
+    #@ end
+    ---
+    apiVersion: carto.run/v1alpha1
+    kind: Deliverable
+    metadata:
+      name: #@ data.values.workload.metadata.name
+      labels: #@ merge_labels({ "app.kubernetes.io/component": "deliverable", "app.tanzu.vmware.com/workload-type": "micropets-delivery-native" , "carto.run/workload-name": data.values.workload.metadata.name, "app.kubernetes.io/part-of": "micropets-app"   })      
+    spec:
+      #@ if/end hasattr(data.values.workload.spec, "serviceAccountName"):
+      serviceAccountName: #@ data.values.workload.spec.serviceAccountName      
+      source:
+        git:
+          url: http://github.com/bmoussaud/micropets-app-gitops.git
+          ref:
+            branch: main
+      params:
+      - name: environment
+        value: #@ data.values.params.environment
+      - name: application
+        value: micropets/current
+
+   
