@@ -41,9 +41,6 @@ spec:
       templateRef:
         kind: ClusterConfigTemplate
         name: micropet-service-intermediate-config
-      sources:
-        - resource: source-provider
-          name: source
       images:
         - resource: image-builder
           name: image
