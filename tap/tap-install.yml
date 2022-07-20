@@ -10,6 +10,7 @@ metadata:
     kapp.k14s.io/change-rule: "upsert after upserting tap-install-gitops/rbac"
 spec:
   serviceAccountName: tap-install-gitops-sa
+  syncPeriod: 30s
   fetch:
   - git:
       url: #@ data.values.repository

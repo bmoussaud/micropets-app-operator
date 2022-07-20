@@ -4,10 +4,12 @@
 tap:
   namespace: tap-install
   devNamespace: dev-tap
+  devNamespace: dev-tap
+  logo: #@ base64.encode(data.read('tap-logo.png'))
   
   #! Set Backstage catalogs to include by default.
   catalogs:
-  - https://github.com/tanzu-corp/tap-catalog/blob/main/catalog-info.yaml
+  - https://github.com/bmoussaud/micropets-app/blob/master/catalog-info.yaml
 
   registry:
     host: registry.tanzu.corp
@@ -16,10 +18,7 @@ tap:
       ootbSupplyChain: tanzu/tanzu-supply-chain
 
   domains:
-    main: apps.tanzu.corp
-    tapGui: tap-gui.apps.tanzu.corp
-    learningCenter: learningcenter.apps.tanzu.corp
-    knative: apps.tanzu.corp
+    main: apps.tanzu.corp    
 #@ end
 ---
 apiVersion: v1
