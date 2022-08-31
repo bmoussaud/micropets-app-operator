@@ -82,5 +82,6 @@ spec:
             git add .
             git status
             git commit --allow-empty -m "$CONFIG_MAP_NAME: $COMMIT_MESSAGE ${GIT_URL}commit/${COMMIT}"
-            git pull 
+            echo "pull before push....."
+            git pull origin "$BRANCH"
             git push --set-upstream origin "$BRANCH"
