@@ -48,12 +48,23 @@ tap:
       password: <xxxxyyyzzz>
 ```
 
+Even if the output the command is 
+```shell
+kapp: Error: waiting on reconcile app/tap-install-gitops (kappctrl.k14s.io/v1alpha1) namespace: tap-install-gitops:
+  Finished unsuccessfully (Reconcile failed:  (message: Deploying: Error (see .status.usefulErrorMessage for details)))
+```
+
+Check the status of the deployed packages (35) using:
+```shell
+watch kubectl get app -A
+```
+
 ### Deploy the Micropets supplychains 
 
 Deploy the [micropet-supplychains](suppychains) && [micropet-deliveries](deliveries)
 ```shell
 git clone git@github.com:bmoussaud/micropets-app-operator.git
-make supplychains 
+make supplychain 
 make delivery
 ```
 

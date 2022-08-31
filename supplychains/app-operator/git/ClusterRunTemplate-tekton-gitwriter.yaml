@@ -82,4 +82,5 @@ spec:
             git add .
             git status
             git commit --allow-empty -m "$CONFIG_MAP_NAME: $COMMIT_MESSAGE ${GIT_URL}commit/${COMMIT}"
+            git pull 
             git push --set-upstream origin "$BRANCH"
