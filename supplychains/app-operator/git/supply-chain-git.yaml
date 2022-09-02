@@ -49,6 +49,7 @@ spec:
       images:
         - resource: image-builder
           name: image
+
     - name: git-writer
       params:
         - name: serviceAccount
@@ -62,6 +63,7 @@ spec:
       sources:
         - resource: source-provider
           name: source
+          
     - name: deliverable
       params:
         - name: environment

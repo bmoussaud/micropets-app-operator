@@ -5,16 +5,16 @@ metadata:
 spec:
   healthRule:
     singleConditionType: Ready
-  imagePath: .status.latestImage 
+  imagePath: .status.latestImage
   params:
-  - name: serviceAccount 
-    default: default
-  - name: clusterBuilder
-    default: micropet-builder    
-  - name: registry
-    default: {}    
-  - name: buildServiceBindings
-    default: []
+    - name: serviceAccount
+      default: default
+    - name: clusterBuilder
+      default: micropet-builder
+    - name: registry
+      default: {}
+    - name: buildServiceBindings
+      default: []
   ytt: |
     #@ load("@ytt:data", "data")
 
@@ -77,6 +77,10 @@ spec:
             value: watermark.project=micropet watermark.author=benoit@moussaud
           - name: BP_JVM_VERSION
             value: "17"
+          - name: BP_NODE_RUN_SCRIPTS
+            value: build
+          - name: NODE_ENV
+            value: development
           #@ if/end param("live-update"):
           - name: BP_LIVE_RELOAD_ENABLED
             value: 'true'

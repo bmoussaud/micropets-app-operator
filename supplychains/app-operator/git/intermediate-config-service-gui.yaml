@@ -4,12 +4,72 @@ metadata:
   name: micropet-service-intermediate-config-gui
 spec: 
   params:
-    - name: broker_service
-      default: #@ "http://not_set/pets/v1/default" 
+    - name: port
+      default: 8080
+    - name: brokerService
+      default: "/"
     - name: color
-      default: "green"  
+      default: green  
+    - name: component
+      default: gui
   configPath: .data
   ytt: |
+    #@ load("@ytt:data", "data")    
+    #@ load("@ytt:yaml", "yaml")
+    #@ load("@ytt:json", "json")
+
+    #@ def values(): 
+    application:
+      name: micro-pet   
+    service:  
+      name: #@ data.values.workload.metadata.name
+      component: #@ data.values.params.component  
+      port: #@ data.values.params.port
+      image: #@ data.values.image
+      config_path: /workspace/dist/assets
+      config_filename: config.json 
+      usedb: false
+      gui:            
+        broker_service: #@ data.values.params.brokerService
+        color: #@ data.values.params.color
+    #@ end
+
+    #@ def schema():
+    application:
+      name: name
+    service:
+      name: name
+      component: component
+      port: 0
+      image: image
+      replicas: 1
+      config_path: config_path
+      config_filename: config_filename 
+      usedb: false                                
+      gui:
+        color: color
+        broker_service: broker_service
+      backend:            
+        frequencyError: 0
+        observability: true
+        mode: "RANDOM_NUMBER"  
+    environment:
+      name: name
+      ingress: ingress
+      domain:
+        internal: internal
+        exposed: exposed
+    #@ end
+
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: #@ data.values.workload.metadata.name
+    data:      
+      values: #@ "\n".join(["#@data/values","---",yaml.encode(values())])
+      schema: #@ "\n".join(["#@data/values-schema","---",yaml.encode(schema())])
+
+  ytt2: |
     #@ load("@ytt:data", "data")
     apiVersion: v1
     kind: ConfigMap
@@ -60,3 +120,5 @@ spec:
           domain:
             internal: internal
             exposed: exposed
+
+    
