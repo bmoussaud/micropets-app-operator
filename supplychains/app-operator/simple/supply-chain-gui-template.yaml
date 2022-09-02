@@ -12,7 +12,7 @@ spec:
     metadata:
       name: micropet-$(workload.metadata.name)$
     spec:
-      tag: #@ data.values.registry.server+ "/"+ data.values.image_prefix + "-tap-$(workload.metadata.name)$"
+      tag: #@ data.values.registry.host+ "/"+ data.values.image_prefix + "-tap-$(workload.metadata.name)$"
       serviceAccountName: micropet-service-account
       builder:
         kind: ClusterBuilder

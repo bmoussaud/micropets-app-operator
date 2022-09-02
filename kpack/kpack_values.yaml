@@ -1,8 +1,8 @@
 #@data/values
 ---
-image_prefix: harbor.mytanzu.xyz/library/micropet
-into_ns: micropets-supplychain
+image_prefix: library/micropet
+into_ns: dev-tap
 registry:
-  server: https://harbor.mytanzu.xyz
-  username: admin
+  host: akseutap2registry.azurecr.io
+  #username 046ecb75-a4d1-45f6-a8b4-e92307111687
   #password injected using environment variable password: xxxxxxxx (see readme.md)

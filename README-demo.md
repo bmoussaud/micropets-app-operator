@@ -2,6 +2,31 @@
 
 ## Prepare the demo
 
+### Relocate the TAP version on a local registry (optional)
+
+You can use the pivnet or central vmregistry (registry.tanzu.vmware.com) but it can be convenient to copy the bundles to a local registry located closed the K8S cluster.
+
+Using the Azure Container Registry
+
+```shell
+#!/bin/bash
+
+CLUSTER_NAME=aks-eu-tap-2
+REGISTRY_NAME=akseutap2registry
+TAP_VERSION=1.2.1
+INSTALL_REPO=tanzu-application-platform
+
+INSTALL_REGISTRY_HOSTNAME=${REGISTRY_NAME}.azurecr.io
+INSTALL_REGISTRY_USERNAME=
+INSTALL_REGISTRY_PASSWORD=
+
+docker login ${INSTALL_REGISTRY_HOSTNAME} -u ${INSTALL_REGISTRY_USERNAME} -p ${INSTALL_REGISTRY_PASSWORD}
+docker login registry.tanzu.vmware.com
+
+imgpkg copy -b registry.tanzu.vmware.com/tanzu-application-platform/tap-packages:${TAP_VERSION} --to-repo ${INSTALL_REGISTRY_HOSTNAME}/${INSTALL_REPO}/tap-packages   --include-non-distributable-layers
+```
+
+
 ### Deploy [Tanzu Application Platform]()
 
 ```shell
@@ -24,7 +49,8 @@ tap:
   - https://github.com/bmoussaud/micropets-app/blob/master/catalog-info.yaml
 
   registry:
-    host: harbor.mytanzu.xyz
+    hostold: harbor.mytanzu.xyz
+    host: akseutap2registry.azurecr.io
     repositories:
       buildService: library/tanzu-build-service
       ootbSupplyChain: library/tanzu-supply-chain
@@ -41,6 +67,7 @@ tap:
     #! Pick one registry for downloading images: Tanzu Network or Pivotal Network
     #! (use tanzuNet as key).
     tanzuNet:
+      host: akseutap2registry.azurecr.io    
       username: bmoussaud@vmware.com
       password: <xxxxyyyzzz>
     registry:
@@ -64,6 +91,10 @@ watch kubectl get app -A
 Deploy the [micropet-supplychains](suppychains) && [micropet-deliveries](deliveries)
 ```shell
 git clone git@github.com:bmoussaud/micropets-app-operator.git
+make kpack 
+
+source ~/.akseutap2registry.config
+MICROPETS_registry_password=${INSTALL_REGISTRY_PASSWORD} MICROPETS_registry_username=${INSTALL_REGISTRY_USERNAME} make kpack
 make supplychain 
 make delivery
 ```

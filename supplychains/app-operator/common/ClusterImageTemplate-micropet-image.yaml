@@ -36,7 +36,7 @@ spec:
 
     #@ def image():
     #@   return "/".join([
-    #@    data.values.params.registry.server,
+    #@    data.values.params.registry.host,
     #@    data.values.params.registry.image_prefix,
     #@    "-tap-".join([
     #@      data.values.workload.metadata.name      
@@ -45,7 +45,7 @@ spec:
     #@ end
 
     #@ def tag() :
-    #@  return "/".join([data.values.params.registry.server,"-".join([data.values.params.registry.image_prefix,"tap",data.values.workload.metadata.name])])
+    #@  return "/".join([data.values.params.registry.host,"-".join([data.values.params.registry.image_prefix,"tap",data.values.workload.metadata.name])])
     #@ end
 
     apiVersion: kpack.io/v1alpha2    

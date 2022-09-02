@@ -1,3 +1,8 @@
+---
+#@ load("@ytt:data", "data")
+#@ load("@ytt:base64", "base64")
+#@ load("@ytt:json", "json")
+---
 apiVersion: carto.run/v1alpha1
 kind: ClusterSupplyChain
 metadata:
@@ -29,8 +34,8 @@ spec:
         - name: registry
           value:
             ca_cert_data: ""
-            image_prefix: library/micropet
-            server: harbor.mytanzu.xyz
+            image_prefix: #@ data.values.image_prefix
+            host: #@ data.values.registry.host
       templateRef:
         kind: ClusterImageTemplate
         name: micropet-image
