@@ -15,9 +15,9 @@ spec:
         name: micropets-git-cli
       workspaces:
         - name: source
-          emptyDir: { }
+          emptyDir: {}
         - name: input
-          emptyDir: { }
+          emptyDir: {}
         - name: ssh-directory
           secret:
             secretName: github-ssh-secret
@@ -30,6 +30,16 @@ spec:
           value: /root
         - name: GIT_SCRIPT
           value: |
+            function git_pull_push {
+               BRANCH="$(runnable.spec.inputs.branch)$"
+               echo "git pull ${BRANCH}"
+               git pull origin "${BRANCH}"
+               echo "git push ${BRANCH}"
+               git push --set-upstream origin "${BRANCH}"
+               GIT_PUSH_EXIT_CODE=$?
+               echo "GIT_PUSH_EXIT_CODE ${GIT_PUSH_EXIT_CODE}"
+               exit ${GIT_PUSH_EXIT_CODE}
+            }
             export COMMIT_MESSAGE="$(runnable.spec.inputs.commit_message)$"            
             export REVISION_ID="$(runnable.spec.inputs.git_revision)$"
             COMMIT=`echo ${REVISION_ID} | cut -d '/' -f 2`
@@ -63,7 +73,7 @@ spec:
             git pull origin "`git remote show origin | grep "HEAD branch" | sed 's/.*: //'`"
             git pull origin "$BRANCH" || git branch "$BRANCH"
             git checkout "$BRANCH"
-            
+
             export CONFIG_MAP_NAME=$(runnable.spec.inputs.input_config_map_name)$
             export CONFIG_MAP_FIELD=$(runnable.spec.inputs.input_config_map_field)$
             export CONFIG_MAP_PATH=$(runnable.spec.inputs.input_config_map_path)$
@@ -74,14 +84,12 @@ spec:
             echo "CONFIG_MAP_PATH ${CONFIG_MAP_PATH}"
             echo "create the path..."
             mkdir -p ${CONFIG_MAP_PATH}
-            
+
             echo "${SCHEMA}" | tee "${CONFIG_MAP_PATH}/schema.yaml"
             echo "${VALUES}" | tee "${CONFIG_MAP_PATH}/values.yaml"
-            
-            
+
+
             git add .
             git status
             git commit --allow-empty -m "$CONFIG_MAP_NAME: $COMMIT_MESSAGE ${GIT_URL}commit/${COMMIT}"
-            echo "pull before push....."
-            git pull origin "$BRANCH"
-            git push --set-upstream origin "$BRANCH"
+            git_pull_push
