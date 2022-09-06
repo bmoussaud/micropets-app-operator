@@ -30,15 +30,34 @@ spec:
           value: /root
         - name: GIT_SCRIPT
           value: |
-            function git_pull_push {
-               BRANCH="$(runnable.spec.inputs.branch)$"
-               echo "git pull ${BRANCH}"
-               git pull origin "${BRANCH}"
-               echo "git push ${BRANCH}"
-               git push --set-upstream origin "${BRANCH}"
-               GIT_PUSH_EXIT_CODE=$?
-               echo "GIT_PUSH_EXIT_CODE ${GIT_PUSH_EXIT_CODE}"
-               exit ${GIT_PUSH_EXIT_CODE}
+            function git_pull_push {              
+              BRANCH="$(runnable.spec.inputs.branch)$"
+              echo "git pull ${BRANCH}"
+              git pull origin "${BRANCH}"
+              echo "git push ${BRANCH}"
+              git push --set-upstream origin "${BRANCH}"
+            }
+
+            function fail {
+              echo $1 >&2
+              exit 1
+            }
+
+            function retry {
+              local n=0
+              local max=5
+              local delay=4
+              while true; do
+                "$@" && break || {
+                  if [[ $n -lt $max ]]; then                    
+                    ((n=n+1))
+                    echo "\nCommand failed. Attempt $n/$max:...sleep ${delay} sec"
+                    sleep $delay;
+                  else
+                    fail "\nThe command has failed after $n attempts."
+                  fi
+                }
+              done
             }
             export COMMIT_MESSAGE="$(runnable.spec.inputs.commit_message)$"            
             export REVISION_ID="$(runnable.spec.inputs.git_revision)$"
@@ -92,4 +111,4 @@ spec:
             git add .
             git status
             git commit --allow-empty -m "$CONFIG_MAP_NAME: $COMMIT_MESSAGE ${GIT_URL}commit/${COMMIT}"
-            git_pull_push
+            retry git_pull_push
