@@ -5,12 +5,12 @@
 apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
-  name:  #@ data.values.service.name
+  name: #@ data.values.service.name
   labels: #@ gen_labels({ })
   #  networking.knative.dev/visibility: cluster-local
-  #  networking.knative.dev/ingress.class: istio   
+  #  networking.knative.dev/ingress.class: istio
   annotations:
-    service.subdomain: #@ data.values.service.name+".svc"    
+    service.subdomain: #@ data.values.service.name+".svc"
     #kapp.k14s.io/versioned-explicit-ref: |
     #  apiVersion: v1
     #  kind: ConfigMap
@@ -18,6 +18,7 @@ metadata:
 spec:
   template:
     metadata:
+      labels: #@ gen_labels({ })
       annotations:
         autoscaling.knative.dev/minScale: "1"
     spec:
@@ -26,23 +27,23 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name:  #@ data.values.service.name + "-config"
-            items:            
-            - key: #@ data.values.service.config_filename  
-              path: #@ data.values.service.config_filename          
+            name: #@ data.values.service.name + "-config"
+            items:
+              - key: #@ data.values.service.config_filename
+                path: #@ data.values.service.config_filename
       containers:
-        - name:  workload
+        - name: workload
           image: #@ data.values.service.image
           ports:
-          - containerPort: #@ data.values.service.port
+            - containerPort: #@ data.values.service.port
           securityContext:
             runAsUser: 1000
           volumeMounts:
             - name: config-volume
-              mountPath: #@ data.values.service.config_path  
+              mountPath: #@ data.values.service.config_path
           env:
             - name: SERVICE_CONFIG_DIR
-              value: #@ data.values.service.config_path  
+              value: #@ data.values.service.config_path
           livenessProbe:
             httpGet:
               path: /liveness
