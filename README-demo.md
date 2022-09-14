@@ -23,9 +23,18 @@ INSTALL_REGISTRY_PASSWORD=
 docker login ${INSTALL_REGISTRY_HOSTNAME} -u ${INSTALL_REGISTRY_USERNAME} -p ${INSTALL_REGISTRY_PASSWORD}
 docker login registry.tanzu.vmware.com
 
-imgpkg copy -b registry.tanzu.vmware.com/tanzu-application-platform/tap-packages:${TAP_VERSION} --to-repo ${INSTALL_REGISTRY_HOSTNAME}/${INSTALL_REPO}/tap-packages   --include-non-distributable-layers
+imgpkg copy -b  registry.tanzu.vmware.com/tanzu-application-platform/tap-packages:${TAP_VERSION} --to-repo ${INSTALL_REGISTRY_HOSTNAME}/${INSTALL_REPO}/tap-packages   --include-non-distributable-layers --concurrency 2
 ```
+TBS 
 
+```shell
+#!/bin/bash
+TBS_VERSION=1.7.0-rc.7
+imgpkg copy -b registry.tanzu.vmware.com/tanzu-application-platform/full-tbs-deps-package-repo:${TBS_VERSION} --to-repo=${INSTALL_REGISTRY_HOSTNAME}/${INSTALL_REPO}/tbs-full-deps
+tanzu package repository add tbs-full-deps-repository --url ${INSTALL_REGISTRY_HOSTNAME}/${INSTALL_REPO}/tbs-full-deps:${TBS_VERSION}  --namespace tap-install  
+tanzu package install full-tbs-deps -p full-tbs-deps.tanzu.vmware.com -v ${TBS_VERSION} -n tap-install
+
+```
 
 ### Deploy [Tanzu Application Platform]()
 
