@@ -8,8 +8,12 @@ kind: ClusterSupplyChain
 metadata:
   name: micropet-service-supply-chain-git
 spec:
-  selector:
-    app.tanzu.vmware.com/workload-type: micropet-service-git
+  selectorMatchExpressions:
+  - key: apps.tanzu.vmware.com/workload-type
+    operator: In
+    values:
+    - micropet-service-git
+    - micropet-service-git-gui   
   #
   #
   #   source-provider <--[src]-- image-builder <--[img]--- config-provider  <--[configmap]---  git-writer
@@ -22,11 +26,14 @@ spec:
       default: backend
     - name: mode
       default: "RANDOM_NUMBER"
+    - name: color
+      default: black    
   resources:
     - name: source-provider
       templateRef:
         kind: ClusterSourceTemplate
         name: micropet-source
+
     - name: image-builder
       params:
         - name: serviceAccount
@@ -42,10 +49,21 @@ spec:
       sources:
         - resource: source-provider
           name: source
+
+
+
     - name: config-provider
       templateRef:
         kind: ClusterConfigTemplate
-        name: micropet-service-intermediate-config
+        options:
+        - name: micropet-service-intermediate-config
+          selector:
+            matchLabels:
+              apps.tanzu.vmware.com/workload-type: micropet-service-git
+        - name: micropet-service-intermediate-config-gui 
+          selector:
+            matchLabels:
+              apps.tanzu.vmware.com/workload-type: micropet-service-git-gui
       images:
         - resource: image-builder
           name: image
