@@ -69,56 +69,5 @@ spec:
       values: #@ "\n".join(["#@data/values","---",yaml.encode(values())])
       schema: #@ "\n".join(["#@data/values-schema","---",yaml.encode(schema())])
 
-  ytt2: |
-    #@ load("@ytt:data", "data")
-    apiVersion: v1
-    kind: ConfigMap
-    metadata:
-      name: #@ data.values.workload.metadata.name
-    data:
-      #@yaml/text-templated-strings
-      values: |
-        #@data/values
-        ---       
-        application:
-          name: micro-pet
-        service:  
-          name: $(workload.metadata.name)$
-          component: gui
-          port: 8080
-          image: (@= data.values.image @)    
-          config_path: /workspace/dist/assets
-          config_filename: config.json 
-          usedb: false          
-          gui:            
-            broker_service: $(params.broker_service)$
-            color: $(params.color)$                               
-      schema: |
-        #@data/values-schema
-        ---
-        application:
-          name: name
-        service:
-          name: name
-          component: component
-          port: 0
-          image: image
-          replicas: 1
-          config_path: config_path
-          config_filename: config_filename 
-          usedb: false                                
-          gui:
-            color: color
-            broker_service: broker_service
-          backend:            
-            frequencyError: 0
-            observability: true
-            mode: "RANDOM_NUMBER"  
-        environment:
-          name: name
-          ingress: ingress
-          domain:
-            internal: internal
-            exposed: exposed
-
+  
     
