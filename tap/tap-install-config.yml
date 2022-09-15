@@ -1,0 +1,42 @@
+#@ load("@ytt:yaml", "yaml")
+#@ load("@ytt:base64", "base64")
+#@ load("@ytt:data", "data")
+---
+#@ def config():
+tap:
+  versionKO: "1.2.1"
+  version: "1.3.0-build.21"
+  namespace: tap-install
+  devNamespace: dev-tap
+  
+  supply_chain: testing_scanning
+  
+  logo: #@ base64.encode(data.read('tap-logo.png'))
+
+  #! Set Backstage catalogs to include by default.
+  catalogs:
+  - https://github.com/bmoussaud/micropets-app/blob/master/catalog-info.yaml
+
+  registry:
+    hostOLD: harbor.mytanzu.xyz
+    host: akseutap2registry.azurecr.io
+    repositories:
+      buildService: library/tanzu-build-service
+      ootbSupplyChain: library/tanzu-supply-chain
+
+  domains:
+    main: apps.eu.aks.mytanzu.xyz
+    tapGui: tap-gui.apps.eu.aks.mytanzu.xyz
+    learningCenter: learningcenter.apps.eu.aks.mytanzu.xyz
+    knative: apps.eu.aks.mytanzu.xyz
+#@ end
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tap-install-gitops
+  namespace: tap-install-gitops
+  annotations:
+    kapp.k14s.io/versioned : ""
+data:
+  tap-config.yml: #@ yaml.encode(config())
