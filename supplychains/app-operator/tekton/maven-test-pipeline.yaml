@@ -41,9 +41,9 @@ spec:
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: my-maven-test
-  labels:
-    apps.tanzu.vmware.com/pipeline: xxxxxxtest
+  name: maven-test-pipeline
+  labels:    
+    apps.tanzu.vmware.com/pipeline: not_used_test
 spec:
   description: >-
     The Mvn pipeline builds source from a Git repository into a container image and run tests using maven
@@ -100,10 +100,10 @@ spec:
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  name: my-benoit-45
+  name: maven-test-pipeline-1
 spec:
   pipelineRef:
-    name: my-maven-test
+    name: maven-test-pipeline
   params:
     - name: source-url                  
       value: http://source-controller-manager-artifact-service.source-system.svc.cluster.local./imagerepository/dev-tap/birds/ef8df1605f55e595c0bf609c92fdff083c7fe2176c8dc20ea964ea90b145b68c.tar.gz

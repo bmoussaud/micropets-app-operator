@@ -1,0 +1,42 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: yestask
+spec:
+  steps:
+    - name: untar
+      image: ubuntu
+      script: |
+        #!/bin/bash        
+        echo "Running tests............................................"  
+        sleep 4
+        echo "Running tests..........................................OK"
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: fake-test-pipeline
+  labels:
+    apps.tanzu.vmware.com/pipeline: test
+spec:
+  description: >-
+    The Fake Test pipeline builds source from a Git repository into a container image and run tests using maven
+  tasks:
+    - name: fetch-and-test
+      taskRef:
+        name: yestask
+  params:
+    - name: source-url
+      description: A git repo url where the source code resides.
+---
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: fake-test-pipeline-1
+spec:
+  pipelineRef:
+    name: fake-test-pipeline
+  params:
+    - name: source-url
+      value: http://source-controller-manager-artifact-service.source-system.svc.cluster.local./imagerepository/dev-tap/birds/ef8df1605f55e595c0bf609c92fdff083c7fe2176c8dc20ea964ea90b145b68c.tar.gz
