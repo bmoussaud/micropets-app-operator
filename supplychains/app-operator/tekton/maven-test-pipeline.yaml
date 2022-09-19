@@ -13,8 +13,9 @@ spec:
       script: |
         #!/bin/bash        
         cd /workspace/source
-        tar zxvf /workspace/source/sources.tar.gz        
-        find /workspace -ls      
+        tar zxvf /workspace/source/sources.tar.gz       
+        chmod -R 777 /workspace 
+        find /workspace -ls
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Task
@@ -35,14 +36,13 @@ spec:
         find /workspace -ls 
         cd /workspace/source        
         mvn -X test -Dproject.build.sourceEncoding=UTF-8 -Dproject.reporting.outputEncoding=UTF-8
-        
-        
+
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   name: maven-test-pipeline
-  labels:    
+  labels:
     apps.tanzu.vmware.com/pipeline: not_used_test
 spec:
   description: >-
@@ -87,26 +87,28 @@ spec:
         - untar
       taskRef:
         name: maven
-      workspaces:      
+      workspaces:
         - name: source
           workspace: source-ws
         - name: maven-settings
           workspace: source-ws
       params:
+        - name: MAVEN_IMAGE
+          value: docker.io/library/maven:3.8-jdk-11
         - name: GOALS
-          value:            
+          value:                   
             - test
 ---
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  name: maven-test-pipeline-1
+  name: maven-test-pipeline-13
 spec:
   pipelineRef:
     name: maven-test-pipeline
   params:
-    - name: source-url                  
-      value: http://source-controller-manager-artifact-service.source-system.svc.cluster.local./imagerepository/dev-tap/birds/ef8df1605f55e595c0bf609c92fdff083c7fe2176c8dc20ea964ea90b145b68c.tar.gz
+    - name: source-url
+      value: http://source-controller-manager-artifact-service.source-system.svc.cluster.local./imagerepository/dev-tap/birds/d4dbe7297c0ff33661574a20b6df884d86ef0fb14d54a112b88dc383e629d189.tar.gz
   workspaces:
     - name: source-ws # this workspace name must be declared in the Pipeline
       volumeClaimTemplate:
@@ -115,4 +117,4 @@ spec:
             - ReadWriteOnce # access mode may affect how you can use this volume in parallel tasks
           resources:
             requests:
-              storage: 5Gi
+              storage: 1Gi

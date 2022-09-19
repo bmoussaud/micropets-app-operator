@@ -33,10 +33,10 @@ spec:
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  name: fake-test-pipeline-1
+  name: fake-test-pipeline-2
 spec:
   pipelineRef:
     name: fake-test-pipeline
   params:
     - name: source-url
-      value: http://source-controller-manager-artifact-service.source-system.svc.cluster.local./imagerepository/dev-tap/birds/ef8df1605f55e595c0bf609c92fdff083c7fe2176c8dc20ea964ea90b145b68c.tar.gz
+      value: http://source-controller-manager-artifact-service.source-system.svc.cluster.local./imagerepository/dev-tap/birds/a7f45518df9075a1d70db45b0f0609e003861a60caeb4261c2726cf05de2d2d8.tar.gz
