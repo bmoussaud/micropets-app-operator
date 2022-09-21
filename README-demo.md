@@ -36,6 +36,12 @@ tanzu package install full-tbs-deps -p full-tbs-deps.tanzu.vmware.com -v ${TBS_V
 
 ```
 
+Scanner config
+
+https://docs-staging.vmware.com/en/draft/VMware-Tanzu-Application-Platform/1.3/tap/GUID-scst-scan-install-scanners.html
+
+
+
 ### Deploy [Tanzu Application Platform]()
 
 ```shell
@@ -47,11 +53,14 @@ Configuration: [tap/tap-install-config.yml](tap/tap-install-config.yml)
 
 ```yaml
 #@ def config():
-tap:
-  version: "1.2.1-build.4"
+tap:  
+  version: "1.3.0-build.24"
   namespace: tap-install
   devNamespace: dev-tap
   logo: #@ base64.encode(data.read('tap-logo.png'))
+
+  supply_chain: testing 
+  #!(or basic or supply_chain: testing_scanning)
 
   #! Set Backstage catalogs to include by default.
   catalogs:
