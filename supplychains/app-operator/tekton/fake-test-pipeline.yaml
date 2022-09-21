@@ -18,7 +18,7 @@ kind: Pipeline
 metadata:
   name: fake-test-pipeline
   labels:
-    apps.tanzu.vmware.com/pipeline: test
+    apps.tanzu.vmware.com/pipeline: nooootest
 spec:
   description: >-
     The Fake Test pipeline builds source from a Git repository into a container image and run tests using maven
