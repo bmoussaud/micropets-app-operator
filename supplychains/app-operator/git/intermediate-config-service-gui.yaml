@@ -20,7 +20,7 @@ spec:
 
     #@ def values(): 
     application:
-      name: micro-pet   
+      name: micropets-app 
     service:  
       name: #@ data.values.workload.metadata.name
       component: #@ data.values.params.component  
