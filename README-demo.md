@@ -45,7 +45,6 @@ https://docs-staging.vmware.com/en/draft/VMware-Tanzu-Application-Platform/1.3/t
 ### Deploy [Tanzu Application Platform]()
 
 ```shell
-git clone git@github.com:bmoussaud/micropets-app-operator.git
 kapp deploy -c -a tap-install-gitops -f <(ytt -f tap --data-value repository=https://github.com/bmoussaud/tap-install-gitops)
 ```
 

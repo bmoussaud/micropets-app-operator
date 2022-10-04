@@ -3,13 +3,12 @@
 #@ load("@ytt:data", "data")
 ---
 #@ def config():
-tap:
-  versionKO: "1.2.1"
-  version: "1.3.0-build.24"
+tap:  
+  version: "1.3.0-rc.1"
   namespace: tap-install
   devNamespace: dev-tap
   
-  supply_chain: testing
+  supply_chain: basic
   
   logo: #@ base64.encode(data.read('tap-logo.png'))
 
