@@ -80,12 +80,26 @@ cartographer:
 	kubectl create namespace cartographer-system --dry-run=client -o yaml | kubectl apply -f -
 	kapp deploy -c --yes -a cartographer  -f https://github.com/vmware-tanzu/cartographer/releases/download/v0.4.0-build.1/cartographer.yaml
 	
-aso:
+# ASO CRD file is so huge => performance issue with KAPP
+# 
+
+register-provider:
+	az provider register --namespace  Microsoft.DBforPostgreSQL
+	az provider register --namespace  Microsoft.DBforPostgreSQL
+
+aso: cert-manager
+	
+	kubectl apply --server-side=true -f https://github.com/Azure/azure-service-operator/releases/download/v2.0.0-beta.2/azureserviceoperator_v2.0.0-beta.2.yaml
+	
 	source ~/.azure/rbac/azure-service-operator-contributor-aks-eu-tap-2.config \
 		&& ytt --ignore-unknown-comments --data-values-env AZURE \
-		-f azure-service-operator \
-		-f https://github.com/Azure/azure-service-operator/releases/download/v2.0.0-beta.2/azureserviceoperator_v2.0.0-beta.2.yaml | kapp deploy -c --yes -a aso  -f-
+		-f azure-service-operator  | kapp deploy -c --yes -a aso-secrets  -f-		
 
+	kubectl wait deployment -n azureserviceoperator-system -l app=azure-service-operator-v2 --for=condition=Available=True
+
+aso-test:
+	ytt -f azure-service-operator-instance  --ignore-unknown-comments | kapp deploy -c --yes -a aso-test -f-
+	kubectl tree resourcegroups.resources.azure.com -n asodemo aso-demo-rg-1
 
 tekton: namespace
 	kapp deploy -c --yes -a tekton -f https://storage.googleapis.com/tekton-releases/pipeline/previous/v0.31.0/release.yaml

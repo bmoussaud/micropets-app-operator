@@ -1,0 +1,7 @@
+#@data/values
+---
+SERVER: asodemo-postgres
+USERNAME: asoadmin 
+PASSWORD: azer?ty90benoitmouss@u
+LOCATION: francecentral
+RG: aso-demo-rg-1
