@@ -87,13 +87,23 @@ register-provider:
 	az provider register --namespace  Microsoft.DBforPostgreSQL
 	az provider register --namespace  Microsoft.DBforPostgreSQL
 
-aso: cert-manager
-	
-	kubectl apply --server-side=true -f https://github.com/Azure/azure-service-operator/releases/download/v2.0.0-beta.2/azureserviceoperator_v2.0.0-beta.2.yaml
-	
+
+aso-core:
+	kubectl apply --server-side=true -f azure-service-operator/aso_azureserviceoperator_v2.0.0-beta.2.yaml
+	kubectl apply --server-side=true -f azure-service-operator/aso_mutating_webhook.yaml
+	kubectl apply --server-side=true -f azure-service-operator/aso_validating_webhook.yaml
+	kubectl apply --server-side=true -f azure-service-operator/aso_crd.yaml
+
+undeploy-aso-core:
+	kubectl delete  -f azure-service-operator/aso_azureserviceoperator_v2.0.0-beta.2.yaml
+	kubectl delete  -f azure-service-operator/aso_mutating_webhook.yaml
+	kubectl delete  -f azure-service-operator/aso_validating_webhook.yaml
+	kubectl delete  -f azure-service-operator/aso_crd.yaml
+
+aso: aso-core	
 	source ~/.azure/rbac/azure-service-operator-contributor-aks-eu-tap-2.config \
 		&& ytt --ignore-unknown-comments --data-values-env AZURE \
-		-f azure-service-operator  | kapp deploy -c --yes -a aso-secrets  -f-		
+		-f azure-service-operator/secrets.yaml  | kapp deploy -a aso-secrets --yes -c -f-		
 
 	kubectl wait deployment -n azureserviceoperator-system -l app=azure-service-operator-v2 --for=condition=Available=True
 
@@ -101,6 +111,12 @@ aso-test:
 	ytt -f azure-service-operator-instance  --ignore-unknown-comments | kapp deploy -c --yes -a aso-test -f-
 	kubectl tree resourcegroups.resources.azure.com -n asodemo aso-demo-rg-1
 
+undeploy-aso: undeploy-aso-core
+	kubectl delete -f https://github.com/Azure/azure-service-operator/releases/download/v2.0.0-beta.2/azureserviceoperator_v2.0.0-beta.2.yaml
+
+undeploy-aso-test:
+	kapp delete -a aso-test --yes
+	ytt -f azure-service-operator-instance  --ignore-unknown-comments | kubectl delete -f-
 tekton: namespace
 	kapp deploy -c --yes -a tekton -f https://storage.googleapis.com/tekton-releases/pipeline/previous/v0.31.0/release.yaml
 
