@@ -1943,7 +1943,7 @@ metadata:
   name: azureserviceoperator-controller-manager
   namespace: azureserviceoperator-system
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       control-plane: controller-manager
@@ -1960,7 +1960,7 @@ spec:
         - --metrics-addr=:8080
         - --health-addr=:8081
         - --enable-leader-election
-        - --v=2
+        - --v=9
         env:
         - name: AZURE_CLIENT_ID
           valueFrom:

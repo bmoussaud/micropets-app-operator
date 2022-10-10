@@ -100,7 +100,7 @@ undeploy-aso-core:
 	kubectl delete  -f azure-service-operator/aso_validating_webhook.yaml
 	kubectl delete  -f azure-service-operator/aso_crd.yaml
 
-aso: aso-core	
+aso: 
 	source ~/.azure/rbac/azure-service-operator-contributor-aks-eu-tap-2.config \
 		&& ytt --ignore-unknown-comments --data-values-env AZURE \
 		-f azure-service-operator/secrets.yaml  | kapp deploy -a aso-secrets --yes -c -f-		
