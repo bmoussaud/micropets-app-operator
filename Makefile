@@ -118,12 +118,17 @@ undeploy-aso-test:
 	ytt -f azure-service-operator-instance  --ignore-unknown-comments | kubectl delete -f-
 
 
+POSTGRESQL_OPERATION_VERSION=1.9.0
 postgres-tanzu-operator:
 	helm registry login registry.tanzu.vmware.com --username=$(TANZUNET_USER) --password=$(TANZUNET_PASSWORD)
-	helm install postgres-operator-chart-1.8.0 oci://registry.tanzu.vmware.com/tanzu-sql-postgres/postgres-operator-chart --version v1.8.0  --namespace=postgres-tanzu-operator --create-namespace 
+	helm install postgres-operator-chart-$(POSTGRESQL_OPERATION_VERSION) oci://registry.tanzu.vmware.com/tanzu-sql-postgres/postgres-operator-chart --version v$(POSTGRESQL_OPERATION_VERSION)  --namespace=postgres-tanzu-operator --create-namespace 
 	kubectl create secret docker-registry regsecret --docker-server https://registry.tanzu.vmware.com/ --docker-username $(TANZUNET_USER) --docker-password $(TANZUNET_PASSWORD) --namespace postgres-tanzu-operator	
-	helm status postgres-operator-chart-1.8.0  -n postgres-tanzu-operator
+	helm status postgres-operator-chart-$(POSTGRESQL_OPERATION_VERSION)  -n postgres-tanzu-operator
 	kubectl wait deployment -n postgres-tanzu-operator --for=condition=Available=True postgres-operator
+
+undeploy-postgres-tanzu-operator:
+	helm delete postgres-operator-chart-$(POSTGRESQL_OPERATION_VERSION)  -n postgres-tanzu-operator
+	kubectl delete ns postgres-tanzu-operator
 
 tekton: namespace
 	kapp deploy -c --yes -a tekton -f https://storage.googleapis.com/tekton-releases/pipeline/previous/v0.31.0/release.yaml
