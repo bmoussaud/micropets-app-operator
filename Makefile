@@ -87,7 +87,6 @@ register-provider:
 	az provider register --namespace  Microsoft.DBforPostgreSQL
 	az provider register --namespace  Microsoft.DBforPostgreSQL
 
-
 aso-core:
 	kubectl apply --server-side=true -f azure-service-operator/aso_azureserviceoperator_v2.0.0-beta.2.yaml
 	kubectl apply --server-side=true -f azure-service-operator/aso_mutating_webhook.yaml
@@ -117,6 +116,15 @@ undeploy-aso: undeploy-aso-core
 undeploy-aso-test:
 	kapp delete -a aso-test --yes
 	ytt -f azure-service-operator-instance  --ignore-unknown-comments | kubectl delete -f-
+
+
+postgres-tanzu-operator:
+	helm registry login registry.tanzu.vmware.com --username=$(TANZUNET_USER) --password=$(TANZUNET_PASSWORD)
+	helm install postgres-operator-chart-1.8.0 oci://registry.tanzu.vmware.com/tanzu-sql-postgres/postgres-operator-chart --version v1.8.0  --namespace=postgres-tanzu-operator --create-namespace 
+	kubectl create secret docker-registry regsecret --docker-server https://registry.tanzu.vmware.com/ --docker-username $(TANZUNET_USER) --docker-password $(TANZUNET_PASSWORD) --namespace postgres-tanzu-operator	
+	helm status postgres-operator-chart-1.8.0  -n postgres-tanzu-operator
+	kubectl wait deployment -n postgres-tanzu-operator --for=condition=Available=True postgres-operator
+
 tekton: namespace
 	kapp deploy -c --yes -a tekton -f https://storage.googleapis.com/tekton-releases/pipeline/previous/v0.31.0/release.yaml
 
