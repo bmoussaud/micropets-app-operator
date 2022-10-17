@@ -3,7 +3,8 @@
 set -x 
 CLUSTER_NAME=aks-eu-tap-2
 REGISTRY_NAME=akseutap2registry
-TAP_VERSION=1.3.0-rc.1
+TAP_VERSION=1.3.0
+
 INSTALL_REPO=tanzu-application-platform
 
 source ~/.kube/acr/.${REGISTRY_NAME}.config
