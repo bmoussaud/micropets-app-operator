@@ -32,7 +32,7 @@ spec:
   serviceAccountRef:
     name: micropet-kpack-service-account
     namespace: #@ data.values.into_ns
-  tag: #@ data.values.registry.host + "/" + data.values.image_prefix + "-builder"
+  tag: #@ data.values.registry.server + "/" + data.values.image_prefix + "-builder"
   stack:
     name: micropet-stack
     kind: ClusterStack

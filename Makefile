@@ -1,12 +1,13 @@
 MICROPETS_SP_NS=dev-tap
 SECRET_OUTPUT_FILE=.secrets.yaml
+REGISTRY_NAME=akseutap3registry
 
 namespace:
 	kubectl create namespace $(MICROPETS_SP_NS) --dry-run=client -o yaml | kubectl apply -f -
 	kubectl get namespace $(MICROPETS_SP_NS) 
 
 kpack: namespace		
-	ytt --ignore-unknown-comments --data-values-env MICROPETS -f kpack | kapp deploy -c --yes  --into-ns $(MICROPETS_SP_NS) -a micropet-kpack -f-
+	source ~/.kube/acr/.$(REGISTRY_NAME).config && ytt --ignore-unknown-comments --data-value-yaml registry.server=${INSTALL_REGISTRY_HOSTNAME} --data-value-yaml registry.username=${INSTALL_REGISTRY_USERNAME} --data-value-yaml registry.password=${INSTALL_REGISTRY_PASSWORD}  -f kpack | kapp deploy -c --yes  --into-ns $(MICROPETS_SP_NS) -a micropet-kpack -f-
 
 supplychain: gen_secrets
 	ytt --ignore-unknown-comments -f supplychains --data-values-file $(SECRET_OUTPUT_FILE) | kapp deploy -c --yes --into-ns $(MICROPETS_SP_NS) -a micropet-supplychain -f-
@@ -68,7 +69,25 @@ cert-manager:
 	kapp deploy -c --yes -a cert-manager -f https://github.com/jetstack/cert-manager/releases/download/v1.7.2/cert-manager.yaml
 
 kapp-controler:
-	kapp deploy -c --yes --dangerous-override-ownership-of-existing-resources -a kapp-controler -f https://github.com/vmware-tanzu/carvel-kapp-controller/releases/download/v0.34.0/release.yml
+	kapp deploy -c --yes -a kapp-controler -f https://github.com/vmware-tanzu/carvel-kapp-controller/releases/download/v0.41.2/release.yml
+
+secretgen-controller:
+	kapp deploy -c --yes -a secretgen-controller -f https://github.com/vmware-tanzu/carvel-secretgen-controller/releases/download/v0.11.0/release.yml
+
+
+tanzu-cluster-essentials:		
+	source ~/.kube/acr/.$(REGISTRY_NAME).config && imgpkg copy -b registry.tanzu.vmware.com/tanzu-cluster-essentials/cluster-essentials-bundle@sha256:54bf611711923dccd7c7f10603c846782b90644d48f1cb570b43a082d18e23b9 --to-repo $(REGISTRY_NAME).azurecr.io/tanzu-cluster-essentials/cluster-essentials-bundle --include-non-distributable-layers --concurrency 5
+	kubectl create namespace tanzu-cluster-essentials --dry-run=client -o yaml | kubectl apply -f -
+	imgpkg pull -b $(REGISTRY_NAME).azurecr.io/tanzu-cluster-essentials/cluster-essentials-bundle@sha256:54bf611711923dccd7c7f10603c846782b90644d48f1cb570b43a082d18e23b9 -o /tmp/bundle/
+
+	echo "## Deploying kapp-controller"
+	source ~/.kube/acr/.$(REGISTRY_NAME).config  && ytt -f /tmp/bundle/kapp-controller/config/ -f /tmp/bundle/registry-creds/ --data-value-yaml registry.server=${INSTALL_REGISTRY_HOSTNAME} --data-value-yaml registry.username=${INSTALL_REGISTRY_USERNAME} --data-value-yaml registry.password=${INSTALL_REGISTRY_PASSWORD} --data-value-yaml kappController.deployment.concurrency=10 | kbld -f- -f /tmp/bundle/.imgpkg/images.yml | kapp deploy --yes -a kapp-controller -n tanzu-cluster-essentials -f-
+
+	echo "## Deploying secretgen-controller"
+	ytt -f /tmp/bundle/secretgen-controller/config/ -f /tmp/bundle/registry-creds/ --data-value-yaml registry.server=${INSTALL_REGISTRY_HOSTNAME} --data-value-yaml registry.username=${INSTALL_REGISTRY_USERNAME} --data-value-yaml registry.password=${INSTALL_REGISTRY_PASSWORD}| kbld -f- -f /tmp/bundle/.imgpkg/images.yml | kapp deploy --yes -a secretgen-controller -n tanzu-cluster-essentials -f-
+
+	@rm  -rf /tmp/bundle/
+
 
 kapp-controler-tkgm:
 	kubectl apply -f https://github.com/vmware-tanzu/carvel-kapp-controller/releases/download/v0.31.0/release.yml
