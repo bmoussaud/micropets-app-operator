@@ -60,10 +60,7 @@ spec:
         kind: ClusterBuilder
         name: #@ data.values.params.clusterBuilder
       failedBuildHistoryLimit: 2
-      successBuildHistoryLimit: 2
-      cache:
-        volume:
-          size: "1.5Gi" 
+      successBuildHistoryLimit: 2 
       source:
         blob:
           url: #@ data.values.source.url

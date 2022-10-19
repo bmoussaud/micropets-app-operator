@@ -3,6 +3,6 @@
 image_prefix: library/micropet
 into_ns: dev-tap
 registry:
-  #host: akseutap2registry.azurecr.io
+  #host: akseutap3registry.azurecr.io
   #username 046ecb75-a4d1-45f6-a8b4-e92307111687
   #password injected using environment variable password: xxxxxxxx (see readme.md)

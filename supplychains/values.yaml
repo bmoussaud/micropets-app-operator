@@ -3,8 +3,7 @@
 workload: false
 image_prefix: library/micropet
 registry:
-  serverOLD: harbor.mytanzu.xyz
-  host: akseutap2registry.azurecr.io
+  host: akseutap3registry.azurecr.io
 service:
   domain: front.mytanzu.xyz
 service_account_name: cartographer-workload-sa

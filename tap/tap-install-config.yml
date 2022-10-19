@@ -17,16 +17,14 @@ tap:
   - https://github.com/bmoussaud/micropets-app/blob/master/catalog-info.yaml
 
   registry:    
-    host: akseutap2registry.azurecr.io
+    host: akseutap3registry.azurecr.io
     repositories:
       buildService: library/tanzu-build-service
       ootbSupplyChain: library/tanzu-supply-chain
 
   domains:
-    main: apps.eu.aks.mytanzu.xyz
-    tapGui: tap-gui.apps.eu.aks.mytanzu.xyz
-    learningCenter: learningcenter.apps.eu.aks.mytanzu.xyz
-    knative: apps.eu.aks.mytanzu.xyz
+    main: tap3.eu.aks.mytanzu.xyz
+    
 #@ end
 ---
 apiVersion: v1
