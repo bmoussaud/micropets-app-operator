@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x 
 CLUSTER_NAME=aks-eu-tap-2
-REGISTRY_NAME=akseutap2registry
+REGISTRY_NAME=akseutap3registry
 TBS_VERSION=1.7.2
 INSTALL_REPO=tanzu-application-platform
 
