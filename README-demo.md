@@ -2,18 +2,32 @@
 
 ## Prepare the demo
 
+### Deploy Carvel Tools
+
+using opensource distribution
+```
+make kapp-controler secretgen-controller
+```
+
+or using tanzu distribution
+
+```
+make tanzu-cluster-essentials
+```
+
 ### Relocate the TAP version on a local registry (optional)
 
 You can use the pivnet or central vmregistry (registry.tanzu.vmware.com) but it can be convenient to copy the bundles to a local registry located closed the K8S cluster.
 
-Using the Azure Container Registry
+Using the Azure Container Registry [copy_tap_package.sh]()
 
 ```shell
+
 #!/bin/bash
 
-CLUSTER_NAME=aks-eu-tap-2
+CLUSTER_NAME=aks-eu-tap-3
 REGISTRY_NAME=akseutap2registry
-TAP_VERSION=1.2.1
+TAP_VERSION=1.3.0
 INSTALL_REPO=tanzu-application-platform
 
 INSTALL_REGISTRY_HOSTNAME=${REGISTRY_NAME}.azurecr.io
@@ -103,25 +117,28 @@ Check the status of the deployed packages (35) using:
 watch kubectl get app -A
 ```
 
+Get the TAP-GUI ip adresse
+```shell
+make tap-gui-ip
+```
+
 ### Deploy the Micropets supplychains 
 
 Deploy the [micropet-supplychains](suppychains) && [micropet-deliveries](deliveries)
 ```shell
-git clone git@github.com:bmoussaud/micropets-app-operator.git
-make kpack 
-
-source ~/.akseutap2registry.config
-MICROPETS_registry_password=${INSTALL_REGISTRY_PASSWORD} MICROPETS_registry_username=${INSTALL_REGISTRY_USERNAME} make kpack
+make kpack
 make supplychain 
 make delivery
 ```
 
-### Deploy the Micropets accelerator
+### Deploy the Micropets accelerators
 
 Deploy the [micropet-java-service-accelerator](https://github.com/bmoussaud/micropet-java-service-accelerator/tree/main/)
+Deploy the [micropet-golang-service-accelerator](https://github.com/bmoussaud/micropet-golang-service-accelerator/tree/main/)
 
 ```shell
 tanzu acc create micropet-java-service-accelerator --git-repo https://github.com/bmoussaud/micropet-java-service-accelerator --git-branch main --interval 5s
+tanzu acc create micropet-golang-service-accelerator --git-repo https://github.com/bmoussaud/micropets-golang-service-accelerator --git-branch main --interval 5s
 ```
 
 ### Deploy the Micropets application

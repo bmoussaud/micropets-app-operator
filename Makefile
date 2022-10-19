@@ -76,17 +76,22 @@ secretgen-controller:
 
 
 tanzu-cluster-essentials:		
-	source ~/.kube/acr/.$(REGISTRY_NAME).config && imgpkg copy -b registry.tanzu.vmware.com/tanzu-cluster-essentials/cluster-essentials-bundle@sha256:54bf611711923dccd7c7f10603c846782b90644d48f1cb570b43a082d18e23b9 --to-repo $(REGISTRY_NAME).azurecr.io/tanzu-cluster-essentials/cluster-essentials-bundle --include-non-distributable-layers --concurrency 5
+	source ~/.kube/acr/.akseutap3registry.config
+	imgpkg copy -b registry.tanzu.vmware.com/tanzu-cluster-essentials/cluster-essentials-bundle@sha256:54bf611711923dccd7c7f10603c846782b90644d48f1cb570b43a082d18e23b9 --to-repo $(REGISTRY_NAME).azurecr.io/tanzu-cluster-essentials/cluster-essentials-bundle --include-non-distributable-layers --concurrency 5
 	kubectl create namespace tanzu-cluster-essentials --dry-run=client -o yaml | kubectl apply -f -
 	imgpkg pull -b $(REGISTRY_NAME).azurecr.io/tanzu-cluster-essentials/cluster-essentials-bundle@sha256:54bf611711923dccd7c7f10603c846782b90644d48f1cb570b43a082d18e23b9 -o /tmp/bundle/
 
 	echo "## Deploying kapp-controller"
-	source ~/.kube/acr/.$(REGISTRY_NAME).config  && ytt -f /tmp/bundle/kapp-controller/config/ -f /tmp/bundle/registry-creds/ --data-value-yaml registry.server=${INSTALL_REGISTRY_HOSTNAME} --data-value-yaml registry.username=${INSTALL_REGISTRY_USERNAME} --data-value-yaml registry.password=${INSTALL_REGISTRY_PASSWORD} --data-value-yaml kappController.deployment.concurrency=10 | kbld -f- -f /tmp/bundle/.imgpkg/images.yml | kapp deploy --yes -a kapp-controller -n tanzu-cluster-essentials -f-
+	ytt -f /tmp/bundle/kapp-controller/config/ -f /tmp/bundle/registry-creds/ --data-value-yaml registry.server=${INSTALL_REGISTRY_HOSTNAME} --data-value-yaml registry.username=${INSTALL_REGISTRY_USERNAME} --data-value-yaml registry.password=${INSTALL_REGISTRY_PASSWORD} --data-value-yaml kappController.deployment.concurrency=10 | kbld -f- -f /tmp/bundle/.imgpkg/images.yml | kapp deploy --yes -a kapp-controller -n tanzu-cluster-essentials -f-
 
 	echo "## Deploying secretgen-controller"
 	ytt -f /tmp/bundle/secretgen-controller/config/ -f /tmp/bundle/registry-creds/ --data-value-yaml registry.server=${INSTALL_REGISTRY_HOSTNAME} --data-value-yaml registry.username=${INSTALL_REGISTRY_USERNAME} --data-value-yaml registry.password=${INSTALL_REGISTRY_PASSWORD}| kbld -f- -f /tmp/bundle/.imgpkg/images.yml | kapp deploy --yes -a secretgen-controller -n tanzu-cluster-essentials -f-
 
 	@rm  -rf /tmp/bundle/
+
+tap-gui-ip:
+	#kubectl get HTTPProxy  -n tap-gui tap-gui -o yaml	
+	kubectl get HTTPProxy  -n tap-gui tap-gui -o json | jq ".status.loadBalancer.ingress[0].ip"
 
 
 kapp-controler-tkgm:
