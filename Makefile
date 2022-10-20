@@ -149,14 +149,27 @@ undeploy-aso-test:
 
 
 POSTGRESQL_OPERATION_VERSION=1.9.0
+TDS_VERSION=1.5.0
 postgres-tanzu-operator:
+	#imgpkg copy -b registry.tanzu.vmware.com/packages-for-vmware-tanzu-data-services/tds-packages:$(TDS_VERSION) --to-repo ${INSTALL_REGISTRY_HOSTNAME}/packages-for-vmware-tanzu-data-services/tds-packages
+	#tanzu secret registry add $(INSTALL_REGISTRY_HOSTNAME)  --username $(INSTALL_REGISTRY_USERNAME) --password $(INSTALL_REGISTRY_PASSWORD) --server $(INSTALL_REGISTRY_HOSTNAME) --export-to-all-namespaces --yes
+	tanzu package repository add tanzu-data-services-repository --url ${INSTALL_REGISTRY_HOSTNAME}/packages-for-vmware-tanzu-data-services/tds-packages:$(TDS_VERSION) --namespace postgres-tanzu-operator --create-namespace
+	tanzu package install postgres-tanzu-operator --package-name postgres-operator.sql.tanzu.vmware.com --version $(POSTGRESQL_OPERATION_VERSION) --namespace postgres-tanzu-operator --create-namespace
+	kubectl wait deployment -n postgres-tanzu-operator --for=condition=Available=True postgres-operator
+
+undeploy-postgres-tanzu-operator:
+	tanzu package installed delete postgres-tanzu-operator --namespace postgres-tanzu-operator --yes
+	#tanzu secret registry delete $(INSTALL_REGISTRY_HOSTNAME)--yes
+	tanzu package repository delete tanzu-data-services-repository --namespace postgres-tanzu-operator --yes
+
+postgres-tanzu-operator-helm:
 	helm registry login registry.tanzu.vmware.com --username=$(TANZUNET_USER) --password=$(TANZUNET_PASSWORD)
 	helm install postgres-operator-chart-$(POSTGRESQL_OPERATION_VERSION) oci://registry.tanzu.vmware.com/tanzu-sql-postgres/postgres-operator-chart --version v$(POSTGRESQL_OPERATION_VERSION)  --namespace=postgres-tanzu-operator --create-namespace 
 	kubectl create secret docker-registry regsecret --docker-server https://registry.tanzu.vmware.com/ --docker-username $(TANZUNET_USER) --docker-password $(TANZUNET_PASSWORD) --namespace postgres-tanzu-operator	
 	helm status postgres-operator-chart-$(POSTGRESQL_OPERATION_VERSION)  -n postgres-tanzu-operator
 	kubectl wait deployment -n postgres-tanzu-operator --for=condition=Available=True postgres-operator
 
-undeploy-postgres-tanzu-operator:
+undeploy-postgres-tanzu-operator-helm:
 	helm delete postgres-operator-chart-$(POSTGRESQL_OPERATION_VERSION)  -n postgres-tanzu-operator
 	kubectl delete ns postgres-tanzu-operator
 
