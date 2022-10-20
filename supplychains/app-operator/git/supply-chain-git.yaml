@@ -28,6 +28,8 @@ spec:
       default: "RANDOM_NUMBER"
     - name: color
       default: black    
+    - name: environment
+      default: azure/aks-eu-tap-3
   resources:
     - name: source-provider
       templateRef:
@@ -82,10 +84,7 @@ spec:
         - resource: source-provider
           name: source
           
-    - name: deliverable
-      params:
-        - name: environment
-          value: azure/aks-eu-tap-3
+    - name: deliverable      
       templateRef:
         kind: ClusterTemplate
         name: micropets-deliverable-template
