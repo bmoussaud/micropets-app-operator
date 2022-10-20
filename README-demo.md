@@ -146,7 +146,7 @@ Deploy the [micropet-app](https://github.com/bmoussaud/micropets-app)
 
 ```shell
 git clone https://github.com/bmoussaud/micropets-app-gitops.git
-kapp deploy --into-ns dev-tap -c -a workloads -f <(ytt -f generators/workloads --data-value environment=azure/aks-eu-tap-2)
+kapp deploy --into-ns dev-tap -c -a workloads -f <(ytt -f generators/workloads --data-value environment=azure/aks-eu-tap-3)
 ```
 
 ## Run the Demo

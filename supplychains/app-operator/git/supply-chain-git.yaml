@@ -85,7 +85,7 @@ spec:
     - name: deliverable
       params:
         - name: environment
-          value: azure/aks-eu-tap-2
+          value: azure/aks-eu-tap-3
       templateRef:
         kind: ClusterTemplate
         name: micropets-deliverable-template
