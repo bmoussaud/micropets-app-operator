@@ -1,7 +1,12 @@
 #@data/values
 ---
-SERVER: asodemo-postgres
+server: benoitmoussaud-postgres-sql
+location: centralus
+location_alt: francecentral
+resourcegroup: aso-demo
+namespace: my-db-instance
+dev_namespace: dev-tap
+
+#not used
 USERNAME: asoadmin 
-PASSWORD: azer?ty90benoitmouss@u
-LOCATION: francecentral
-RG: aso-demo-rg-2
+PASSWORD: azer?ty90b3noitmouss@u

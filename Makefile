@@ -96,9 +96,8 @@ tap:
 	ytt -f tap --data-value-yaml registry.server=${INSTALL_REGISTRY_HOSTNAME} --data-value-yaml registry.username=${INSTALL_REGISTRY_USERNAME} --data-value-yaml registry.password=${INSTALL_REGISTRY_PASSWORD} --data-value repository=https://github.com/bmoussaud/tap-install-gitops | kapp deploy --yes -c -a tap-install-gitops -f-
 
 tap-gui-ip:
-	#kubectl get HTTPProxy  -n tap-gui tap-gui -o yaml	
+	kubectl get HTTPProxy  -n tap-gui tap-gui
 	kubectl get HTTPProxy  -n tap-gui tap-gui -o json | jq ".status.loadBalancer.ingress[0].ip"
-
 
 kapp-controler-tkgm:
 	kubectl apply -f https://github.com/vmware-tanzu/carvel-kapp-controller/releases/download/v0.31.0/release.yml
@@ -112,40 +111,36 @@ cartographer:
 	
 # ASO CRD file is so huge => performance issue with KAPP
 # 
-
 register-provider:
 	az provider register --namespace  Microsoft.DBforPostgreSQL
-	az provider register --namespace  Microsoft.DBforPostgreSQL
 
-aso-core:
-	kubectl apply --server-side=true -f azure-service-operator/aso_azureserviceoperator_v2.0.0-beta.2.yaml
-	kubectl apply --server-side=true -f azure-service-operator/aso_mutating_webhook.yaml
-	kubectl apply --server-side=true -f azure-service-operator/aso_validating_webhook.yaml
-	kubectl apply --server-side=true -f azure-service-operator/aso_crd.yaml
-
-undeploy-aso-core:
-	kubectl delete  -f azure-service-operator/aso_azureserviceoperator_v2.0.0-beta.2.yaml
-	kubectl delete  -f azure-service-operator/aso_mutating_webhook.yaml
-	kubectl delete  -f azure-service-operator/aso_validating_webhook.yaml
-	kubectl delete  -f azure-service-operator/aso_crd.yaml
 
 aso: 
-	source ~/.azure/rbac/azure-service-operator-contributor-aks-eu-tap-2.config \
+	kubectl apply --server-side=true -f https://github.com/Azure/azure-service-operator/releases/download/v2.0.0-beta.3/azureserviceoperator_v2.0.0-beta.3.yaml
+	
+	source ~/.azure/rbac/azure-service-operator-contributor-aks-eu-tap-3.config \
 		&& ytt --ignore-unknown-comments --data-values-env AZURE \
-		-f azure-service-operator/secrets.yaml  | kapp deploy -a aso-secrets --yes -c -f-		
+		-f azure-service-operator  | kapp deploy -a aso-secrets --yes -c -f-		
 
 	kubectl wait deployment -n azureserviceoperator-system -l app=azure-service-operator-v2 --for=condition=Available=True
 
-aso-test:
-	ytt -f azure-service-operator-instance  --ignore-unknown-comments | kapp deploy -c --yes -a aso-test -f-
-	kubectl tree resourcegroups.resources.azure.com -n asodemo aso-demo-rg-1
+aso-instance:
+	ytt -f azure-service-operator-instance  --ignore-unknown-comments | kubectl apply -f-
 
-undeploy-aso: undeploy-aso-core
-	kubectl delete -f https://github.com/Azure/azure-service-operator/releases/download/v2.0.0-beta.2/azureserviceoperator_v2.0.0-beta.2.yaml
+aso-instance-check:	
+	kubectl tree Password  aso-psql-secret -n my-db-instance
+	kubectl tree resourcegroups.resources.azure.com -n my-db-instance aso-demo
 
-undeploy-aso-test:
-	kapp delete -a aso-test --yes
-	ytt -f azure-service-operator-instance  --ignore-unknown-comments | kubectl delete -f-
+aso-instance-wait: aso-instance-check
+	kubectl wait flexibleservers.dbforpostgresql.azure.com aso-psql-fs -n my-db-instance  --for=condition=Ready --timeout=5m
+	kubectl wait flexibleserversdatabases.dbforpostgresql.azure.com -n my-db-instance aso-psql  --for=condition=Ready --timeout=5m
+
+undeploy-aso:
+	kubectl delete --server-side=true -f https://github.com/Azure/azure-service-operator/releases/download/v2.0.0-beta.3/azureserviceoperator_v2.0.0-beta.3.yaml
+
+undeploy-aso-instance:
+	ytt -f azure-service-operator-instance --ignore-unknown-comments | kubectl delete -f-
+
 
 
 POSTGRESQL_OPERATION_VERSION=1.9.0

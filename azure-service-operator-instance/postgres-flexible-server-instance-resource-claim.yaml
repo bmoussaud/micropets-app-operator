@@ -1,0 +1,147 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+kind: ClusterInstanceClass
+metadata:
+  name: azure-postgres
+spec:
+  description:
+    short: Azure Flexible Server instances with a postgresql engine
+  pool:
+    kind: Secret
+    labelSelector:
+      matchLabels:
+        services.apps.tanzu.vmware.com/class: azure-postgres
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: servicebinding-controller-secret-reader
+  labels:
+    servicebinding.io/controller: "true"
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
+      - get
+      - list
+      - watch
+---
+apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+kind: ResourceClaimPolicy
+metadata:
+  name: #@ "developer-in-"+data.values.dev_namespace+"-can-claim-azure-postgres"
+  namespace: #@ data.values.namespace
+spec:
+  subject:
+    kind: Secret
+    group: ""
+    selector:
+      matchLabels:
+        services.apps.tanzu.vmware.com/class: azure-postgres
+  consumingNamespaces:
+    -  #@ data.values.dev_namespace
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: aso-psql-reader
+  namespace: #@ data.values.namespace
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: aso-psql-reading
+  namespace: #@ data.values.namespace
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
+      - get
+      - list
+      - watch
+    resourceNames:
+      - aso-psql-secret
+  - apiGroups:
+      - dbforpostgresql.azure.com
+    resources:
+      - flexibleservers
+      - flexibleserversdatabases
+    verbs:
+      - get
+      - list
+      - watch
+    resourceNames:
+      - aso-psql
+      - aso-psql-fs
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: aso-psql-reader-to-read
+  namespace: #@ data.values.namespace
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: aso-psql-reading
+subjects:
+  - kind: ServiceAccount
+    name: aso-psql-reader
+    namespace: #@ data.values.namespace
+---
+apiVersion: secretgen.carvel.dev/v1alpha1
+kind: SecretTemplate
+metadata:
+  name: aso-psql-bindable
+  namespace: #@ data.values.namespace
+spec:
+  serviceAccountName: aso-psql-reader
+  inputResources:
+    - name: server
+      ref:
+        apiVersion: dbforpostgresql.azure.com/v1alpha1api20210601
+        kind: FlexibleServer
+        name: aso-psql-fs
+    - name: db
+      ref:
+        apiVersion: dbforpostgresql.azure.com/v1alpha1api20210601
+        kind: FlexibleServersDatabase
+        name: aso-psql
+    - name: creds
+      ref:
+        apiVersion: v1
+        kind: Secret
+        name: "$(.server.spec.administratorLoginPassword.name)"
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: aso-psql
+        app.kubernetes.io/instance: "$(.server.metadata.name)"
+        services.apps.tanzu.vmware.com/class: azure-postgres
+    type: postgresql
+    stringData:
+      type: postgresql
+      port: "5432"
+      database: "$(.db.status.name)"
+      host: "$(.server.status.fullyQualifiedDomainName)"
+      username: "$(.server.status.administratorLogin)"
+    data:
+      password: "$(.creds.data.password)"
+---
+# tanzu services claim create aso-psql-claim --resource-name aso-psql-bindable --resource-kind Secret --resource-api-version v1
+---
+apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+kind: ResourceClaim
+metadata:
+  name: aso-psql-bindable
+  namespace: #@ data.values.dev_namespace
+spec:
+  ref:
+    apiVersion: v1
+    kind: Secret
+    name: aso-psql-bindable
+    namespace: #@ data.values.namespace
