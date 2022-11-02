@@ -125,24 +125,26 @@ aso:
 
 	kubectl wait deployment -n azureserviceoperator-system -l app=azure-service-operator-v2 --for=condition=Available=True
 
-aso-instance:
-	ytt -f azure-service-operator-instance  --ignore-unknown-comments | kubectl apply -f-
+aso-instance.ytt: 
+	@-rm azure-service-operator-instance/.$@.yaml	
+	ytt -f azure-service-operator-instance --ignore-unknown-comments > azure-service-operator-instance/.$@.yaml	
 
-aso-instance-check:	
-	kubectl tree Password  aso-psql-secret -n my-db-instance
-	kubectl tree resourcegroups.resources.azure.com -n my-db-instance aso-demo
+aso-instance: aso-instance.ytt
+	kubectl apply -f azure-service-operator-instance/.$@.ytt.yaml
+
+aso-instance-check:		
+	kubectl tree resourcegroups.resources.azure.com -n database-instances-fr micropet-db-fr
 
 aso-instance-wait: aso-instance-check
-	kubectl wait flexibleservers.dbforpostgresql.azure.com aso-psql-fs -n my-db-instance  --for=condition=Ready --timeout=5m
-	kubectl wait flexibleserversdatabases.dbforpostgresql.azure.com -n my-db-instance aso-psql  --for=condition=Ready --timeout=5m
+	kubectl wait flexibleservers.dbforpostgresql.azure.com bmoussaud-micropetstore-psql-srv -n database-instances-fr --for=condition=Ready --timeout=5m 
+	kubectl wait flexibleserversdatabases.dbforpostgresql.azure.com bmoussaud-micropetstore-psql -n database-instances-fr   --for=condition=Ready --timeout=5m
 
 undeploy-aso:
 	kubectl delete --server-side=true -f https://github.com/Azure/azure-service-operator/releases/download/v2.0.0-beta.3/azureserviceoperator_v2.0.0-beta.3.yaml
 
-undeploy-aso-instance:
-	ytt -f azure-service-operator-instance --ignore-unknown-comments | kubectl delete -f-
-
-
+undeploy-aso-instance: aso-instance.ytt
+	kubectl delete -f azure-service-operator-instance/.aso-instance.ytt.yaml
+	
 
 POSTGRESQL_OPERATION_VERSION=1.9.0
 TDS_VERSION=1.5.0

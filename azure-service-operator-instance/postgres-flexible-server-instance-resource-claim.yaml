@@ -47,13 +47,13 @@ spec:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: aso-psql-reader
+  name: #@ data.values.server+"-psql-reader"
   namespace: #@ data.values.namespace
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: aso-psql-reading
+  name: #@ data.values.server+"-psql-reading"
   namespace: #@ data.values.namespace
 rules:
   - apiGroups:
@@ -65,8 +65,8 @@ rules:
       - list
       - watch
     resourceNames:
-      - aso-psql-secret
-  - apiGroups:
+      - #@ data.values.server+"-psql-secret"
+  - apiGroups:      
       - dbforpostgresql.azure.com
     resources:
       - flexibleservers
@@ -75,42 +75,43 @@ rules:
       - get
       - list
       - watch
+      - fetch
     resourceNames:
-      - aso-psql
-      - aso-psql-fs
+      - #@ data.values.server+"-psql"
+      - #@ data.values.server+"-psql-srv"
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: aso-psql-reader-to-read
+  name: #@ data.values.server+"-psql-reader-to-read"
   namespace: #@ data.values.namespace
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: aso-psql-reading
+  name: #@ data.values.server+"-psql-reading"
 subjects:
   - kind: ServiceAccount
-    name: aso-psql-reader
+    name: #@ data.values.server+"-psql-reader"
     namespace: #@ data.values.namespace
 ---
 apiVersion: secretgen.carvel.dev/v1alpha1
 kind: SecretTemplate
 metadata:
-  name: aso-psql-bindable
+  name: #@ data.values.server+"-psql-bindable"
   namespace: #@ data.values.namespace
 spec:
-  serviceAccountName: aso-psql-reader
+  serviceAccountName: #@ data.values.server+"-psql-reader"
   inputResources:
     - name: server
       ref:
         apiVersion: dbforpostgresql.azure.com/v1alpha1api20210601
         kind: FlexibleServer
-        name: aso-psql-fs
+        name: #@ data.values.server+"-psql-srv"
     - name: db
       ref:
         apiVersion: dbforpostgresql.azure.com/v1alpha1api20210601
         kind: FlexibleServersDatabase
-        name: aso-psql
+        name: #@ data.values.server+"-psql"
     - name: creds
       ref:
         apiVersion: v1
@@ -119,7 +120,7 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/component: aso-psql
+        app.kubernetes.io/component: #@ data.values.server+"-psql"
         app.kubernetes.io/instance: "$(.server.metadata.name)"
         services.apps.tanzu.vmware.com/class: azure-postgres
     type: postgresql
@@ -137,11 +138,11 @@ spec:
 apiVersion: services.apps.tanzu.vmware.com/v1alpha1
 kind: ResourceClaim
 metadata:
-  name: aso-psql-bindable
+  name: #@ data.values.server+"-psql-bindable"
   namespace: #@ data.values.dev_namespace
 spec:
   ref:
     apiVersion: v1
     kind: Secret
-    name: aso-psql-bindable
+    name: #@ data.values.server+"-psql-bindable"
     namespace: #@ data.values.namespace

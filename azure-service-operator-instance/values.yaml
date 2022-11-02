@@ -1,12 +1,8 @@
 #@data/values
 ---
-server: benoitmoussaud-postgres-sql
-location: centralus
-location_alt: francecentral
-resourcegroup: aso-demo
-namespace: my-db-instance
+server: bmoussaud-micropetstore
+location: francecentral
+resourcegroup: micropet-db-fr
+namespace: database-instances-fr
 dev_namespace: dev-tap
-
-#not used
-USERNAME: asoadmin 
-PASSWORD: azer?ty90b3noitmouss@u
+dbid: "dev"

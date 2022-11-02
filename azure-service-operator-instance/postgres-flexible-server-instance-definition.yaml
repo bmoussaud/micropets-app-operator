@@ -1,11 +1,6 @@
 ---
 #@ load("@ytt:data", "data")
 ---
-apiVersion: v1
-kind: Namespace
-metadata:  
-  name: #@ data.values.namespace
----
 apiVersion: resources.azure.com/v1beta20200601
 kind: ResourceGroup
 metadata:
@@ -17,56 +12,57 @@ spec:
 apiVersion: secretgen.k14s.io/v1alpha1
 kind: Password
 metadata:
-  name: aso-psql-secret
+  name: #@ data.values.server+"-psql-secret"
   namespace: #@ data.values.namespace
 spec:
-  length: 64
+  length: 24
   secretTemplate:
     type: Opaque
     stringData:
-      password: $(value)
+      password: 123%ABC#$(value)
 ---
 apiVersion: dbforpostgresql.azure.com/v1beta20210601
 kind: FlexibleServersDatabase
 metadata:
-  name: aso-psql
+  name: #@ data.values.server+"-psql"
   namespace: #@ data.values.namespace
 spec:
-  azureName: mydb
+  azureName: #@ data.values.server+"-psql-"+ data.values.dbid
   owner:
-    name: aso-psql-fs   
+    name: #@ data.values.server+"-psql-srv"
   charset: utf8
 ---
 apiVersion: dbforpostgresql.azure.com/v1beta20210601
 kind: FlexibleServersFirewallRule
 metadata:
-  name: aso-psql
+  name: #@ data.values.server+"-psql-fw"
   namespace: #@ data.values.namespace
 spec:
   owner:
-    name: aso-psql-fs   
+    name: #@ data.values.server+"-psql-srv"
   startIpAddress: 0.0.0.0 #! only allow traffic from azure. See https://docs.microsoft.com/en-us/azure/postgresql/single-server/concepts-firewall-rules#connecting-from-azure. Warning not for production use.
-  endIpAddress: 0.0.0.0
+  endIpAddress: 255.255.255.255
 ---
 apiVersion: dbforpostgresql.azure.com/v1beta20210601
 kind: FlexibleServer
 metadata:
-  name: aso-psql-fs
+  name: #@ data.values.server+"-psql-srv"
   namespace: #@ data.values.namespace
 spec:
   location: #@ data.values.location
-  azureName: #@ data.values.server
+  azureName: #@ data.values.server+"-"+data.values.dbid
   owner:
-    name: #@ data.values.resourcegroup     
-  version: "13" 
+    name: #@ data.values.resourcegroup
+  version: "14"
   sku:
-    name: Standard_D4s_v3
-    tier: GeneralPurpose
+    name: Standard_B1ms
+    tier: Burstable
   administratorLogin: myAdmin
   administratorLoginPassword:
-    name: aso-psql-secret
+    name: #@ data.values.server+"-psql-secret"
     key: password
   storage:
     storageSizeGB: 32
-
-
+  backup:
+    backupRetentionDays: 7
+    geoRedundantBackup: Disabled
