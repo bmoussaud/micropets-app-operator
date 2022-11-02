@@ -14,3 +14,4 @@ deploy-all.sh
 tap/tap-install-secrets.yml
 tap/tap-install-config.yml
 
+*.ytt.yaml
