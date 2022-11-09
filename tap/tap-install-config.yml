@@ -8,7 +8,7 @@ tap:
   namespace: tap-install
   devNamespace: dev-tap
   
-  supply_chain: testing
+  supply_chain: testing_scanning
   
   logo: #@ base64.encode(data.read('tap-logo.png'))
 
@@ -17,7 +17,7 @@ tap:
   - https://github.com/bmoussaud/micropets-app/blob/master/catalog-info.yaml
 
   registry:    
-    host: akseutap3registry.azurecr.io
+    host: #@ data.values.registry.server
     repositories:
       buildService: library/tanzu-build-service
       ootbSupplyChain: library/tanzu-supply-chain
