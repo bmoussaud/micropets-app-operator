@@ -27,7 +27,7 @@ Using the Azure Container Registry [copy_tap_package.sh]()
 
 CLUSTER_NAME=aks-eu-tap-3
 REGISTRY_NAME=akseutap3registry
-TAP_VERSION=1.3.0
+TAP_VERSION=1.3.1
 INSTALL_REPO=tanzu-application-platform
 
 INSTALL_REGISTRY_HOSTNAME=${REGISTRY_NAME}.azurecr.io

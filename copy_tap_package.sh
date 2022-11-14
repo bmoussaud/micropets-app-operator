@@ -2,7 +2,7 @@
 
 set -x 
 REGISTRY_NAME=akseutap3registry
-TAP_VERSION=1.3.0
+TAP_VERSION=1.3.1
 
 INSTALL_REPO=tanzu-application-platform
 
