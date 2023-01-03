@@ -1,6 +1,6 @@
 MICROPETS_SP_NS=dev-tap
 SECRET_OUTPUT_FILE=.secrets.yaml
-REGISTRY_NAME=akseutap3registry
+#REGISTRY_NAME=akseutap3registry
 
 namespace:
 	kubectl create namespace $(MICROPETS_SP_NS) --dry-run=client -o yaml | kubectl apply -f -
@@ -77,7 +77,6 @@ secretgen-controller:
 
 
 tanzu-cluster-essentials:		
-	
 	source ~/.kube/acr/.$(REGISTRY_NAME).config
 	imgpkg copy -b registry.tanzu.vmware.com/tanzu-cluster-essentials/cluster-essentials-bundle@sha256:54bf611711923dccd7c7f10603c846782b90644d48f1cb570b43a082d18e23b9 --to-repo $(REGISTRY_NAME).azurecr.io/tanzu-cluster-essentials/cluster-essentials-bundle --include-non-distributable-layers --concurrency 5
 	kubectl create namespace tanzu-cluster-essentials --dry-run=client -o yaml | kubectl apply -f -
@@ -117,7 +116,7 @@ register-provider:
 
 
 aso: 
-	kubectl apply --server-side=true -f https://github.com/Azure/azure-service-operator/releases/download/v2.0.0-beta.3/azureserviceoperator_v2.0.0-beta.3.yaml
+	kubectl apply --server-side=true -f https://github.com/Azure/azure-service-operator/releases/download/v2.0.0-beta.4/azureserviceoperator_v2.0.0-beta.4.yaml
 	
 	source ~/.azure/rbac/azure-service-operator-contributor-aks-eu-tap-3.config \
 		&& ytt --ignore-unknown-comments --data-values-env AZURE \
