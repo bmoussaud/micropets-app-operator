@@ -23,6 +23,8 @@ Using the Azure Container Registry [copy_tap_package.sh]()
 
 ```shell
 
+./copy_tap_package.sh akseutap4registry 1.4.0-rc.16
+
 #!/bin/bash
 
 CLUSTER_NAME=aks-eu-tap-3

@@ -1,8 +1,8 @@
 #!/bin/bash
 
 set -x 
-REGISTRY_NAME=akseutap3registry
-TAP_VERSION=1.3.2
+REGISTRY_NAME=$1
+TAP_VERSION=$2
 
 INSTALL_REPO=tanzu-application-platform
 
