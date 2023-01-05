@@ -57,6 +57,22 @@ Scanner config
 https://docs-staging.vmware.com/en/draft/VMware-Tanzu-Application-Platform/1.3/tap/GUID-scst-scan-install-scanners.html
 
 
+### Namespace Provisioner
+
+The registry-credentials secret referenced by the Tanzu Build Service is added to tap-install and exported to all namespaces.
+
+```shell
+#!/bin/bash
+source /Users/benoitmoussaud/.kube/acr/.akseutap4registry.config
+tanzu secret registry add tbs-registry-credentials --server ${INSTALL_REGISTRY_HOSTNAME} --username ${INSTALL_REGISTRY_USERNAME} --password ${INSTALL_REGISTRY_PASSWORD} --export-to-all-namespaces --yes --namespace tap-install
+```
+
+```shell
+kubectl create namespace tap-14-dev
+kubectl label namespaces tap-14-dev tap.mytanzu.xyz/my-tap-ns=""
+kubectl get secrets,serviceaccount,rolebinding,pods,workload,configmap -n tap-14-dev
+
+```
 
 ### Deploy [Tanzu Application Platform]()
 
