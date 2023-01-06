@@ -19,7 +19,7 @@ data:
 apiVersion: secretgen.carvel.dev/v1alpha1
 kind: SecretImport
 metadata:
-  name: git-ssh-import 
+  name: git-ssh
 spec:
   fromNamespace: tap-install
 ---
