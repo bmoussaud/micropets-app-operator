@@ -2,7 +2,7 @@
 #@ load("@ytt:base64", "base64")
 #@ load("@ytt:json", "json")
 ---
-## tap-registry exported from tapp-install using secretexports.secretgen.carvel.dev
+#! tap-registry exported from tapp-install using secretexports.secretgen.carvel.dev
 ---
 apiVersion: v1
 kind: Secret
@@ -14,7 +14,7 @@ type: kubernetes.io/dockerconfigjson
 data:
   .dockerconfigjson: e30K
 ---
-## git-ssh used by tekton tasks.
+#! git-ssh used by tekton tasks.
 ---
 apiVersion: v1
 kind: Secret
