@@ -21,7 +21,7 @@ kind: Secret
 metadata:
   name: git-ssh  
   annotations:
-    tekton.dev/git-0: #@ data.values.tap.credentials.git.server
+    tekton.dev/git-0: https://github.com
 type: kubernetes.io/basic-auth
 stringData:
   username: data.values.tap.credentials.git.username
