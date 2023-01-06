@@ -1,6 +1,6 @@
 MICROPETS_SP_NS=dev-tap
 SECRET_OUTPUT_FILE=.secrets.yaml
-#REGISTRY_NAME=akseutap3registry
+REGISTRY_NAME=akseutap4registry
 
 namespace:
 	kubectl create namespace $(MICROPETS_SP_NS) --dry-run=client -o yaml | kubectl apply -f -
@@ -145,11 +145,11 @@ undeploy-aso-instance: aso-instance.ytt
 	kubectl delete -f azure-service-operator-instance/.aso-instance.ytt.yaml
 	
 
-POSTGRESQL_OPERATION_VERSION=1.9.0
-TDS_VERSION=1.5.0
+POSTGRESQL_OPERATION_VERSION=2.0.0
+TDS_VERSION=1.6.0
 postgres-tanzu-operator:
-	#imgpkg copy -b registry.tanzu.vmware.com/packages-for-vmware-tanzu-data-services/tds-packages:$(TDS_VERSION) --to-repo ${INSTALL_REGISTRY_HOSTNAME}/packages-for-vmware-tanzu-data-services/tds-packages
-	#tanzu secret registry add $(INSTALL_REGISTRY_HOSTNAME)  --username $(INSTALL_REGISTRY_USERNAME) --password $(INSTALL_REGISTRY_PASSWORD) --server $(INSTALL_REGISTRY_HOSTNAME) --export-to-all-namespaces --yes
+	imgpkg copy -b registry.tanzu.vmware.com/packages-for-vmware-tanzu-data-services/tds-packages:$(TDS_VERSION) --to-repo ${INSTALL_REGISTRY_HOSTNAME}/packages-for-vmware-tanzu-data-services/tds-packages
+	tanzu secret registry add $(INSTALL_REGISTRY_HOSTNAME)  --username $(INSTALL_REGISTRY_USERNAME) --password $(INSTALL_REGISTRY_PASSWORD) --server $(INSTALL_REGISTRY_HOSTNAME) --export-to-all-namespaces --yes
 	tanzu package repository add tanzu-data-services-repository --url ${INSTALL_REGISTRY_HOSTNAME}/packages-for-vmware-tanzu-data-services/tds-packages:$(TDS_VERSION) --namespace postgres-tanzu-operator --create-namespace
 	tanzu package install postgres-tanzu-operator --package-name postgres-operator.sql.tanzu.vmware.com --version $(POSTGRESQL_OPERATION_VERSION) --namespace postgres-tanzu-operator --create-namespace
 	kubectl wait deployment -n postgres-tanzu-operator --for=condition=Available=True postgres-operator
