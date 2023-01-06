@@ -1,0 +1,140 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:base64", "base64")
+#@ load("@ytt:json", "json")
+---
+# tap-registry exported from tapp-install using secretexports.secretgen.carvel.dev
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: tap-registry 
+  annotations:
+    secretgen.carvel.dev/image-pull-secret: ""
+type: kubernetes.io/dockerconfigjson
+data:
+  .dockerconfigjson: e30K
+---
+# git-ssh used by tekton tasks.
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: git-ssh  
+  annotations:
+    tekton.dev/git-0: #@ data.values.tap.credentials.git.server
+type: kubernetes.io/basic-auth
+stringData:
+  username: data.values.tap.credentials.git.username
+  password: data.values.tap.credentials.git.token
+---
+#@ def app_registry_config():
+#@  return {
+#@    "auths": {
+#@      data.values.tap_values.shared.image_registry.project_path.split('/')[0]: {
+#@        "username": data.values.tap_values.shared.image_registry.username,
+#@        "password": data.values.tap_values.shared.image_registry.password,
+#@        "auth":""
+#@      }
+#@    }
+#@  }
+#@ end
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-registry
+type: kubernetes.io/dockerconfigjson
+stringData:
+  .dockerconfigjson: #@ json.encode(app_registry_config())
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tap-default 
+secrets:
+  - name: app-registry
+  - name: git-ssh
+imagePullSecrets:
+  - name: app-registry
+  - name: tap-registry
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: tap-default
+rules:
+  - apiGroups: [projectcontour.io]
+    resources: ["httpproxies"]
+    verbs: ["*"]
+  - apiGroups: [apis.apps.tanzu.vmware.com]
+    resources: [apidescriptors]
+    verbs: ["*"]
+  - apiGroups: [source.toolkit.fluxcd.io]
+    resources: [gitrepositories]
+    verbs: ["*"]
+  - apiGroups: [source.apps.tanzu.vmware.com]
+    resources: [imagerepositories]
+    verbs: ["*"]
+  - apiGroups: [carto.run]
+    resources: [workloads, deliverables, runnables]
+    verbs: ["*"]
+  - apiGroups: [kpack.io]
+    resources: [images]
+    verbs: ["*"]
+  - apiGroups: ["conventions.carto.run", "conventions.apps.tanzu.vmware.com"]
+    resources: ["podintents", "clusterpodconventions"]
+    verbs: ["*"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["*"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["list"]
+  - apiGroups: [tekton.dev]
+    resources: [taskruns, pipelineruns]
+    verbs: ["*"]
+  - apiGroups: [tekton.dev]
+    resources: [pipelines]
+    verbs: ["*"]
+  - apiGroups: [kappctrl.k14s.io]
+    resources: [apps]
+    verbs: ["*"]
+  - apiGroups: [serving.knative.dev]
+    resources: ["services"]
+    verbs: ["*"]
+  - apiGroups: [servicebinding.io]
+    resources: ["servicebindings"]
+    verbs: ["*"]
+  - apiGroups: [services.apps.tanzu.vmware.com]
+    resources: ["resourceclaims"]
+    verbs: ["*"]
+  - apiGroups: [scanning.apps.tanzu.vmware.com]
+    resources: ["imagescans", "sourcescans"]
+    verbs: ["*"]
+  - apiGroups: ["", "networking.k8s.io", "apps", "extensions", "batch"]
+    resources:
+      [
+        "configmaps",
+        "ingresses",
+        "services",
+        "deployments",
+        "secrets",
+        "replicasets",
+        "pods",
+        "jobs",
+      ]
+    verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: tap-default  
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: tap-default
+subjects:
+  - kind: ServiceAccount
+    name: tap-default
+  - kind: ServiceAccount
+    name: default
