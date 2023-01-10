@@ -3,25 +3,30 @@
 #@ load("@ytt:json", "json")
 ---
 #! tap-registry exported from tapp-install using secretexports.secretgen.carvel.dev
+#! but it has defined in the azure keyvault.
 ---
-apiVersion: v1
-kind: Secret
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
 metadata:
-  name: tap-registry
-  annotations:
-    secretgen.carvel.dev/image-pull-secret: ""
-type: kubernetes.io/dockerconfigjson
-data:
-  .dockerconfigjson: e30K
+  name: azure-tap-registry
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: cluster-azure-backend
+  target:
+    template:
+      type: kubernetes.io/dockerconfigjson
+      data:
+        .dockerconfigjson: "{{ .mysecret | toString }}"
+    name: tap-registry
+    creationPolicy: Owner
+  data:
+  - secretKey: mysecret
+    remoteRef:
+      key: akseutap4registry
 ---
 #! git-ssh used by tekton tasks.
----
-apiVersion: secretgen.carvel.dev/v1alpha1
-kind: SecretImport
-metadata:
-  name: secretimport-git-ssh
-spec:
-  fromNamespace: tap-install
 ---
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
@@ -33,7 +38,7 @@ spec:
     kind: ClusterSecretStore
     name: cluster-azure-backend
   target:
-    name: external-git-ssh
+    name: git-ssh
     template:
       metadata:
         annotations:
