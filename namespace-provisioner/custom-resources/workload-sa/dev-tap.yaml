@@ -19,9 +19,32 @@ data:
 apiVersion: secretgen.carvel.dev/v1alpha1
 kind: SecretImport
 metadata:
-  name: git-ssh
+  name: secretimport-git-ssh
 spec:
   fromNamespace: tap-install
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: azure-github-ssh
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: cluster-azure-backend
+  target:
+    name: external-git-ssh
+    template:
+      metadata:
+        annotations:
+          tekton.dev/git-0: https://github.com
+  data:
+    - secretKey: username
+      remoteRef:
+        key: github-username
+    - secretKey: password
+      remoteRef:
+        key: github-password
 ---
 #@ def app_registry_config():
 #@  return {

@@ -74,6 +74,25 @@ kubectl get secrets,serviceaccount,rolebinding,pods,workload,configmap -n tap-14
 
 ```
 
+### External secret operator
+
+
+Azure: Create an Key vault Deployment name: `bmoussaud-keyvault`, Rg `mytanzu.xyz`
+Doc: 
+* https://external-secrets.io/v0.7.1/provider/azure-key-vault/
+* https://blog.container-solutions.com/tutorial-external-secrets-with-azure-keyvault
+
+```shell
+CLUSTER_NAME=aks-eu-tap-4
+KEY_VAULT=bmoussaud-keyvault
+KEY_VAULT_RG=mytanzu.xyz
+tanzu package install external-secrets   -p external-secrets.apps.tanzu.vmware.com --version  0.6.1+tap.2 -n tap-install
+az aks show --resource-group $(CLUSTER_NAME)  --name $(CLUSTER_NAME)   --query 'identityProfile.kubeletidentity.objectId' -o tsv
+KUBELET_IDENTITY_OBJECT_ID=$(az aks show --resource-group $(CLUSTER_NAME)   --name $(CLUSTER_NAME)   --query 'identityProfile.kubeletidentity.objectId' -o tsv)
+echo ${KUBELET_IDENTITY_OBJECT_ID}
+az keyvault set-policy --name $(KEY_VAULT) --resource-group  $(KEY_VAULT_RG)  --object-id "${KUBELET_IDENTITY_OBJECT_ID}" --certificate-permissions get --secret-permissions get
+```
+
 ### Deploy [Tanzu Application Platform]()
 
 ```shell
