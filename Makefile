@@ -78,9 +78,9 @@ secretgen-controller:
 
 tanzu-cluster-essentials:		
 	source ~/.kube/acr/.$(REGISTRY_NAME).config
-	imgpkg copy -b registry.tanzu.vmware.com/tanzu-cluster-essentials/cluster-essentials-bundle@sha256:54bf611711923dccd7c7f10603c846782b90644d48f1cb570b43a082d18e23b9 --to-repo $(REGISTRY_NAME).azurecr.io/tanzu-cluster-essentials/cluster-essentials-bundle --include-non-distributable-layers --concurrency 5
+	imgpkg copy -b registry.tanzu.vmware.com/tanzu-cluster-essentials/cluster-essentials-bundle@sha256:5fd527dda8af0e4c25c427e5659559a2ff9b283f6655a335ae08357ff63b8e7f --to-repo $(REGISTRY_NAME).azurecr.io/tanzu-cluster-essentials/cluster-essentials-bundle --include-non-distributable-layers --concurrency 5
 	kubectl create namespace tanzu-cluster-essentials --dry-run=client -o yaml | kubectl apply -f -
-	imgpkg pull -b $(REGISTRY_NAME).azurecr.io/tanzu-cluster-essentials/cluster-essentials-bundle@sha256:54bf611711923dccd7c7f10603c846782b90644d48f1cb570b43a082d18e23b9 -o /tmp/bundle/
+	imgpkg pull -b $(REGISTRY_NAME).azurecr.io/tanzu-cluster-essentials/cluster-essentials-bundle@sha256:5fd527dda8af0e4c25c427e5659559a2ff9b283f6655a335ae08357ff63b8e7f -o /tmp/bundle/
 
 	echo "## Deploying kapp-controller"
 	ytt -f /tmp/bundle/kapp-controller/config/ -f /tmp/bundle/registry-creds/ --data-value-yaml registry.server=${INSTALL_REGISTRY_HOSTNAME} --data-value-yaml registry.username=${INSTALL_REGISTRY_USERNAME} --data-value-yaml registry.password=${INSTALL_REGISTRY_PASSWORD} --data-value-yaml kappController.deployment.concurrency=10 | kbld -f- -f /tmp/bundle/.imgpkg/images.yml | kapp deploy --yes -a kapp-controller -n tanzu-cluster-essentials -f-
@@ -96,6 +96,7 @@ tap:
 	ytt -f tap --data-value-yaml git.token=${GIT_SSH_PASSWORD} --data-value-yaml registry.server=${INSTALL_REGISTRY_HOSTNAME} --data-value-yaml registry.username=${INSTALL_REGISTRY_USERNAME} --data-value-yaml registry.password=${INSTALL_REGISTRY_PASSWORD} --data-value repository=https://github.com/bmoussaud/tap-install-gitops | kapp deploy --yes -c -a tap-install-gitops -f-
 
 tap-gui-ip:
+# az network dns record-set a add-record --resource-group mytanzu.xyz --zone-name mytanzu.xyz --record-set-name "*.tap4.eu.aks"  --ipv4-address  1.2.3.4
 	kubectl get HTTPProxy  -n tap-gui tap-gui
 	kubectl get HTTPProxy  -n tap-gui tap-gui -o json | jq ".status.loadBalancer.ingress[0].ip"
 
