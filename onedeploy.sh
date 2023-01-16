@@ -1,3 +1,5 @@
+
+source /Users/benoitmoussaud/.kube/acr/.akseutap4registry.config
 make tanzu-cluster-essentials
 
 make tap
