@@ -59,6 +59,8 @@ https://docs-staging.vmware.com/en/draft/VMware-Tanzu-Application-Platform/1.3/t
 
 ### Namespace Provisioner
 
+Doc: https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/1.4/tap/namespace-provisioner-tutorials.html
+
 The registry-credentials secret referenced by the Tanzu Build Service is added to tap-install and exported to all namespaces.
 
 ```shell
