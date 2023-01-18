@@ -1,5 +1,6 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:yaml", "yaml")
+---
 #@ def in_list(key, list):
 #@  return hasattr(data.values, key) and (data.values[key] in list)
 #@ end
@@ -34,3 +35,4 @@ spec:
               wget -qO- $(params.source-url) | tar xvz -m
               echo "Java Test"
               ./mvnw test
+#@ end

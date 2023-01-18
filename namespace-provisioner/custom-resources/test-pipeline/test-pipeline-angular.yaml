@@ -35,5 +35,4 @@ spec:
               echo "NPM Test"
               npm install
               npm run test-headless
-
 #@ end
