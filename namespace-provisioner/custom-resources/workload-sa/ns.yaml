@@ -2,8 +2,7 @@
 ---
 apiVersion: v1
 kind: Namespace
-metadata:
-  name: #@ data.values.name
+metadata:  
   labels:
     gitops.tap.mytanzu.xyz/my-tap-ns: ""
 ---
