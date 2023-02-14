@@ -23,7 +23,7 @@ tap:
       ootbSupplyChain: library/tanzu-supply-chain
 
   domains:
-    main: tap4.eu.aks.mytanzu.xyz
+    main: tap300.eu.aks.mytanzu.xyz
     
 #@ end
 ---

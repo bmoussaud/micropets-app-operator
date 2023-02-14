@@ -60,6 +60,8 @@ https://docs-staging.vmware.com/en/draft/VMware-Tanzu-Application-Platform/1.3/t
 ### Namespace Provisioner
 
 Doc: https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/1.4/tap/namespace-provisioner-tutorials.html
+IDEA: https://dev.azure.com/doddatvmware/tap-lab/_git/gitops-platform?version=GB1.4&path=/clusters/build/config/tap/desired-namespaces-app.yaml
+
 
 The registry-credentials secret referenced by the Tanzu Build Service is added to tap-install and exported to all namespaces.
 

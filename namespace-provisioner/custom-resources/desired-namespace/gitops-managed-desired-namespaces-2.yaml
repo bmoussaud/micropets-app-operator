@@ -15,5 +15,8 @@ data:
     - name: micropets-birds
       language: java
       database: postgres
-    
+    - name: micropets-cats
+      language: golang      
+    - name: micropets-gui
+      language: angular  
     
