@@ -40,6 +40,7 @@ spec:
   target:
     name: git-ssh
     template:
+      type: kubernetes.io/basic-auth 
       metadata:
         annotations:
           tekton.dev/git-0: https://github.com
