@@ -1,10 +1,10 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:yaml", "yaml")
 ---
-#@ def in_list(key, list):
-#@  return hasattr(data.values, key) and (data.values[key] in list)
+#@ def in_list(property, value):
+#@  return hasattr(data.values, property) and ( value in data.values[property])
 #@ end
-#@ if in_list('database', ['postgres']):
+#@ if in_list('databases', 'postgres'):
 ---
 apiVersion: sql.tanzu.vmware.com/v1
 kind: Postgres
@@ -23,7 +23,7 @@ spec:
 apiVersion: services.apps.tanzu.vmware.com/v1alpha1
 kind: ResourceClaim
 metadata:
-  name: #@ data.values.name+"-tanzu-postgresql-database"  
+  name: #@ data.values.name+"-tanzu-postgresql-database"
 spec:
   ref:
     apiVersion: sql.tanzu.vmware.com/v1

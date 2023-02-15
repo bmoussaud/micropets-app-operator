@@ -1,9 +1,9 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:yaml", "yaml")
-#@ def in_list(key, list):
-#@  return hasattr(data.values, key) and (data.values[key] in list)
+#@ def in_list(property, value):
+#@  return hasattr(data.values, property) and ( value in data.values[property])
 #@ end
-#@ if in_list('language', ['angular']):
+#@ if in_list('languages', 'angular'):
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
@@ -35,4 +35,5 @@ spec:
               echo "NPM Test"
               npm install
               npm run test-headless
+
 #@ end

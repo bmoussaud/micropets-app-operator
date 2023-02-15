@@ -6,14 +6,19 @@ metadata:
   namespace: tap-namespace-provisioning
   annotations:
     kapp.k14s.io/create-strategy: fallback-on-update
-    namespace-provisioner.apps.tanzu.vmware.com/no-overwrite: "" 
+    namespace-provisioner.apps.tanzu.vmware.com/no-overwrite: ""
 data:
   namespaces.yaml: |
     #@data/values
     ---
     namespaces:
-    - name: micropets-birds
-      language: java
+    - name: micropets-int
+      language: 
+      - java
+      - golang
       database: postgres
-    
-    
+    - name: micropets-dev
+      language: 
+      - java
+      - golang
+      database: postgres
