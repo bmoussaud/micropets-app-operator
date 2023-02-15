@@ -32,10 +32,8 @@ spec:
             script: |-
               cd `mktemp -d`
               wget -qO- $(params.source-url) | tar xvz -m
-              echo "GoLang Test...."
-              
-              #go test
-              echo "$(params.source-url)"
-              echo "$(params.ource-revision)"
+              echo "GoLang Test...."  
+              echo "go test...."             
+              #go test              
               echo "GoLang Test....Skipped "
 #@ end
