@@ -1,0 +1,87 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:yaml", "yaml")
+---
+#@ def in_list(property, value):
+#@  return hasattr(data.values, property) and ( value in data.values[property])
+#@ end
+#@ if in_list('databases', 'mongodbdfgmljdsflmkjmkdsfgjmdsfmgljdsmljgmlksmlkdgj'):
+---
+apiVersion: mongodbcommunity.mongodb.com/v1
+kind: MongoDBCommunity
+metadata:
+  name: #@ data.values.name+"-mongodb"
+spec:
+  members: 3
+  type: ReplicaSet
+  version: "4.2.6"
+  security:
+    authentication:
+      modes: ["SCRAM"]
+  users:
+    - name: my-user
+      db: admin
+      passwordSecretRef: # a reference to the secret that will be used to generate the user's password
+        name: #@ data.values.name+"-mongodb-password"
+      roles:
+        - name: clusterAdmin
+          db: admin
+        - name: userAdminAnyDatabase
+          db: admin
+        - name: root
+          db: admin
+      scramCredentialsSecretName: my-scram
+  additionalMongodConfig:
+    storage.wiredTiger.engineConfig.journalCompressor: zlib
+
+# the user credentials will be generated from this secret
+# once the credentials are generated, this secret is no longer required
+---
+apiVersion: secretgen.k14s.io/v1alpha1
+kind: Password
+metadata:
+  name: #@ data.values.name+"-mongodb-password"
+spec:
+  length: 24
+  secretTemplate:
+    type: Opaque
+    stringData:
+      password: 321%BDF#$(value)
+---
+apiVersion: secretgen.carvel.dev/v1alpha1
+kind: SecretTemplate
+metadata:
+  name: #@ data.values.name+"-mongodb"
+spec:
+  serviceAccountName: mongo-sa-reader
+  inputResources:
+    - name: creds
+      ref:
+        apiVersion: v1
+        kind: Secret
+        name: #@ data.values.name+"-mongodb"
+  template:
+    metadata:
+      labels:
+        services.apps.tanzu.vmware.com/class: k8s-mongodb
+    type: Opaque
+    stringData:
+      type: mongodb
+      port: "10255"
+      options: /admin?replicaSet=elephants-mongodb&ssl=false
+      host: #@ data.values.name+"-svc.mongodb.svc.cluster.local"
+    data:
+      username: $(.creds.data.username)
+      connectionString: $(.creds.data.connectionString\.standardSrv)
+      password: $(.creds.data.password)
+---
+apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+kind: ResourceClaim
+metadata:
+  name: #@ data.values.name+"-mongodb"
+spec:
+  ref:
+    apiVersion: v1
+    kind: Secret
+    name: #@ data.values.name+"-mongodb"
+---
+#@ end
