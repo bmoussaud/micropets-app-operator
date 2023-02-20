@@ -13,12 +13,15 @@ data:
     ---
     namespaces:
     - name: micropets-int
-      language: 
+      languages: 
       - java
       - golang
-      database: postgres
+      databases: 
+      - postgres
     - name: micropets-dev
-      language: 
+      languages: 
       - java
       - golang
-      database: postgres
+      databases: 
+      - postgres
+    
