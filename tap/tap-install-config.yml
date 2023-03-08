@@ -8,7 +8,7 @@ tap:
   namespace: tap-install
   devNamespace: dev-tap
   
-  supply_chain: testing
+  supply_chain: testing_scanning
   
   logo: #@ base64.encode(data.read('tap-logo.png'))
 
