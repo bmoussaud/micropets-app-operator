@@ -108,7 +108,7 @@ Configuration: [tap/tap-install-config.yml](tap/tap-install-config.yml)
 ```yaml
 #@ def config():
 tap:  
-  version: "1.3.0-build.24"
+  version: "1.4.2"
   namespace: tap-install
   devNamespace: dev-tap
   logo: #@ base64.encode(data.read('tap-logo.png'))

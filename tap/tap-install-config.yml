@@ -4,7 +4,7 @@
 ---
 #@ def config():
 tap:  
-  version: "1.4.0"
+  version: "1.4.2"
   namespace: tap-install
   devNamespace: dev-tap
   
@@ -23,7 +23,7 @@ tap:
       ootbSupplyChain: library/tanzu-supply-chain
 
   domains:
-    main: tap300.eu.aks.mytanzu.xyz
+    main: tap4.eu.aks.mytanzu.xyz
     
 #@ end
 ---
