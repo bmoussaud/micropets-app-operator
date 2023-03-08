@@ -25,10 +25,10 @@ tap:
   domains:
     main: tap4.eu.aks.mytanzu.xyz
   
-  metadata:
+  metadatastore:
     ca: empty
     auth_token: empty
-    
+
 #@ end
 ---
 apiVersion: v1
