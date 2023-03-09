@@ -43,5 +43,5 @@ spec:
       vuln := vulns[j]
       ratings := { e | e := vuln.ratings.rating.severity } | { e | e := vuln.ratings.rating[_].severity }
       not isSafe(vuln)
-      msg = sprintf("CVE %s %s %s", [comp.name, vuln.id, ratings])
+      msg = sprintf("* CVE %s %s %s", [comp.name, vuln.id, ratings])
     }
