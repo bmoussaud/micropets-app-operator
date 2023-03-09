@@ -15,7 +15,7 @@ spec:
     package main
 
     # Accepted Values: "Critical", "High", "Medium", "Low", "Negligible", "UnknownSeverity"
-    notAllowedSeverities := ["Critical", "UnknownSeverity"]
+    notAllowedSeverities := [ "UnknownSeverity"]
     ignoreCves := ["CVE-2017-18381","CVE-2018-20353","CVE-2018-20354","CVE-2018-20355","CVE-2018-20356","CVE-2019-12951","CVE-2021-26529"]
 
     contains(array, elem) = true {
