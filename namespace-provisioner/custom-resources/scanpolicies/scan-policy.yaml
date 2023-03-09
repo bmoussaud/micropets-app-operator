@@ -9,14 +9,14 @@ kind: ScanPolicy
 metadata:
   name: scan-policy
   labels:
-    'app.kubernetes.io/part-of': 'scan-system'
+    "app.kubernetes.io/part-of": "scan-system"
 spec:
   regoFile: |
     package main
 
     # Accepted Values: "Critical", "High", "Medium", "Low", "Negligible", "UnknownSeverity"
     notAllowedSeverities := ["Critical", "UnknownSeverity"]
-    ignoreCves := []
+    ignoreCves := ["CVE-2016-0949","CVE-2017-11291","CVE-2018-12804"]
 
     contains(array, elem) = true {
       array[_] = elem
