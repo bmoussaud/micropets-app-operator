@@ -17,7 +17,7 @@ spec:
     # Accepted Values: "Critical", "High", "Medium", "Low", "Negligible", "UnknownSeverity"
     notAllowedSeverities := ["Critical", "UnknownSeverity"]
     # about gui-angular-js and the last one is for java
-    ignoreCves := ["CVE-2016-0949","CVE-2017-11291","CVE-2018-12804","CVE-2018-12805","CVE-2018-4923","CVE-2021-40719","CVE-2018-25076","GHSA-36p3-wjmg-h94x"]
+    ignoreCves := [""]
 
     contains(array, elem) = true {
       array[_] = elem

@@ -4,10 +4,16 @@
 #@ end
 #@ if/end in_list('supply_chain', ['testing_scanning']) and in_list('profile', ['full', 'build']):
 ---
+#@ def in_list_lang(value):
+#@  return hasattr(data.values, 'languages') and ( value in data.values['languages'])
+#@ end
+---
+#@ if/end in_list('supply_chain', ['testing_scanning']) and in_list('profile', ['full', 'build']) and in_list_lang('nodejs'):
+---
 apiVersion: scanning.apps.tanzu.vmware.com/v1beta1
 kind: ScanPolicy
 metadata:
-  name: nodejs-mongodb-policy
+  name: scan-policy-nodejs-mongodb
   labels:
     "app.kubernetes.io/part-of": "scan-system"
 spec:
@@ -16,6 +22,7 @@ spec:
 
     # Accepted Values: "Critical", "High", "Medium", "Low", "Negligible", "UnknownSeverity"
     notAllowedSeverities := [ "UnknownSeverity"]
+    # mongodb and moogoose
     ignoreCves := ["CVE-2017-18381","CVE-2018-20353","CVE-2018-20354","CVE-2018-20355","CVE-2018-20356","CVE-2019-12951","CVE-2021-26529"]
 
     contains(array, elem) = true {
