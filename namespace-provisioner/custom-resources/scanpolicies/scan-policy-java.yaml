@@ -7,7 +7,7 @@
 #@  return hasattr(data.values, 'languages') and ( value in data.values['languages'])
 #@ end
 ---
-#@ if/end in_list('supply_chain', ['testing_scanning']) and in_list('profile', ['full', 'build']) and in_list_lang('languages', 'java'):
+#@ if/end in_list('supply_chain', ['testing_scanning']) and in_list('profile', ['full', 'build']) and in_list_lang('java'):
 ---
 apiVersion: scanning.apps.tanzu.vmware.com/v1beta1
 kind: ScanPolicy
