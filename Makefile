@@ -1,6 +1,6 @@
 MICROPETS_SP_NS=dev-tap
 SECRET_OUTPUT_FILE=.secrets.yaml
-REGISTRY_NAME=akseutap4registry
+REGISTRY_NAME=akseutap5registry
 
 namespace:
 	kubectl create namespace $(MICROPETS_SP_NS) --dry-run=client -o yaml | kubectl apply -f -
@@ -78,9 +78,9 @@ secretgen-controller:
 
 tanzu-cluster-essentials:		
 	source ~/.kube/acr/.$(REGISTRY_NAME).config
-	imgpkg copy -b registry.tanzu.vmware.com/tanzu-cluster-essentials/cluster-essentials-bundle@sha256:5fd527dda8af0e4c25c427e5659559a2ff9b283f6655a335ae08357ff63b8e7f --to-repo $(REGISTRY_NAME).azurecr.io/tanzu-cluster-essentials/cluster-essentials-bundle --include-non-distributable-layers --concurrency 5
+	imgpkg copy -b  registry.tanzu.vmware.com/tanzu-cluster-essentials/cluster-essentials-bundle@sha256:2354688e46d4bb4060f74fca069513c9b42ffa17a0a6d5b0dbb81ed52242ea44 --to-repo $(REGISTRY_NAME).azurecr.io/tanzu-cluster-essentials/cluster-essentials-bundle --include-non-distributable-layers --concurrency 5
 	kubectl create namespace tanzu-cluster-essentials --dry-run=client -o yaml | kubectl apply -f -
-	imgpkg pull -b $(REGISTRY_NAME).azurecr.io/tanzu-cluster-essentials/cluster-essentials-bundle@sha256:5fd527dda8af0e4c25c427e5659559a2ff9b283f6655a335ae08357ff63b8e7f -o /tmp/bundle/
+	imgpkg pull -b $(REGISTRY_NAME).azurecr.io/tanzu-cluster-essentials/cluster-essentials-bundle@sha256:2354688e46d4bb4060f74fca069513c9b42ffa17a0a6d5b0dbb81ed52242ea44 -o /tmp/bundle/
 
 	echo "## Deploying kapp-controller"
 	ytt -f /tmp/bundle/kapp-controller/config/ -f /tmp/bundle/registry-creds/ --data-value-yaml registry.server=${INSTALL_REGISTRY_HOSTNAME} --data-value-yaml registry.username=${INSTALL_REGISTRY_USERNAME} --data-value-yaml registry.password=${INSTALL_REGISTRY_PASSWORD} --data-value-yaml kappController.deployment.concurrency=10 | kbld -f- -f /tmp/bundle/.imgpkg/images.yml | kapp deploy --yes -a kapp-controller -n tanzu-cluster-essentials -f-
@@ -183,3 +183,12 @@ undeploy-packages:
 	kapp delete --yes -a gitops-toolkit
 	kapp delete --yes -a kpack
 
+external-secrets:
+	tanzu package install external-secrets   -p external-secrets.apps.tanzu.vmware.com --version  0.6.1+tap.6 -n tap-install
+	kapp deploy -a azure-secret-sp -n tap-install -f  ~/.azure/rbac/vault-micropets.yaml
+
+# TODO move this configuration to tanzutips/aks./configure-access-to-azure-secrets.sh aks-eu-tap-5 vault-micropets mytanzu.xyz
+#CLUSTER_NAME=aks-eu-tap-5
+#KEY_VAULT=bmoussaud-keyvault
+#KEY_VAULT_RG=mytanzu.xyz
+	

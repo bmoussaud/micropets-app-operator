@@ -23,12 +23,12 @@ Using the Azure Container Registry [copy_tap_package.sh]()
 
 ```shell
 
-./copy_tap_package.sh akseutap4registry 1.4.0-rc.16
+./copy_tap_package.sh akseutap4registry 1.5.0-rc.1
 
 #!/bin/bash
 
-CLUSTER_NAME=aks-eu-tap-3
-REGISTRY_NAME=akseutap3registry
+CLUSTER_NAME=aks-eu-tap-4
+REGISTRY_NAME=akseutap4registry
 TAP_VERSION=1.3.1
 INSTALL_REPO=tanzu-application-platform
 
@@ -87,10 +87,10 @@ Doc:
 * https://blog.container-solutions.com/tutorial-external-secrets-with-azure-keyvault
 
 ```shell
-CLUSTER_NAME=aks-eu-tap-4
+CLUSTER_NAME=aks-eu-tap-5
 KEY_VAULT=bmoussaud-keyvault
 KEY_VAULT_RG=mytanzu.xyz
-tanzu package install external-secrets   -p external-secrets.apps.tanzu.vmware.com --version  0.6.1+tap.2 -n tap-install
+tanzu package install external-secrets   -p external-secrets.apps.tanzu.vmware.com --version  0.6.1+tap.6 -n tap-install
 az aks show --resource-group $(CLUSTER_NAME)  --name $(CLUSTER_NAME)   --query 'identityProfile.kubeletidentity.objectId' -o tsv
 KUBELET_IDENTITY_OBJECT_ID=$(az aks show --resource-group $(CLUSTER_NAME)   --name $(CLUSTER_NAME)   --query 'identityProfile.kubeletidentity.objectId' -o tsv)
 echo ${KUBELET_IDENTITY_OBJECT_ID}
@@ -157,6 +157,11 @@ Check the status of the deployed packages (35) using:
 ```shell
 watch kubectl get app -A
 ```
+Sometimes you need to help the app controler to reconcile faste
+```shell
+kctrl app kick  -n tap-install -a tap
+```
+
 
 Get the TAP-GUI ip adresse
 ```shell
