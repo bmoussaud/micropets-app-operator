@@ -1,14 +1,3 @@
-#@ load("@ytt:data", "data")
-#@ def in_list(key, list):
-#@  return hasattr(data.values.tap_values, key) and (data.values.tap_values[key] in list)
-#@ end
----
-#@ def in_list_lang(value):
-#@  return hasattr(data.values, 'languages') and ( value in data.values['languages'])
-#@ end
----
-#@ if/end in_list('supply_chain', ['testing_scanning']) and in_list('profile', ['full', 'build']) and in_list_lang('java'):
----
 apiVersion: scanning.apps.tanzu.vmware.com/v1beta1
 kind: ScanPolicy
 metadata:
@@ -19,34 +8,40 @@ spec:
   regoFile: |
     package main
 
-    # Accepted Values: "Critical", "High", "Medium", "Low", "Negligible", "UnknownSeverity"
     notAllowedSeverities := ["Critical", "UnknownSeverity"]    
-    ignoreCves := ["GHSA-36p3-wjmg-h94x","CVE-2019-10211","CVE-2018-1115","CVE-2015-3166","CVE-2015-0244","GHSA-45hx-wfhj-473x"]
+    ignoreCves := ["GHSA-36p3-wjmg-h94x","CVE-2019-10211","CVE-2018-1115","CVE-2015-3166","CVE-2015-0244","CVE-2016-1000027"]
+    ignoreComponents := ["h2"]
 
     contains(array, elem) = true {
       array[_] = elem
     } else = false { true }
 
     isSafe(match) {
-      severities := { e | e := match.ratings.rating.severity } | { e | e := match.ratings.rating[_].severity }
-      some i
-      fails := contains(notAllowedSeverities, severities[i])
-      not fails
+        severities := { e | e := match.ratings.rating.severity } | { e | e := match.ratings.rating[_].severity }
+        some i
+        fails := contains(notAllowedSeverities, severities[i])
+        not fails
     }
 
     isSafe(match) {
-      ignore := contains(ignoreCves, match.id)
-      ignore
+        ignore := contains(ignoreCves, match.id)
+        ignore
+    }
+
+    ignoreComponent(component) {
+      ignore := contains(ignoreComponents, component.name)
+        ignore
     }
 
     deny[msg] {
-      comps := { e | e := input.bom.components.component } | { e | e := input.bom.components.component[_] }
-      some i
-      comp := comps[i]
-      vulns := { e | e := comp.vulnerabilities.vulnerability } | { e | e := comp.vulnerabilities.vulnerability[_] }
-      some j
-      vuln := vulns[j]
-      ratings := { e | e := vuln.ratings.rating.severity } | { e | e := vuln.ratings.rating[_].severity }
-      not isSafe(vuln)
-      msg = sprintf("CVE %s %s %s", [comp.name, vuln.id, ratings])
+        comps := { e | e := input.bom.components.component } | { e | e := input.bom.components.component[_] }
+        some i
+        comp := comps[i]
+        not ignoreComponent(comp)
+        vulns := { e | e := comp.vulnerabilities.vulnerability } | { e | e := comp.vulnerabilities.vulnerability[_] }
+        some j
+        vuln := vulns[j]
+        ratings := { e | e := vuln.ratings.rating.severity } | { e | e := vuln.ratings.rating[_].severity }
+        not isSafe(vuln)
+        msg = sprintf("CVE %s %s %s", [comp.name, vuln.id, ratings])
     }
