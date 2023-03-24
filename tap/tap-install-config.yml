@@ -4,7 +4,7 @@
 ---
 #@ def config():
 tap:
-  version: "1.5.0-rc.1"
+  version: "1.5.0-rc.8"
   namespace: tap-install
   devNamespace: dev-tap
 
@@ -15,6 +15,7 @@ tap:
   #! Set Backstage catalogs to include by default.
   catalogs:
     - https://github.com/bmoussaud/micropets-app/blob/master/catalog-info.yaml
+
 
   registry:
     host: #@ data.values.registry.server
