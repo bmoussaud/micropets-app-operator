@@ -4,7 +4,7 @@
 ---
 #@ def config():
 tap:
-  version: "1.5.0-rc.8"
+  version: "1.5.0-rc.9"
   namespace: tap-install
   devNamespace: dev-tap
 
