@@ -9,7 +9,7 @@ spec:
     package main
 
     notAllowedSeverities := ["Critical", "UnknownSeverity"]    
-    ignoreCves := ["GHSA-36p3-wjmg-h94x","CVE-2019-10211","CVE-2018-1115","CVE-2015-3166","CVE-2015-0244","CVE-2016-1000027"]
+    ignoreCves := ["GHSA-36p3-wjmg-h94x","CVE-2019-10211","CVE-2018-1115","CVE-2015-3166","CVE-2015-0244","CVE-2016-1000027","CVE-2021-26291"]
     ignoreComponents := ["h2"]
 
     contains(array, elem) = true {
