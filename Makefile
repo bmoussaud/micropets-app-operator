@@ -92,6 +92,9 @@ tanzu-cluster-essentials:
 	@rm  -rf /tmp/bundle/
 
 .PHONY: tap
+available-version:
+	imgpkg tag list -i registry.tanzu.vmware.com/tanzu-application-platform/tap-packages | sort -V
+	
 tap:
 	source ~/.kube/acr/.$(REGISTRY_NAME).config
 	ytt -f tap --data-value-yaml git.token=${GIT_SSH_PASSWORD} --data-value-yaml registry.server=${INSTALL_REGISTRY_HOSTNAME} --data-value-yaml registry.username=${INSTALL_REGISTRY_USERNAME} --data-value-yaml registry.password=${INSTALL_REGISTRY_PASSWORD} --data-value repository=https://github.com/bmoussaud/tap-install-gitops | kapp deploy --yes -c -a tap-install-gitops -f-
