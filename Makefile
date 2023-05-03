@@ -1,6 +1,6 @@
 MICROPETS_SP_NS=dev-tap
 SECRET_OUTPUT_FILE=.secrets.yaml
-REGISTRY_NAME=akseutap6registry
+REGISTRY_NAME=akseutap5registry
 
 namespace:
 	kubectl create namespace $(MICROPETS_SP_NS) --dry-run=client -o yaml | kubectl apply -f -
@@ -94,10 +94,9 @@ tanzu-cluster-essentials:
 .PHONY: tap
 available-version:
 	imgpkg tag list -i registry.tanzu.vmware.com/tanzu-application-platform/tap-packages | sort -V
-	
+
 tap:
-	source ~/.kube/acr/.$(REGISTRY_NAME).config
-	ytt -f tap --data-value-yaml git.token=${GIT_SSH_PASSWORD} --data-value-yaml registry.server=${INSTALL_REGISTRY_HOSTNAME} --data-value-yaml registry.username=${INSTALL_REGISTRY_USERNAME} --data-value-yaml registry.password=${INSTALL_REGISTRY_PASSWORD} --data-value repository=https://github.com/bmoussaud/tap-install-gitops | kapp deploy --yes -c -a tap-install-gitops -f-
+	source ~/.kube/acr/.$(REGISTRY_NAME).config && ytt -f tap --data-value-yaml git.token=${GIT_SSH_PASSWORD} --data-value-yaml registry.server=${INSTALL_REGISTRY_HOSTNAME} --data-value-yaml registry.username=${INSTALL_REGISTRY_USERNAME} --data-value-yaml registry.password=${INSTALL_REGISTRY_PASSWORD} --data-value repository=https://github.com/bmoussaud/tap-install-gitops | kapp deploy --yes -c -a tap-install-gitops -f-
 
 tap-gui-ip:
 # az network dns record-set a add-record --resource-group mytanzu.xyz --zone-name mytanzu.xyz --record-set-name "*.tap4.eu.aks"  --ipv4-address  1.2.3.4
@@ -184,7 +183,7 @@ undeploy-packages:
 	kapp delete --yes -a cartographer 
 	kapp delete --yes -a kapp-controler
 	kapp delete --yes -a cert-manager
-	kapp delete --yes -a gitops-toolkit
+	kapp delete --yes	 -a gitops-toolkit
 	kapp delete --yes -a kpack
 
 external-secrets:
