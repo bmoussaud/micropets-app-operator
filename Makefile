@@ -1,6 +1,6 @@
 MICROPETS_SP_NS=dev-tap
 SECRET_OUTPUT_FILE=.secrets.yaml
-REGISTRY_NAME=akseutap5registry
+REGISTRY_NAME=akseutap6registry
 
 namespace:
 	kubectl create namespace $(MICROPETS_SP_NS) --dry-run=client -o yaml | kubectl apply -f -
@@ -79,8 +79,12 @@ secretgen-controller:
 CLUSTER_ESSENTIAL_INSTALL_BUNDLE=tanzu-cluster-essentials/cluster-essentials-bundle@sha256:79abddbc3b49b44fc368fede0dab93c266ff7c1fe305e2d555ed52d00361b446
 tanzu-cluster-essentials:		
 	source ~/.kube/acr/.$(REGISTRY_NAME).config
+	echo "## Test $(REGISTRY_NAME) Registry..."
+	source ~/.kube/acr/.$(REGISTRY_NAME).config && test_registry_$(REGISTRY_NAME)
 	imgpkg copy -b  registry.tanzu.vmware.com/$(CLUSTER_ESSENTIAL_INSTALL_BUNDLE) --to-repo $(REGISTRY_NAME).azurecr.io/tanzu-cluster-essentials/cluster-essentials-bundle --include-non-distributable-layers --concurrency 5
+	echo "## create namespace tanzu-cluster-essentials"
 	kubectl create namespace tanzu-cluster-essentials --dry-run=client -o yaml | kubectl apply -f -
+	echo "## pull the bundle"
 	imgpkg pull -b $(REGISTRY_NAME).azurecr.io/$(CLUSTER_ESSENTIAL_INSTALL_BUNDLE) -o /tmp/bundle/
 
 	echo "## Deploying kapp-controller"
@@ -102,6 +106,9 @@ tap-gui-ip:
 # az network dns record-set a add-record --resource-group mytanzu.xyz --zone-name mytanzu.xyz --record-set-name "*.tap4.eu.aks"  --ipv4-address  1.2.3.4
 	kubectl get HTTPProxy  -n tap-gui tap-gui
 	kubectl get HTTPProxy  -n tap-gui tap-gui -o json | jq ".status.loadBalancer.ingress[0].ip"
+
+untap:
+	kapp delete -c -a tap-install-gitops
 
 kapp-controler-tkgm:
 	kubectl apply -f https://github.com/vmware-tanzu/carvel-kapp-controller/releases/download/v0.31.0/release.yml
