@@ -17,6 +17,8 @@ spec:
     dbname: #@ data.values.name+"-database"
     username: pgadmin
     appUser: admin
+  imagePullSecret:
+    name: app-registry
   highAvailability:
     enabled: false
 ---
